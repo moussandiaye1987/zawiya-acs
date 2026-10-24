@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidentialité — Zawiya Cheikh Ibrahim Niasse</title>
+<meta name="description" content="Comment l'Association Connaissance et Savoir collecte, conserve et protège les données du site du projet de Zawiya.">
+<meta name="robots" content="index, follow">
+<link rel="icon" href="favicon.png" sizes="32x32">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Alegreya+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--pierre:#EFE8DC;--craie:#FBF8F2;--encre:#14301F;--encre-2:#4A6152;--vert:#1E7A43;--trait:rgba(20,48,31,.16);--rayon:3px}
+@media (prefers-color-scheme:dark){:root{--pierre:#101F18;--craie:#0B1611;--encre:#EDE6DA;--encre-2:#A9BCAE;--vert:#63BC82;--trait:rgba(237,230,218,.17)}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--pierre);color:var(--encre);font-family:"Alegreya Sans",system-ui,sans-serif;font-size:17px;line-height:1.65}
+.wrap{width:min(760px,92vw);margin-inline:auto;padding:2.5rem 0 4rem}
+h1,h2{font-family:"Marcellus",serif;font-weight:400;line-height:1.2;margin:0}
+h1{font-size:clamp(1.9rem,5vw,2.6rem);margin-bottom:.5rem}
+h2{font-size:1.3rem;margin:2.3rem 0 .7rem}
+p,li{color:var(--encre-2)}
+p{margin:0 0 1em}
+ul{padding-left:1.2rem}
+li{margin-bottom:.45rem}
+strong{color:var(--encre);font-weight:500}
+a{color:var(--vert)}
+.retour{display:inline-block;margin-bottom:2rem;font-size:.92rem;text-decoration:none;color:var(--vert)}
+.marque{font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;color:var(--vert);margin-bottom:.4rem}
+.chapeau{font-size:1.05rem}
+.encadre{border-left:3px solid var(--vert);background:color-mix(in srgb,var(--vert) 7%,transparent);
+  padding:1rem 1.2rem;border-radius:0 var(--rayon) var(--rayon) 0;margin:1.5rem 0}
+table{width:100%;border-collapse:collapse;font-size:.95rem;margin:1rem 0}
+th,td{text-align:left;padding:.65rem .5rem;border-bottom:1px solid var(--trait);vertical-align:top}
+th{font-weight:500;color:var(--encre);font-size:.86rem}
+td{color:var(--encre-2)}
+.maj{font-size:.86rem;color:var(--encre-2);margin-top:2.5rem;padding-top:1rem;border-top:1px solid var(--trait)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="retour" href="/">← Retour au site</a>
+  <p class="marque">Association Connaissance et Savoir</p>
+  <h1>Confidentialité</h1>
+  <p class="chapeau">Cette page décrit ce que nous collectons, pourquoi, combien de temps nous le gardons, et comment vous pouvez intervenir. Elle ne décrit que ce qui est réellement mis en œuvre.</p>
+
+  <div class="encadre">
+    <strong>Ce site n'encaisse aucun paiement.</strong> Il ne demande ni numéro de carte, ni IBAN, ni mandat de prélèvement. Aucune donnée bancaire de participant n'est collectée ni conservée.
+  </div>
+
+  <h2>Qui est responsable</h2>
+  <p>L'Association Connaissance et Savoir (ACS), association loi 1901, 35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes. Pour toute question relative à vos données, écrivez à l'adresse de contact indiquée en bas de la page d'accueil, ou appelez le 06 76 55 10 98.</p>
+
+  <h2>Ce que nous collectons</h2>
+  <table>
+    <thead><tr><th>Formulaire</th><th>Données</th><th>Pourquoi</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Engagement de contribution</strong></td>
+        <td>Prénom, nom, e-mail et/ou téléphone, code postal, zone, Dahira éventuelle, montant mensuel déclaré, durée, préférence de règlement, message libre.</td>
+        <td>Enregistrer votre engagement, vous recontacter, suivre l'avancement du projet et vous adresser le rappel mensuel si vous l'avez accepté.</td>
+      </tr>
+      <tr>
+        <td><strong>Référencement d'une Dahira</strong></td>
+        <td>Nom de la Dahira, guide, ville, code postal, lieu et horaires des activités, nom et coordonnées du responsable, effectif.</td>
+        <td>Constituer l'annuaire public des Dahiras et pouvoir joindre le responsable pour vérifier la fiche.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Nous conservons également une <strong>empreinte chiffrée de votre adresse IP</strong> — jamais l'adresse elle-même — uniquement pour limiter les envois automatisés répétés.</p>
+
+  <h2>Ce qui est public et ce qui ne l'est pas</h2>
+  <ul>
+    <li><strong>Jamais public :</strong> votre nom, vos coordonnées, votre montant, votre référence. Aucune liste de participants n'est transmise au navigateur des visiteurs. Le site ne diffuse que des totaux.</li>
+    <li><strong>Public après validation :</strong> pour une Dahira, son nom, son guide, sa ville, son code postal, ses pratiques et son effectif. Le téléphone n'apparaît que si le responsable l'a expressément autorisé lors de la soumission.</li>
+    <li><strong>Jamais public :</strong> l'e-mail et le téléphone privé du responsable d'une Dahira.</li>
+  </ul>
+
+  <h2>Où sont conservées les données</h2>
+  <p>Dans une base de données hébergée en France (région de Paris) par Supabase, et accessible uniquement au bureau de l'association. Les tables sont fermées par défaut : aucune lecture n'est possible sans une clé détenue par le serveur, qui n'est jamais transmise au navigateur. Le site est hébergé par Netlify.</p>
+  <p>Les e-mails de notification et de rappel transitent par un prestataire d'envoi, qui traite votre adresse e-mail pour les acheminer.</p>
+
+  <h2>Combien de temps</h2>
+  <ul>
+    <li><strong>Engagements :</strong> pendant toute la durée de l'engagement, puis trois ans après le dernier contact. Les pièces nécessaires à la comptabilité de l'association sont conservées selon les obligations légales qui s'y appliquent.</li>
+    <li><strong>Fiches de Dahira :</strong> tant que la Dahira figure dans l'annuaire, puis un an.</li>
+    <li><strong>Journal des envois :</strong> douze mois.</li>
+  </ul>
+
+  <h2>Vos droits</h2>
+  <p>Vous pouvez à tout moment demander à consulter, corriger ou supprimer vos données, retirer votre consentement, ou simplement interrompre les rappels sans annuler votre engagement. Un lien de désinscription figure en bas de chaque e-mail de rappel.</p>
+  <p>Écrivez-nous : nous répondons dans un délai d'un mois. Si la réponse ne vous satisfait pas, vous pouvez saisir la CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).</p>
+
+  <h2>Traceurs</h2>
+  <p>Ce site ne dépose <strong>aucun cookie publicitaire</strong> et n'utilise aucun outil de mesure d'audience. Votre navigateur conserve localement le brouillon du formulaire d'engagement, afin que vous ne perdiez pas votre saisie ; ces informations restent sur votre appareil et ne nous sont jamais transmises. Les polices de caractères sont chargées depuis Google Fonts, ce qui transmet votre adresse IP à Google.</p>
+
+  <h2>Ce que nous ne promettons pas</h2>
+  <p>Nous ne prétendons pas à une certification de sécurité particulière, ni à un chiffrement de bout en bout. Les protections en place sont celles décrites ci-dessus : accès restreint, tables fermées par défaut, secrets conservés côté serveur, communications chiffrées en transit.</p>
+
+  <p class="maj">Dernière mise à jour : 25 octobre 2026. Cette page sera revue si le fonctionnement du site change.</p>
+</div>
+</body>
+</html>

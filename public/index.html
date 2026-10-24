@@ -1,0 +1,2256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zawiya Cheikh Ibrahim Niasse — Association Connaissance et Savoir</title>
+<meta name="description" content="Projet d'acquisition et d'aménagement de la Zawiya Cheikh Ibrahim Niasse en Île-de-France. Enregistrez votre engagement de contribution ou référencez votre Dahira.">
+<link rel="icon" href="favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icone-180.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Association Connaissance et Savoir">
+<meta property="og:title" content="Bâtir la Zawiya Cheikh Ibrahim Niasse en Île-de-France">
+<meta property="og:description" content="1 000 engagements recherchés pour acquérir et aménager un lieu permanent : salle de 500 places, salles de Hadra, école, accueil des Chouyoukh.">
+<meta property="og:image" content="img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#12321F">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ====================================================================
+   Jetons de couleur — identité conservée : pierre, encre forestière,
+   vert ACS, et l'ogive des fenêtres du bâtiment comme motif récurrent.
+   ==================================================================== */
+:root{
+  --pierre:#EFE8DC; --pierre-2:#E4DAC9; --craie:#FBF8F2;
+  --encre:#14301F; --encre-2:#4A6152;
+  --vert:#1E7A43; --vert-vif:#7CB230;
+  --nuit:#12321F; --sur-nuit:#EFE8DC; --sur-nuit-2:rgba(239,232,220,.74);
+  --trait:rgba(20,48,31,.16); --trait-fort:rgba(20,48,31,.34);
+  --alerte:#B4342A;
+  --voile-or:#F3DFAB; --voile-argent:#DEE3E7; --voile-bronze:#EACFAE; --voile-libre:#DCE9CD;
+  --voile-trait:rgba(20,48,31,.18); --fond-puzzle:#EFE6D4;
+  --tr-or:#A87F14; --tr-argent:#7F8A94; --tr-bronze:#8A5722; --tr-libre:#3F7A1E;
+  --rayon:3px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --pierre:#101F18; --pierre-2:#1A2E24; --craie:#0B1611;
+    --encre:#EDE6DA; --encre-2:#A9BCAE;
+    --vert:#63BC82; --vert-vif:#A5D65C;
+    --nuit:#0A1410; --sur-nuit:#EDE6DA; --sur-nuit-2:rgba(237,230,218,.72);
+    --trait:rgba(237,230,218,.17); --trait-fort:rgba(237,230,218,.34);
+    --alerte:#F0A096;
+    --voile-or:#2C2617; --voile-argent:#232729; --voile-bronze:#2B2018; --voile-libre:#1E2A18;
+    --voile-trait:rgba(237,230,218,.15); --fond-puzzle:#14231B;
+    --tr-or:#EDC65E; --tr-argent:#DCE0E3; --tr-bronze:#D0924E; --tr-libre:#9BD25C;
+  }
+}
+:root[data-theme="dark"]{
+  --pierre:#101F18; --pierre-2:#1A2E24; --craie:#0B1611;
+  --encre:#EDE6DA; --encre-2:#A9BCAE;
+  --vert:#63BC82; --vert-vif:#A5D65C;
+  --nuit:#0A1410; --sur-nuit:#EDE6DA; --sur-nuit-2:rgba(237,230,218,.72);
+  --trait:rgba(237,230,218,.17); --trait-fort:rgba(237,230,218,.34);
+  --alerte:#F0A096;
+  --voile-or:#2C2617; --voile-argent:#232729; --voile-bronze:#2B2018; --voile-libre:#1E2A18;
+  --voile-trait:rgba(237,230,218,.15); --fond-puzzle:#14231B;
+  --tr-or:#EDC65E; --tr-argent:#DCE0E3; --tr-bronze:#D0924E; --tr-libre:#9BD25C;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none !important; transition:none !important} }
+body{margin:0; background:var(--pierre); color:var(--encre);
+  font-family:"Alegreya Sans","Segoe UI",system-ui,sans-serif; font-size:17px; line-height:1.62; overflow-x:hidden}
+img{max-width:100%; display:block}
+a{color:inherit}
+h1,h2,h3,h4{font-family:"Marcellus","Times New Roman",Georgia,serif; font-weight:400; line-height:1.14; margin:0}
+p{margin:0 0 1em}
+[id]{scroll-margin-top:78px}
+.wrap{width:min(1120px,92vw); margin-inline:auto}
+.narrow{width:min(720px,92vw); margin-inline:auto}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+.skip{position:absolute; left:-9999px; top:0; background:var(--vert); color:#fff; padding:.7rem 1rem; z-index:99}
+.skip:focus{left:0}
+:focus-visible{outline:2px solid var(--vert); outline-offset:3px; border-radius:2px}
+.ogive{clip-path:url(#ogive)}
+
+/* ---------- barre de navigation : trois accès, toujours visibles ---------- */
+.topbar{position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--pierre) 93%, transparent);
+  backdrop-filter:blur(10px); border-bottom:1px solid var(--trait)}
+.topbar-in{display:flex; align-items:center; gap:.9rem; padding:.5rem 0; min-height:62px; position:relative}
+.brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; flex:0 0 auto}
+.brand img{width:38px; height:38px; border-radius:50%; background:#fff}
+.brand b{font-family:"Marcellus",serif; font-size:1rem; font-weight:400; letter-spacing:.02em; line-height:1.15}
+.brand b span{display:block; font-size:.73rem; color:var(--encre-2); letter-spacing:.04em}
+.acces{display:flex; gap:.5rem; margin-left:auto; align-items:center}
+.acces a{text-decoration:none; font-size:.95rem; padding:.6rem .95rem; border-radius:var(--rayon);
+  border:1px solid transparent; color:var(--encre-2); white-space:nowrap}
+.acces a:hover{color:var(--encre); border-color:var(--trait-fort)}
+.acces a.primaire{background:var(--vert); border-color:var(--vert); color:var(--craie); font-weight:500}
+.acces a.primaire:hover{background:var(--encre); border-color:var(--encre); color:var(--pierre)}
+.menu-btn{display:none; align-items:center; justify-content:center; width:44px; height:44px; flex:0 0 auto;
+  background:transparent; border:1px solid var(--trait-fort); border-radius:var(--rayon); color:var(--encre); cursor:pointer}
+.menu-btn svg{width:20px; height:20px}
+.menu-btn[aria-expanded="true"]{border-color:var(--vert); color:var(--vert)}
+.menu-mobile{display:none; position:absolute; top:100%; left:-4vw; right:-4vw; z-index:60; background:var(--pierre);
+  border-top:1px solid var(--trait); border-bottom:1px solid var(--trait); padding:.3rem 4vw .9rem;
+  box-shadow:0 12px 24px rgba(0,0,0,.10)}
+.menu-mobile.ouvert{display:block}
+.menu-mobile a{display:block; padding:.95rem .2rem; text-decoration:none; color:var(--encre);
+  border-bottom:1px solid var(--trait); font-size:1.02rem}
+.menu-mobile a:last-child{border-bottom:none}
+.brand-court{display:none}
+
+@media (max-width:1000px){
+  .acces a.secondaire{display:none}
+  .menu-btn{display:inline-flex}
+}
+@media (max-width:620px){
+  [id]{scroll-margin-top:68px}
+  .topbar-in{gap:.45rem; min-height:56px}
+  .brand img{width:32px; height:32px}
+  .brand b{font-size:.9rem}
+  .brand b span{display:none}
+  .brand-long{display:none}
+  .brand-court{display:inline}
+  .acces a{padding:.55rem .8rem; font-size:.88rem; min-height:42px; display:flex; align-items:center}
+}
+
+/* ---------- boutons ---------- */
+.btn{display:inline-flex; align-items:center; justify-content:center; text-decoration:none; cursor:pointer;
+  font-family:inherit; font-size:.97rem; line-height:1.2; padding:.78rem 1.3rem; border-radius:var(--rayon);
+  border:1px solid var(--vert); background:var(--vert); color:var(--craie);
+  transition:background .15s ease, border-color .15s ease, color .15s ease}
+.btn:hover{background:var(--encre); border-color:var(--encre); color:var(--pierre)}
+.btn[disabled]{opacity:.55; cursor:progress}
+.btn-ghost{background:transparent; color:var(--encre); border-color:var(--trait-fort)}
+.btn-ghost:hover{background:transparent; color:var(--vert); border-color:var(--vert)}
+.btn-sm{padding:.55rem .9rem; font-size:.88rem}
+
+/* ---------- sections ---------- */
+.sect{padding:clamp(3rem,7vw,5.5rem) 0; border-top:1px solid var(--trait)}
+.sect-craie{background:var(--craie)}
+.sect-nuit{background:var(--nuit); color:var(--sur-nuit); border-top:none}
+.sect h2{font-size:clamp(1.8rem,4vw,2.7rem); max-width:19em}
+.sect h2 + p{margin-top:1rem; color:var(--encre-2); max-width:38em; font-size:1.05rem}
+.sect-nuit h2 + p{color:var(--sur-nuit-2)}
+.sect-lead{margin-bottom:clamp(1.8rem,4vw,2.8rem)}
+.etape{font-size:.76rem; letter-spacing:.14em; text-transform:uppercase; color:var(--vert); margin-bottom:.6rem; display:block}
+.duo{display:grid; grid-template-columns:1fr 1fr; gap:clamp(1.6rem,4vw,3rem); align-items:start}
+@media (max-width:820px){ .duo{grid-template-columns:1fr} }
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(2.2rem,5vw,4.5rem) 0 clamp(1.8rem,4vw,3rem)}
+.hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(2rem,5vw,4.5rem); align-items:center}
+@media (max-width:860px){ .hero-grid{grid-template-columns:1fr; gap:2.2rem} }
+.hero h1{font-size:clamp(2.1rem,6vw,4.1rem); letter-spacing:-.005em}
+.hero h1 em{font-style:normal; font-family:"Alegreya Sans",sans-serif; font-size:.4em; display:block;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--vert); margin-bottom:.9rem; line-height:1.3}
+.lede{font-size:1.14rem; color:var(--encre-2); max-width:34em; margin-top:1.2rem}
+.hero-actions{display:flex; flex-wrap:wrap; gap:.7rem; margin-top:1.7rem}
+.hero-art img{width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center 62%}
+.hero-art figcaption{margin-top:.7rem; font-size:.82rem; color:var(--encre-2); text-align:center; font-style:italic}
+.chiffres{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--trait);
+  border-block:1px solid var(--trait); margin-top:clamp(2rem,4vw,3rem)}
+.chiffre{background:var(--pierre); padding:1.3rem 1.1rem}
+.chiffre b{display:block; font-family:"Marcellus",serif; font-size:clamp(1.6rem,3.4vw,2.4rem); line-height:1; color:var(--vert)}
+.chiffre span{display:block; font-size:.87rem; color:var(--encre-2); margin-top:.4rem}
+@media (max-width:640px){ .chiffres{grid-template-columns:1fr} }
+
+/* ---------- vocations, galerie, film ---------- */
+.vocations{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--trait); border:1px solid var(--trait)}
+@media (max-width:760px){ .vocations{grid-template-columns:1fr} }
+.vocation{background:var(--craie); padding:1.7rem 1.4rem}
+.sect-craie .vocation{background:var(--pierre)}
+.vocation h3{font-size:1.26rem; margin-bottom:.5rem}
+.vocation p{font-size:.96rem; color:var(--encre-2); margin:0}
+.vocation svg{width:30px; height:34px; margin-bottom:.9rem; color:var(--vert)}
+.film{position:relative; border-radius:var(--rayon); overflow:hidden; background:#000; margin-top:2rem}
+.film video{width:100%; display:block; aspect-ratio:16/9; background:#000}
+.film-legende{font-size:.85rem; color:var(--encre-2); margin-top:.6rem}
+.galerie{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:1.6rem}
+.galerie figure{margin:0; position:relative; overflow:hidden; border-radius:var(--rayon)}
+.galerie img{width:100%; height:100%; object-fit:cover}
+.g-large{grid-column:span 4; aspect-ratio:16/9}
+.g-small{grid-column:span 2; aspect-ratio:4/5}
+.g-mid{grid-column:span 3; aspect-ratio:16/10}
+.galerie figcaption{position:absolute; left:0; right:0; bottom:0; padding:.8rem .85rem .65rem;
+  font-size:.81rem; color:#fff; background:linear-gradient(to top,rgba(10,20,15,.82),transparent)}
+@media (max-width:760px){
+  .galerie{grid-template-columns:repeat(2,1fr); gap:8px}
+  .g-large,.g-mid{grid-column:span 2; aspect-ratio:16/10}
+  .g-small{grid-column:span 1}
+  .galerie figcaption{font-size:.75rem}
+}
+
+/* ---------- blocs dépliables ---------- */
+.replier{border:1px solid var(--trait-fort); border-radius:var(--rayon); margin-top:1rem; background:var(--craie)}
+.sect-craie .replier{background:var(--pierre)}
+.replier > summary{cursor:pointer; padding:1.1rem 1.2rem; font-family:"Marcellus",serif; font-size:1.15rem;
+  list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem}
+.replier > summary::-webkit-details-marker{display:none}
+.replier > summary::after{content:"+"; font-size:1.5rem; color:var(--vert); line-height:1}
+.replier[open] > summary::after{content:"–"}
+.replier > summary:focus-visible{outline:2px solid var(--vert); outline-offset:-2px}
+.replier .contenu{padding:0 1.2rem 1.4rem; border-top:1px solid var(--trait)}
+.replier .contenu > *:first-child{margin-top:1.1rem}
+@media (max-width:620px){ .replier .contenu{padding:0 .9rem 1.2rem} }
+
+/* ---------- programme, critères, zones ---------- */
+.niveaux{display:grid; grid-template-columns:1fr 1fr; gap:clamp(1.2rem,3vw,2.2rem)}
+@media (max-width:820px){ .niveaux{grid-template-columns:1fr} }
+.niveau{border:1px solid var(--trait); border-radius:var(--rayon); overflow:hidden}
+.niveau h4{background:var(--pierre-2); padding:.8rem 1.1rem; font-size:1.08rem}
+.sect-craie .niveau h4{background:var(--pierre)}
+.niveau ul{list-style:none; margin:0; padding:.3rem 1.1rem 1.1rem}
+.niveau li{display:flex; justify-content:space-between; gap:1rem; padding:.58rem 0;
+  border-bottom:1px dotted var(--trait); font-size:.95rem}
+.niveau li:last-child{border-bottom:none}
+.niveau li b{font-weight:500; color:var(--encre-2); white-space:nowrap; font-variant-numeric:tabular-nums}
+.zones-ilf{display:flex; flex-wrap:wrap; gap:.55rem; margin:1rem 0 0; padding:0; list-style:none}
+.dept{display:flex; align-items:baseline; gap:.5rem; border:1px solid var(--trait-fort);
+  border-radius:var(--rayon); padding:.55rem .85rem; font-size:.93rem}
+.dept b{font-family:"Marcellus",serif; font-size:1.12rem; color:var(--vert)}
+.dept.secondaire{border-style:dashed; opacity:.82}
+.dept.secondaire b{color:var(--encre-2)}
+.criteres{list-style:none; margin:0; padding:0}
+.criteres li{position:relative; padding:.85rem 0 .85rem 2.3rem; border-bottom:1px solid var(--trait); font-size:.99rem}
+.criteres li:first-child{border-top:1px solid var(--trait)}
+.criteres li::before{content:""; position:absolute; left:.3rem; top:1.2rem; width:12px; height:14px;
+  background:var(--vert); clip-path:url(#ogive)}
+.criteres b{font-weight:500}
+.criteres span{display:block; color:var(--encre-2); font-size:.92rem}
+.legende{font-size:.85rem; color:var(--encre-2); margin-top:.9rem}
+
+/* ---------- encadrés ---------- */
+.avis{border-left:3px solid var(--vert); background:color-mix(in srgb,var(--vert) 7%, transparent);
+  padding:1rem 1.2rem; margin:1.4rem 0; font-size:.96rem; color:var(--encre-2); border-radius:0 var(--rayon) var(--rayon) 0}
+.avis b{color:var(--encre); font-weight:500}
+.avis.fort{border-left-color:var(--alerte); background:color-mix(in srgb,var(--alerte) 8%, transparent)}
+.mention-paiement{border:1px solid var(--vert); background:color-mix(in srgb,var(--vert) 8%, transparent);
+  border-radius:var(--rayon); padding:1rem 1.2rem; margin:1.5rem 0; font-size:.97rem}
+.mention-paiement b{display:block; font-weight:500; color:var(--encre); margin-bottom:.2rem}
+.mention-paiement span{color:var(--encre-2)}
+
+/* ---------- tableaux ---------- */
+.scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch; position:relative}
+.tbl{width:100%; border-collapse:collapse; font-size:.97rem; margin-top:1.4rem}
+.tbl caption{text-align:left; font-size:.88rem; color:var(--encre-2); padding-bottom:.7rem}
+.tbl th,.tbl td{padding:.75rem .65rem; text-align:right; border-bottom:1px solid var(--trait); font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child{text-align:left; font-variant-numeric:normal}
+.tbl thead th{font-weight:500; font-size:.84rem; color:var(--encre-2); letter-spacing:.03em; border-bottom:1px solid var(--trait-fort)}
+.tbl tbody tr.privilegie td{background:color-mix(in srgb, var(--vert) 9%, transparent); font-weight:500}
+.tbl tfoot td{border-bottom:none; border-top:1px solid var(--trait-fort); font-weight:500}
+.tbl .sub{display:block; font-size:.82rem; color:var(--encre-2); font-weight:400}
+@media (max-width:760px){
+  .tbl{min-width:520px}
+  .tbl th,.tbl td{padding:.6rem .45rem; font-size:.9rem}
+}
+
+/* ---------- forfaits ---------- */
+.forfaits{display:grid; grid-template-columns:repeat(4,1fr); gap:.7rem}
+@media (max-width:820px){ .forfaits{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:460px){ .forfaits{grid-template-columns:1fr} }
+.forfait{position:relative}
+.forfait input{position:absolute; opacity:0; width:0; height:0}
+.forfait > span{display:block; cursor:pointer; padding:1.15rem .85rem 1.1rem; text-align:center; height:100%;
+  border:1px solid var(--trait-fort); border-radius:var(--rayon); background:var(--craie);
+  transition:border-color .15s ease, background .15s ease}
+.sect-craie .forfait > span{background:var(--pierre)}
+.forfait .medaille{display:block; width:26px; height:26px; margin:0 auto .5rem; border-radius:50%}
+.forfait .nom{display:block; font-family:"Marcellus",serif; font-size:1rem; letter-spacing:.03em; margin-bottom:.4rem}
+.forfait .prix{display:block; font-family:"Marcellus",serif; font-size:1.7rem; line-height:1; color:var(--encre)}
+.forfait .pour{display:block; font-size:.81rem; color:var(--encre-2); margin-top:.45rem; line-height:1.35}
+.forfait input:checked + span{border-color:var(--vert); border-width:2px; background:color-mix(in srgb,var(--vert) 10%, transparent);
+  padding:calc(1.15rem - 1px) calc(.85rem - 1px) calc(1.1rem - 1px)}
+.forfait input:checked + span .prix{color:var(--vert)}
+.forfait input:focus-visible + span{outline:2px solid var(--vert); outline-offset:2px}
+
+/* ---------- formulaires ---------- */
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:1.05rem 1.15rem; margin-top:1.6rem}
+.champ{display:flex; flex-direction:column; gap:.33rem}
+.champ.plein{grid-column:1 / -1}
+@media (max-width:700px){ .form-grid{grid-template-columns:1fr} .champ.plein{grid-column:auto} }
+.champ label{font-size:.88rem; color:var(--encre-2)}
+.champ label .req{color:var(--vert)}
+.champ input,.champ select,.champ textarea{font-family:inherit; font-size:16px; color:var(--encre);
+  background:var(--craie); border:1px solid var(--trait-fort); border-radius:var(--rayon); padding:.72rem .82rem; width:100%}
+.sect-craie .champ input,.sect-craie .champ select,.sect-craie .champ textarea{background:var(--pierre)}
+.champ input:focus,.champ select:focus,.champ textarea:focus{outline:2px solid var(--vert); outline-offset:1px; border-color:var(--vert)}
+.champ .aide{font-size:.82rem; color:var(--encre-2); margin:0}
+.erreur{font-size:.83rem; color:var(--alerte); margin:0}
+[aria-invalid="true"]{border-color:var(--alerte) !important}
+.piege{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+fieldset{border:1px solid var(--trait); border-radius:var(--rayon); padding:1.05rem 1.15rem 1.15rem; margin:0; grid-column:1 / -1}
+fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
+.case{display:flex; gap:.7rem; align-items:flex-start; grid-column:1 / -1; font-size:.92rem; color:var(--encre-2)}
+.case input{margin-top:.25rem; width:19px; height:19px; accent-color:var(--vert); flex:0 0 auto}
+.radios-ligne{display:flex; gap:1.4rem; align-items:center; padding-top:.3rem; flex-wrap:wrap}
+.radios-ligne label{display:flex; gap:.42rem; align-items:center; font-size:.96rem; cursor:pointer}
+.radios-ligne input{accent-color:var(--vert); width:18px; height:18px}
+.total{grid-column:1 / -1; display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1rem;
+  border-block:1px solid var(--trait-fort); padding:.95rem 0; align-items:baseline}
+.total span{color:var(--encre-2); font-size:.94rem}
+.total b{font-family:"Marcellus",serif; font-size:1.55rem; color:var(--vert)}
+.total .sous{display:block; font-family:"Alegreya Sans",sans-serif; font-size:.82rem; color:var(--encre-2); font-weight:400}
+.actions{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.3rem; align-items:center}
+.statut{font-size:.92rem; color:var(--vert); min-height:1.3em; margin:.6rem 0 0; grid-column:1 / -1}
+.statut.ko{color:var(--alerte)}
+@media (max-width:620px){
+  .actions .btn{width:100%}
+  .total{flex-direction:column; align-items:flex-start; gap:.15rem}
+  fieldset{padding:1rem .85rem 1.1rem}
+}
+
+/* ---------- confirmation ---------- */
+.confirmation{margin-top:1.6rem; border:1px solid var(--vert); border-radius:var(--rayon);
+  background:color-mix(in srgb,var(--vert) 7%, transparent); padding:1.5rem 1.4rem}
+.confirmation[hidden]{display:none}
+.confirmation h3{font-size:1.35rem; margin-bottom:.4rem}
+.confirmation dl{display:grid; grid-template-columns:auto 1fr; gap:.4rem 1.2rem; margin:1.1rem 0 0; font-size:.96rem}
+.confirmation dt{color:var(--encre-2)}
+.confirmation dd{margin:0}
+.confirmation .ref{font-family:"Marcellus",serif; font-size:1.3rem; color:var(--vert)}
+@media (max-width:620px){ .confirmation dl{grid-template-columns:1fr; gap:.1rem} .confirmation dt{margin-top:.6rem} }
+.suite{list-style:none; counter-reset:s; margin:1.4rem 0 0; padding:0}
+.suite li{counter-increment:s; position:relative; padding:.7rem 0 .7rem 2.6rem; font-size:.97rem; color:var(--encre-2)}
+.suite li::before{content:counter(s); position:absolute; left:0; top:.65rem; width:26px; height:26px;
+  border-radius:50%; background:var(--vert); color:var(--craie); display:grid; place-items:center;
+  font-family:"Marcellus",serif; font-size:.9rem}
+.suite b{color:var(--encre); font-weight:500}
+
+/* ---------- tableau de bord ---------- */
+.kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--trait); border:1px solid var(--trait)}
+@media (max-width:900px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:520px){ .kpis{grid-template-columns:1fr} }
+.kpi{background:var(--craie); padding:1.3rem 1.15rem}
+.sect-craie .kpi{background:var(--pierre)}
+.kpi b{display:block; font-family:"Marcellus",serif; font-size:clamp(1.45rem,3.1vw,2rem); line-height:1.05; color:var(--vert)}
+.kpi span{display:block; font-size:.85rem; color:var(--encre-2); margin-top:.35rem}
+.kpi .delta{font-size:.81rem; color:var(--encre-2); margin:.45rem 0 0}
+.kpi.indispo b{color:var(--encre-2); font-size:1.05rem; font-family:"Alegreya Sans",sans-serif; line-height:1.35}
+.maj{font-size:.85rem; color:var(--encre-2); margin-top:1rem}
+.jauge{height:14px; background:var(--trait); border-radius:99px; overflow:hidden; margin:.45rem 0}
+.jauge i{display:block; height:100%; background:linear-gradient(90deg,var(--vert),var(--vert-vif)); border-radius:99px}
+.jauge-tete{display:flex; justify-content:space-between; gap:1rem; font-size:.92rem; align-items:baseline}
+.jauge-tete b{font-weight:500}
+.jauge-tete span{color:var(--encre-2); font-size:.87rem; font-variant-numeric:tabular-nums}
+
+/* ---------- puzzle ---------- */
+.puzzle-cadre{position:relative; border-radius:var(--rayon); overflow:hidden;
+  background:var(--fond-puzzle); border:1px solid var(--trait); margin-top:1.4rem}
+.puzzle-cadre svg{width:100%; height:auto; display:block}
+.libre-voile{fill:var(--voile-libre)} .bronze-voile{fill:var(--voile-bronze)}
+.argent-voile{fill:var(--voile-argent)} .gold-voile{fill:var(--voile-or)}
+.libre-voile,.bronze-voile,.argent-voile,.gold-voile{fill-opacity:.975; stroke:var(--voile-trait); stroke-width:1; stroke-linejoin:round}
+.libre-pose{stroke:var(--tr-libre); fill:var(--tr-libre)} .bronze-pose{stroke:var(--tr-bronze); fill:var(--tr-bronze)}
+.argent-pose{stroke:var(--tr-argent); fill:var(--tr-argent)} .gold-pose{stroke:var(--tr-or); fill:var(--tr-or)}
+.libre-pose,.bronze-pose,.argent-pose,.gold-pose{fill-opacity:.09; stroke-width:1.7; stroke-linejoin:round}
+.puzzle-tete{display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem 1.3rem}
+.puzzle-compte{font-family:"Marcellus",serif; font-size:clamp(1.8rem,4.4vw,2.7rem); line-height:1; color:var(--vert)}
+.puzzle-compte small{font-size:.42em; color:var(--encre-2); font-family:"Alegreya Sans",sans-serif}
+.puzzle-legende{list-style:none; display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  background:var(--trait); border:1px solid var(--trait); margin:1.2rem 0 0; padding:0}
+@media (max-width:760px){ .puzzle-legende{grid-template-columns:repeat(2,1fr)} }
+@media (max-width:420px){ .puzzle-legende{grid-template-columns:1fr} }
+.puzzle-legende li{background:var(--craie); padding:.85rem .95rem}
+.sect-craie .puzzle-legende li{background:var(--pierre)}
+.puzzle-legende .tete{display:flex; align-items:center; gap:.5rem; font-size:.93rem}
+.puzzle-legende i{width:17px; height:12px; border-radius:2px; flex:0 0 auto; border:1.6px solid}
+.puzzle-legende .chiffres{font-family:"Marcellus",serif; font-size:1.3rem; margin-top:.4rem; line-height:1.1}
+.puzzle-legende .chiffres em{font-style:normal; color:var(--encre-2); font-size:.62em}
+.puzzle-legende .reste{display:block; font-size:.82rem; color:var(--encre-2); margin-top:.25rem}
+.puzzle-note{margin-top:1rem; font-size:.89rem; color:var(--encre-2); max-width:48em}
+
+/* ---------- cartes ---------- */
+.carte-enveloppe{position:relative; display:grid; grid-template-columns:1.25fr .75fr;
+  gap:clamp(1.1rem,3vw,2.2rem); align-items:start; margin-top:1.5rem}
+@media (max-width:860px){ .carte-enveloppe{grid-template-columns:1fr} }
+.carte-cadre{position:relative; border:1px solid var(--trait); border-radius:var(--rayon);
+  background:var(--craie); overflow:hidden; touch-action:pan-y}
+.carte-cadre.zoomee{touch-action:none}
+.sect-craie .carte-cadre{background:var(--pierre)}
+.carte-cadre svg{width:100%; height:auto; display:block; cursor:grab}
+.carte-cadre svg.attrape{cursor:grabbing}
+.region{fill:var(--trait); stroke:var(--craie); stroke-width:1; stroke-linejoin:round; transition:fill .25s ease}
+.sect-craie .region{stroke:var(--pierre)}
+.etiq-zone{pointer-events:none}
+.etiq-zone .nom{font-family:"Alegreya Sans",sans-serif; font-size:12px; font-weight:700; fill:var(--encre)}
+.etiq-zone .val{font-family:"Marcellus",serif; font-size:17px; fill:var(--vert)}
+.etiq-zone .fond{fill:var(--craie); fill-opacity:.86}
+.sect-craie .etiq-zone .fond{fill:var(--pierre)}
+.carte-outils{position:absolute; right:10px; top:10px; display:flex; flex-direction:column; gap:6px; z-index:3}
+.carte-outils button{width:40px; height:40px; border-radius:var(--rayon); border:1px solid var(--trait-fort);
+  background:var(--craie); color:var(--encre); font-size:1.1rem; line-height:1; cursor:pointer; font-family:inherit}
+.sect-craie .carte-outils button{background:var(--pierre)}
+.carte-outils button:hover{border-color:var(--vert); color:var(--vert)}
+.marqueur{cursor:pointer}
+.marqueur .halo{fill:var(--vert); opacity:.18}
+.marqueur .point{fill:var(--vert); stroke:var(--craie); stroke-width:1.6}
+.marqueur.actif .point{fill:var(--vert-vif)}
+.marqueur:hover .halo{opacity:.34}
+.infobulle{position:absolute; z-index:5; pointer-events:none; background:var(--encre); color:var(--pierre);
+  font-size:.82rem; padding:.4rem .6rem; border-radius:var(--rayon); max-width:210px; line-height:1.35;
+  transform:translate(-50%,-135%)}
+.infobulle[hidden]{display:none}
+.infobulle b{display:block; font-weight:500}
+.carte-cote h3{font-size:1.12rem; margin-bottom:.7rem}
+.carte-cote .aide-carte{font-size:.87rem; color:var(--encre-2); margin-bottom:1rem}
+.legende-zones{list-style:none; margin:0; padding:0}
+.legende-zones li{display:flex; align-items:center; gap:.65rem; padding:.5rem 0;
+  border-bottom:1px solid var(--trait); font-size:.92rem}
+.legende-zones li:last-child{border-bottom:none}
+.legende-zones .pastille-couleur{width:15px; height:15px; border-radius:2px; border:1px solid var(--trait-fort); flex:0 0 auto}
+.legende-zones .val{margin-left:auto; color:var(--encre-2); font-variant-numeric:tabular-nums; font-size:.87rem}
+.fiche-carte{border:1px solid var(--vert); border-radius:var(--rayon); padding:1rem 1.1rem;
+  background:color-mix(in srgb,var(--vert) 7%, transparent); margin-bottom:1.1rem}
+.fiche-carte[hidden]{display:none}
+.fiche-carte h4{font-family:"Marcellus",serif; font-weight:400; font-size:1.08rem; margin:0 0 .3rem}
+.fiche-carte p{margin:0 0 .22rem; font-size:.89rem; color:var(--encre-2)}
+@media (max-width:860px){ .etiq-zone{display:none} .carte-cote{margin-top:1rem} }
+
+/* ---------- annuaire ---------- */
+.filtres{display:flex; flex-wrap:wrap; gap:.7rem; align-items:flex-end; margin-bottom:1.3rem}
+.filtres .champ{flex:1 1 185px; gap:.28rem}
+.filtres .champ.large{flex:2 1 300px}
+@media (max-width:620px){ .filtres .champ{flex:1 1 100%} }
+.resultats-info{font-size:.89rem; color:var(--encre-2); margin:0 0 1.1rem}
+.cartes-dahira{display:grid; grid-template-columns:repeat(auto-fill,minmax(285px,1fr)); gap:1rem}
+@media (max-width:620px){ .cartes-dahira{grid-template-columns:1fr} }
+.dahira-carte{border:1px solid var(--trait); border-radius:var(--rayon); padding:1.1rem 1.15rem 1.2rem;
+  background:var(--craie); display:flex; flex-direction:column; gap:.5rem}
+.sect-craie .dahira-carte{background:var(--pierre)}
+.dahira-carte h3{font-size:1.12rem; line-height:1.25}
+.dahira-carte .guide{font-size:.9rem; color:var(--vert)}
+.dahira-carte .lieu{font-size:.9rem; color:var(--encre-2)}
+.pratiques{display:flex; flex-wrap:wrap; gap:.38rem; margin-top:.15rem}
+.pastille{font-size:.78rem; padding:.22rem .58rem; border-radius:99px; border:1px solid var(--trait-fort); color:var(--encre-2)}
+.pastille.oui{border-color:var(--vert); color:var(--vert); background:color-mix(in srgb,var(--vert) 10%, transparent)}
+.dahira-carte .bas{margin-top:auto; padding-top:.65rem; border-top:1px solid var(--trait);
+  display:flex; justify-content:space-between; gap:.7rem; font-size:.87rem; align-items:baseline; flex-wrap:wrap}
+.dahira-carte .bas a{color:var(--vert)}
+.effectif{color:var(--encre-2); font-variant-numeric:tabular-nums}
+.vide{border:1px dashed var(--trait-fort); border-radius:var(--rayon); padding:2rem 1.4rem;
+  text-align:center; color:var(--encre-2)}
+.vide b{display:block; color:var(--encre); font-family:"Marcellus",serif; font-weight:400; font-size:1.18rem; margin-bottom:.35rem}
+
+/* ---------- simulateur ---------- */
+.simu{border:1px solid var(--trait-fort); border-radius:var(--rayon); padding:1.3rem 1.3rem 1.4rem;
+  background:var(--craie); margin-top:2rem}
+.sect-craie .simu{background:var(--pierre)}
+.simu h3{font-size:1.28rem; margin-bottom:.35rem}
+.simu > p{font-size:.93rem; color:var(--encre-2); max-width:46em}
+.simu-grille{display:grid; grid-template-columns:repeat(4,1fr); gap:.85rem; margin-top:1.2rem}
+@media (max-width:700px){ .simu-grille{grid-template-columns:repeat(2,1fr)} }
+.simu-sortie{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--trait);
+  border:1px solid var(--trait); margin-top:1.4rem}
+@media (max-width:700px){ .simu-sortie{grid-template-columns:1fr} }
+.simu-sortie div{background:var(--craie); padding:1rem}
+.sect-craie .simu-sortie div{background:var(--pierre)}
+.simu-sortie b{display:block; font-family:"Marcellus",serif; font-size:1.45rem; line-height:1.1; color:var(--vert)}
+.simu-sortie span{display:block; font-size:.83rem; color:var(--encre-2); margin-top:.3rem}
+.simu-verdict{margin-top:1.1rem; font-size:.94rem; padding:.85rem 1.05rem; border-left:3px solid var(--vert); color:var(--encre-2)}
+.simu-verdict.court{border-left-color:var(--alerte)}
+
+/* ---------- gouvernance, FAQ, frise ---------- */
+.trio{display:grid; grid-template-columns:1fr 1.15fr 1fr; gap:1px; background:var(--trait);
+  border:1px solid var(--trait); margin-top:1.6rem}
+@media (max-width:820px){ .trio{grid-template-columns:1fr} }
+.acteur{background:var(--craie); padding:1.5rem 1.3rem}
+.sect-craie .acteur{background:var(--pierre)}
+.acteur.centre{background:color-mix(in srgb,var(--vert) 8%, var(--craie))}
+.sect-craie .acteur.centre{background:color-mix(in srgb,var(--vert) 8%, var(--pierre))}
+.acteur h4{font-family:"Marcellus",serif; font-weight:400; font-size:1.14rem}
+.acteur .role{font-size:.8rem; color:var(--vert); letter-spacing:.05em; margin:.2rem 0 .8rem}
+.acteur ul{margin:0; padding-left:1.1rem; font-size:.93rem; color:var(--encre-2)}
+.acteur li{margin-bottom:.3rem}
+.faq{margin-top:1.4rem}
+.faq details{border-bottom:1px solid var(--trait)}
+.faq summary{cursor:pointer; padding:1rem 2rem 1rem 0; font-size:1.02rem; position:relative; list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+"; position:absolute; right:.3rem; top:.9rem; color:var(--vert); font-size:1.3rem}
+.faq details[open] summary::after{content:"–"}
+.faq summary:focus-visible{outline:2px solid var(--vert); outline-offset:2px}
+.faq .reponse{padding:0 0 1.1rem; color:var(--encre-2); font-size:.96rem; max-width:46em}
+.frise{list-style:none; padding:0; margin:0; border-left:2px solid var(--trait-fort)}
+.frise li{position:relative; padding:0 0 1.5rem 1.8rem}
+.frise li:last-child{padding-bottom:0}
+.frise li::before{content:""; position:absolute; left:-7px; top:.5em; width:12px; height:12px;
+  background:var(--pierre); border:2px solid var(--vert); border-radius:50%}
+.sect-craie .frise li::before{background:var(--craie)}
+.frise li.jalon::before{background:var(--vert)}
+.frise time{display:block; font-family:"Marcellus",serif; font-size:1.18rem; color:var(--vert); line-height:1.2}
+.frise p{margin:.15rem 0 0; font-size:.96rem; color:var(--encre-2)}
+.frise strong{color:var(--encre); font-weight:500}
+
+/* ---------- contact, RIB, pied ---------- */
+.rib{border:1px solid var(--trait-fort); border-radius:var(--rayon); background:var(--craie); padding:1.4rem}
+.sect-craie .rib{background:var(--pierre)}
+.rib h3{font-size:1.2rem; margin-bottom:.15rem}
+.rib .titulaire{font-size:.9rem; color:var(--encre-2); margin-bottom:1rem}
+.rib dl{display:grid; grid-template-columns:auto 1fr; gap:.5rem 1.1rem; margin:0; font-size:.95rem}
+.rib dt{color:var(--encre-2); font-size:.87rem}
+.rib dd{margin:0; font-variant-numeric:tabular-nums; word-break:break-word}
+.rib .iban{font-size:1.02rem; letter-spacing:.02em}
+.rib .actions{display:flex; gap:.6rem; margin-top:1.1rem; flex-wrap:wrap}
+@media (max-width:620px){ .rib dl{grid-template-columns:1fr; gap:.1rem} .rib dt{margin-top:.6rem} }
+.autres{list-style:none; margin:1.4rem 0 0; padding:0}
+.autres li{padding:.85rem 0; border-bottom:1px solid var(--trait); display:flex; justify-content:space-between;
+  gap:1rem; flex-wrap:wrap; align-items:baseline}
+.autres li:first-child{border-top:1px solid var(--trait)}
+.autres b{font-weight:500}
+.autres span{color:var(--encre-2); font-size:.92rem}
+.citation{text-align:center; padding-block:clamp(2.6rem,6vw,4.4rem)}
+.citation blockquote{margin:0; font-family:"Marcellus",serif; font-size:clamp(1.25rem,3vw,1.95rem);
+  line-height:1.4; max-width:20em; margin-inline:auto}
+.citation .ar{direction:rtl; font-size:1.18rem; line-height:2.1; margin-top:1.4rem; color:var(--sur-nuit)}
+.citation cite{display:block; margin-top:1.3rem; font-style:normal; font-size:.9rem; letter-spacing:.05em; color:var(--sur-nuit-2)}
+.pied{border-top:1px solid var(--trait); padding:2.6rem 0 2.2rem; font-size:.92rem; color:var(--encre-2)}
+.pied-grid{display:grid; grid-template-columns:auto 1fr auto; gap:1.8rem; align-items:center}
+@media (max-width:760px){ .pied-grid{grid-template-columns:1fr} .pied-grid .btn{width:100%} }
+.logos{display:flex; gap:1rem; align-items:center}
+.logos img{width:54px; height:54px; border-radius:50%; background:#fff}
+.pied a{color:var(--vert)}
+.pied-bas{margin-top:1.8rem; padding-top:1.1rem; border-top:1px solid var(--trait); font-size:.84rem;
+  display:flex; flex-wrap:wrap; gap:.4rem 1.3rem; justify-content:space-between}
+</style>
+</head>
+
+<body>
+<a class="skip" href="#projet">Aller au contenu</a>
+
+<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+  <defs><clipPath id="ogive" clipPathUnits="objectBoundingBox">
+    <path d="M0,1 L0,0.40 C0.02,0.17 0.22,0.04 0.5,0 C0.78,0.04 0.98,0.17 1,0.40 L1,1 Z"/>
+  </clipPath></defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#haut">
+      <img src="img/logoacs.jpg" alt="">
+      <b><span class="brand-long">Zawiya Cheikh Ibrahim Niasse</span><span class="brand-court">Zawiya</span><span>Association Connaissance et Savoir</span></b>
+    </a>
+    <nav class="acces" aria-label="Accès principaux">
+      <a class="secondaire" href="#projet">Le projet</a>
+      <a class="primaire" href="#adherer">Adhérer</a>
+      <a class="secondaire" href="#dahiras">Référencer ma Dahira</a>
+    </nav>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuMobile" aria-label="Ouvrir le menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+    <nav class="menu-mobile" id="menuMobile" aria-label="Sections du site">
+      <a href="#projet">Le projet</a>
+      <a href="#adherer">Adhérer au projet</a>
+      <a href="#dahiras">Référencer ma Dahira</a>
+      <a href="#annuaire">Annuaire des Dahiras</a>
+      <a href="#transparence">Transparence et suivi</a>
+      <a href="#historique">Historique</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+
+<!-- ================================================================
+     A. LE PROJET
+     ================================================================ -->
+<section class="hero" id="projet">
+  <div class="wrap hero-grid">
+    <div>
+      <h1><em>Keur Baye en France</em>Bâtir la Zawiya Cheikh Ibrahim Niasse</h1>
+      <p class="lede">Depuis 2003, les disciples de Baye Niass en France se réunissent sans avoir de maison à eux. L'Association Connaissance et Savoir veut acquérir et aménager un lieu permanent en Île-de-France : une salle de 500 places, deux salles de Hadra, une école et l'hébergement des Chouyoukh en visite.</p>
+      <p class="lede">Nous cherchons <strong>1 000 personnes</strong> prêtes à s'engager sur 24 mois.</p>
+      <div class="hero-actions">
+        <a class="btn" href="#adherer">Adhérer au projet</a>
+        <a class="btn btn-ghost" href="#transparence">Voir où en est le projet</a>
+      </div>
+    </div>
+    <figure class="hero-art">
+      <img class="ogive" src="img/facade2.jpg" alt="Perspective de la façade de la Zawiya à la tombée du jour : pierre claire et hautes fenêtres en ogive.">
+      <figcaption>Perspective d'architecte — façade sur rue</figcaption>
+    </figure>
+  </div>
+  <div class="wrap">
+    <div class="chiffres">
+      <div class="chiffre"><b>2 000 000 €</b><span>Budget d'acquisition et d'aménagement</span></div>
+      <div class="chiffre"><b>1 000</b><span>Engagements recherchés, partout en France</span></div>
+      <div class="chiffre"><b>24 mois</b><span>Horizon de l'effort collectif</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sect sect-craie">
+  <div class="wrap">
+    <div class="sect-lead">
+      <h2>Une Zawiya, c'est trois maisons sous un même toit</h2>
+      <p>L'ACS porte ce projet avec la Fédération Ansaruddîne France. Le lieu servira aux talibés de toute la France : rencontres, enseignement, accueil de la famille de Cheikh Ibrahim Niasse.</p>
+    </div>
+    <div class="vocations">
+      <div class="vocation">
+        <svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 1C6 4 2 8 2 13v14h20V13C22 8 18 4 12 1z"/><path d="M9 27v-8a3 3 0 016 0v8"/></svg>
+        <h3>Accueillir et héberger</h3>
+        <p>Des logements pour les Chouyoukh lors de leurs visites, un espace de restauration, un hall d'accueil et un parking dimensionné pour les grands rassemblements.</p>
+      </div>
+      <div class="vocation">
+        <svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 6h8a2 2 0 012 2v16a2 2 0 00-2-2H2V6z"/><path d="M22 6h-8a2 2 0 00-2 2v16a2 2 0 012-2h8V6z"/></svg>
+        <h3>Enseigner et former</h3>
+        <p>Des salles de cours pour l'arabe, le Coran et l'exégèse des œuvres de Baye, une salle polyvalente, une bibliothèque, l'accompagnement scolaire des enfants.</p>
+      </div>
+      <div class="vocation">
+        <svg viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 2c-4 4-6 7-6 10v14h12V12c0-3-2-6-6-10z"/><path d="M1 27V16m22 11V16"/><path d="M12 27v-6"/></svg>
+        <h3>La Zawiya</h3>
+        <p>Deux salles de Hadra, une grande salle de conférence de 500 places pour le Gamou et les Zikrs, un lieu de prière ouvert toute l'année.</p>
+      </div>
+    </div>
+
+    <div class="film">
+      <video controls preload="none" playsinline poster="img/poster.jpg">
+        <source src="maquette-zawiya.mp4" type="video/mp4">
+        <p style="padding:2rem;text-align:center;color:#ccc">Votre navigateur ne peut pas lire cette vidéo.</p>
+      </video>
+    </div>
+    <p class="film-legende">Film de la maquette — parcours extérieur et intérieur du bâtiment, 1 min 49.</p>
+
+    <div class="galerie">
+      <figure class="g-large"><img loading="lazy" decoding="async" src="img/aerien.jpg" alt="Vue d'ensemble du bâtiment, du parvis et du parking arboré."><figcaption>Vue d'ensemble</figcaption></figure>
+      <figure class="g-small"><img loading="lazy" decoding="async" src="img/hero.jpg" alt="Façade en pierre claire avec fenêtres en ogive, vue depuis la rue."><figcaption>Façade sur rue</figcaption></figure>
+      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/hall2.jpg" alt="Hall d'accueil lumineux, sol en terrazzo, hautes ouvertures en ogive."><figcaption>Hall d'accueil</figcaption></figure>
+      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/conf.jpg" alt="Salle de conférence avec estrade et sièges verts."><figcaption>Salle de conférence, 500 places</figcaption></figure>
+    </div>
+
+    <p style="margin-top:2rem"><a class="btn" href="#adherer">Adhérer au projet</a></p>
+
+    <details class="replier">
+      <summary>Le bâtiment en détail</summary>
+      <div class="contenu">
+        <p style="color:var(--encre-2);font-size:.95rem">Les perspectives d'architecte décrivent ce que le bâtiment deviendra une fois acquis et aménagé. Elles ne sont pas contractuelles.</p>
+        <div class="niveaux">
+          <div class="niveau">
+            <h4>Rez-de-chaussée</h4>
+            <ul>
+              <li><span>Salle de conférence</span><b>514 m² · 500 pers.</b></li>
+              <li><span>Salle Hadra 1</span><b>50 pers.</b></li>
+              <li><span>Salle Hadra 2</span><b>50 pers.</b></li>
+              <li><span>Hall d'accueil et hall d'exposition</span><b>—</b></li>
+              <li><span>Cuisine et salle de restauration</span><b>—</b></li>
+              <li><span>Bureau ACS et accueil des Chouyoukh</span><b>—</b></li>
+              <li><span>Sanitaires, ablutions, ascenseur</span><b>—</b></li>
+              <li><span>Poste de sécurité et local du gardien</span><b>—</b></li>
+            </ul>
+          </div>
+          <div class="niveau">
+            <h4>Premier étage</h4>
+            <ul>
+              <li><span>Salle polyvalente</span><b>—</b></li>
+              <li><span>Salles de cours</span><b>7 salles</b></li>
+              <li><span>Logements des Chouyoukh</span><b>3 logements</b></li>
+              <li><span>Logement du gardien</span><b>—</b></li>
+              <li><span>Bureau de la direction de l'école</span><b>—</b></li>
+              <li><span>Bureau comptable</span><b>—</b></li>
+              <li><span>Sanitaires, ablutions, locaux techniques</span><b>—</b></li>
+            </ul>
+          </div>
+        </div>
+        <figure style="margin:1.8rem 0 0">
+          <img loading="lazy" decoding="async" src="img/plan.jpg" alt="Plan axonométrique du rez-de-chaussée : parking arboré, hall d'accueil, salle de conférence, salles Hadra, cuisine et sanitaires." style="border:1px solid var(--trait); border-radius:var(--rayon)">
+          <figcaption style="font-size:.85rem;color:var(--encre-2);margin-top:.6rem">Plan du rez-de-chaussée</figcaption>
+        </figure>
+      </div>
+    </details>
+
+    <details class="replier">
+      <summary>Où nous cherchons, et selon quels critères</summary>
+      <div class="contenu">
+        <div class="duo">
+          <div>
+            <h4 style="font-family:Marcellus,serif;font-weight:400;font-size:1.15rem">Départements ciblés</h4>
+            <ul class="zones-ilf">
+              <li class="dept"><b>78</b> Yvelines</li>
+              <li class="dept"><b>95</b> Val-d'Oise</li>
+              <li class="dept"><b>93</b> Seine-Saint-Denis</li>
+            </ul>
+            <ul class="zones-ilf">
+              <li class="dept secondaire"><b>94</b> Val-de-Marne</li>
+              <li class="dept secondaire"><b>77</b> Seine-et-Marne</li>
+            </ul>
+            <p class="legende">Trait plein : départements prioritaires. Trait pointillé : départements complémentaires, étudiés au cas par cas.</p>
+            <p style="margin-top:1.2rem;color:var(--encre-2);font-size:.95rem">Ces zones offrent le meilleur équilibre entre trois contraintes qui s'opposent souvent : la desserte en transports, la distance au premier voisin, et le prix au mètre carré d'un bien avec parking.</p>
+          </div>
+          <div>
+            <h4 style="font-family:Marcellus,serif;font-weight:400;font-size:1.15rem;margin-bottom:.9rem">Nos critères</h4>
+            <ul class="criteres">
+              <li><b>Classement ERP de type L</b><span>Salle de conférences et de réunions — condition préalable à toute ouverture au public.</span></li>
+              <li><b>Capacité de 500 personnes assises</b><span>Une salle principale d'environ 500 m² d'un seul tenant.</span></li>
+              <li><b>Parking sur la parcelle</b><span>Une quarantaine de places au minimum, pour ne pas peser sur le quartier.</span></li>
+              <li><b>Isolation sonore et recul</b><span>Zone d'activité ou parcelle dégagée, afin que les Zikrs et Gamou n'incommodent personne.</span></li>
+              <li><b>Desserte en transports en commun</b><span>Gare RER ou Transilien accessible à pied ou par une ligne de bus directe.</span></li>
+              <li><b>Un niveau aménageable au-dessus</b><span>Pour les salles de cours et les logements des Chouyoukh.</span></li>
+              <li><b>Accessibilité aux personnes à mobilité réduite</b><span>Ascenseur, sanitaires adaptés, cheminements conformes.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ================================================================
+     B. ADHÉSION ET ENGAGEMENT FINANCIER
+     ================================================================ -->
+<section class="sect" id="adherer">
+  <div class="wrap">
+    <div class="sect-lead">
+      <span class="etape">Étape 1</span>
+      <h2>Enregistrer mon engagement de contribution</h2>
+      <p>Choisissez un montant mensuel et une durée. Vous recevrez une référence personnelle, puis l'association vous contactera pour la mise en place du versement.</p>
+    </div>
+
+    <div class="mention-paiement">
+      <b>Aucun paiement n'est effectué sur ce site.</b>
+      <span>Ce formulaire enregistre votre engagement de contribution. Aucun paiement ni prélèvement n'est effectué sur ce site. L'association vous communiquera les modalités de règlement. Aucune coordonnée bancaire ne vous est demandée ici.</span>
+    </div>
+
+    <form id="formEngagement" novalidate>
+      <fieldset style="margin-top:1.4rem">
+        <legend>Mon forfait mensuel <span class="req" aria-hidden="true">*</span></legend>
+        <div class="forfaits">
+          <label class="forfait">
+            <input type="radio" name="forfait" value="bronze">
+            <span><i class="medaille" style="background:linear-gradient(135deg,#C88A4A,#8C5A28)"></i>
+              <b class="nom">Bronze</b><b class="prix">25 €</b><span class="pour">Étudiants et petits budgets</span></span>
+          </label>
+          <label class="forfait">
+            <input type="radio" name="forfait" value="argent" checked>
+            <span><i class="medaille" style="background:linear-gradient(135deg,#D6D9DC,#9AA2A8)"></i>
+              <b class="nom">Argent</b><b class="prix">50 €</b><span class="pour">Salariés</span></span>
+          </label>
+          <label class="forfait">
+            <input type="radio" name="forfait" value="gold">
+            <span><i class="medaille" style="background:linear-gradient(135deg,#E7C15C,#B08A1E)"></i>
+              <b class="nom">Gold</b><b class="prix">100 €</b><span class="pour">Grands donateurs</span></span>
+          </label>
+          <label class="forfait">
+            <input type="radio" name="forfait" value="libre">
+            <span><i class="medaille" style="background:var(--trait-fort)"></i>
+              <b class="nom">Libre</b><b class="prix">Autre</b><span class="pour">Le montant que vous choisissez</span></span>
+          </label>
+        </div>
+        <div class="champ" id="blocLibre" style="margin-top:1rem" hidden>
+          <label for="montantLibre">Montant mensuel choisi, en euros <span class="req" aria-hidden="true">*</span></label>
+          <input id="montantLibre" name="montantLibre" type="number" min="5" step="1" inputmode="decimal" placeholder="Par exemple 150">
+          <p class="erreur" data-pour="montant_mensuel_declare" hidden></p>
+        </div>
+      </fieldset>
+
+      <div class="form-grid">
+        <div class="champ">
+          <label for="duree">Durée de mon engagement <span class="req" aria-hidden="true">*</span></label>
+          <select id="duree" name="duree">
+            <option value="24" selected>24 mois — l'horizon du projet</option>
+            <option value="12">12 mois</option>
+            <option value="36">36 mois</option>
+          </select>
+          <p class="aide" id="aideDuree"></p>
+        </div>
+        <div class="champ">
+          <label for="preference">Comment je préfère régler</label>
+          <select id="preference" name="preference">
+            <option value="">Je verrai avec l'association</option>
+            <option>Virement mensuel</option>
+            <option>Virement trimestriel</option>
+            <option>HelloAsso</option>
+            <option>Koppar Express</option>
+            <option>Remise à ma Dahira</option>
+          </select>
+          <p class="aide">Simple préférence. Rien n'est mis en place à cette étape.</p>
+        </div>
+
+        <div class="champ">
+          <label for="prenom">Prénom <span class="req" aria-hidden="true">*</span></label>
+          <input id="prenom" name="prenom" type="text" autocomplete="given-name" required>
+          <p class="erreur" data-pour="prenom" hidden></p>
+        </div>
+        <div class="champ">
+          <label for="nom">Nom <span class="req" aria-hidden="true">*</span></label>
+          <input id="nom" name="nom" type="text" autocomplete="family-name" required>
+          <p class="erreur" data-pour="nom" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="email">Adresse e-mail</label>
+          <input id="email" name="email" type="email" autocomplete="email" inputmode="email">
+          <p class="aide">E-mail ou téléphone : au moins l'un des deux.</p>
+          <p class="erreur" data-pour="email" hidden></p>
+        </div>
+        <div class="champ">
+          <label for="telephone">Téléphone</label>
+          <input id="telephone" name="telephone" type="tel" autocomplete="tel" inputmode="tel" placeholder="06 12 34 56 78">
+          <p class="erreur" data-pour="telephone" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="codePostal">Code postal</label>
+          <input id="codePostal" name="codePostal" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="5">
+          <p class="aide">Facultatif. Sert uniquement aux statistiques par région.</p>
+        </div>
+        <div class="champ">
+          <label for="zone">Ma zone</label>
+          <select id="zone" name="zone">
+            <option value="">Je ne sais pas</option>
+            <option>Île-de-France</option><option>Nord</option><option>Grand-Est</option>
+            <option>Loire</option><option>Auvergne-Rhône-Alpes</option><option>Sud</option>
+            <option>Hors de France</option>
+          </select>
+        </div>
+
+        <div class="champ plein">
+          <label for="dahira">Ma Dahira ou section Ansaruddîne</label>
+          <input id="dahira" name="dahira" type="text" list="listeDahiraNoms" placeholder="Facultatif">
+          <datalist id="listeDahiraNoms"></datalist>
+        </div>
+
+        <div class="champ plein">
+          <label for="message">Message à l'association</label>
+          <textarea id="message" name="message" rows="2" placeholder="Facultatif"></textarea>
+        </div>
+
+        <div class="total">
+          <span>Total prévisionnel de mon engagement
+            <span class="sous" id="sousTotal"></span>
+          </span>
+          <b id="totalAffiche">1 200 €</b>
+        </div>
+
+        <label class="case">
+          <input type="checkbox" id="consentement" required>
+          <span>J'enregistre un <b>engagement de contribution</b> et j'autorise l'Association Connaissance et Savoir à conserver ces informations pour le suivi de mon engagement et à me contacter à ce sujet. Je comprends qu'aucun paiement n'est effectué sur ce site et je peux demander la rectification ou la suppression de mes données à tout moment. <span class="req" aria-hidden="true">*</span></span>
+        </label>
+        <p class="erreur" data-pour="consentement" hidden></p>
+
+        <label class="case">
+          <input type="checkbox" id="consentementRappels" checked>
+          <span>J'accepte de recevoir par e-mail un rappel courtois en fin de mois. Je pourrai l'interrompre à tout moment sans annuler mon engagement.</span>
+        </label>
+
+        <div class="piege" aria-hidden="true">
+          <label for="site_web">Ne pas remplir</label>
+          <input id="site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn" id="btnEngagement">Enregistrer mon engagement</button>
+          <button type="button" class="btn btn-ghost" id="viderEngagement">Effacer</button>
+        </div>
+        <p class="statut" id="statutEngagement" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="confirmation" id="confirmationEngagement" hidden tabindex="-1">
+      <h3>Votre engagement est enregistré</h3>
+      <p style="margin:0;color:var(--encre-2)">Conservez votre référence : elle est à rappeler sur chacun de vos versements.</p>
+      <dl id="confirmationDetails"></dl>
+      <div class="mention-paiement" style="margin-bottom:0">
+        <b>Aucun paiement n'a été effectué.</b>
+        <span>Ce formulaire enregistre votre engagement de contribution. Aucun paiement ni prélèvement n'est effectué sur ce site. L'association vous communiquera les modalités de règlement.</span>
+      </div>
+    </div>
+
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.3rem;margin-top:clamp(2rem,4vw,3rem)">Ce qui se passe ensuite</h3>
+    <ol class="suite">
+      <li><b>Vous recevez un accusé de réception</b> par e-mail, avec votre référence et le récapitulatif de votre engagement. Il rappelle qu'aucun paiement n'a été effectué.</li>
+      <li><b>Un membre du bureau vous contacte</b> pour convenir des modalités de versement : virement, remise à votre Dahira ou autre moyen validé par l'association.</li>
+      <li><b>Vous versez directement à l'association</b>, en indiquant votre référence. Un rappel courtois vous parvient en fin de mois si vous l'avez accepté.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================================================================
+     C. RÉFÉRENCEMENT DES DAHIRAS
+     ================================================================ -->
+<section class="sect sect-craie" id="dahiras">
+  <div class="wrap">
+    <div class="sect-lead">
+      <span class="etape">Étape 2</span>
+      <h2>Les Dahiras de Baye en France</h2>
+      <p>Chaque responsable renseigne lui-même sa section : le guide qui la dirige, le lieu, un contact et les pratiques hebdomadaires. Une fiche n'apparaît dans l'annuaire qu'après vérification par l'association.</p>
+    </div>
+
+    <details class="replier" id="blocAjoutDahira">
+      <summary>Référencer ma Dahira</summary>
+      <div class="contenu">
+        <p style="color:var(--encre-2);font-size:.95rem">Seul le nom, la ville, le code postal et vos coordonnées de responsable sont obligatoires. Vos coordonnées restent privées : vous choisissez plus bas si un numéro peut être affiché publiquement.</p>
+        <form id="formDahira" novalidate>
+          <div class="form-grid">
+            <div class="champ plein">
+              <label for="dNom">Nom de la Dahira <span class="req" aria-hidden="true">*</span></label>
+              <input id="dNom" type="text" required placeholder="Par exemple : Dahira Nasrul Ilm de Montreuil">
+              <p class="erreur" data-pour="nom" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="dGuide">Cheikh ou Moukhadam qui la dirige</label>
+              <input id="dGuide" type="text">
+            </div>
+            <div class="champ">
+              <label for="dZone">Zone</label>
+              <select id="dZone">
+                <option value="">Non précisée</option>
+                <option>Île-de-France</option><option>Nord</option><option>Grand-Est</option>
+                <option>Loire</option><option>Auvergne-Rhône-Alpes</option><option>Sud</option>
+                <option>Hors de France</option>
+              </select>
+              <p class="erreur" data-pour="zone" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="dVille">Ville <span class="req" aria-hidden="true">*</span></label>
+              <input id="dVille" type="text" autocomplete="address-level2" required>
+              <p class="erreur" data-pour="ville" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="dCp">Code postal <span class="req" aria-hidden="true">*</span></label>
+              <input id="dCp" type="text" inputmode="numeric" maxlength="5" autocomplete="postal-code" required>
+              <p class="erreur" data-pour="code_postal" hidden></p>
+            </div>
+            <div class="champ plein">
+              <label for="dLieu">Lieu des activités</label>
+              <input id="dLieu" type="text" placeholder="Adresse ou repère : salle, domicile, mosquée">
+            </div>
+
+            <div class="champ">
+              <label for="dRespNom">Personne responsable <span class="req" aria-hidden="true">*</span></label>
+              <input id="dRespNom" type="text" required>
+              <p class="erreur" data-pour="responsable_nom" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="dRespMail">E-mail du responsable <span class="req" aria-hidden="true">*</span></label>
+              <input id="dRespMail" type="email" inputmode="email" required>
+              <p class="aide">Privé. Sert à valider la fiche et à vous répondre.</p>
+              <p class="erreur" data-pour="responsable_email" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="dRespTel">Téléphone du responsable</label>
+              <input id="dRespTel" type="tel" inputmode="tel">
+              <p class="aide">Privé.</p>
+            </div>
+            <div class="champ">
+              <label for="dTelPublic">Téléphone à publier dans l'annuaire</label>
+              <input id="dTelPublic" type="tel" inputmode="tel" placeholder="Laisser vide pour ne rien publier">
+            </div>
+
+            <fieldset>
+              <legend>Khadara hebdomadaire du vendredi</legend>
+              <div class="radios-ligne">
+                <label><input type="radio" name="dKhadara" value="oui"> Oui</label>
+                <label><input type="radio" name="dKhadara" value="non" checked> Non</label>
+              </div>
+              <div class="champ" id="blocKhadara" style="margin-top:.9rem" hidden>
+                <label for="dKhadaraHoraire">Lieu et horaire de la Khadara</label>
+                <input id="dKhadaraHoraire" type="text" placeholder="Par exemple : après la prière du vendredi, salle municipale">
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Wazifa quotidienne</legend>
+              <div class="radios-ligne">
+                <label><input type="radio" name="dWazifa" value="oui"> Oui</label>
+                <label><input type="radio" name="dWazifa" value="non" checked> Non</label>
+              </div>
+              <div class="champ" id="blocWazifa" style="margin-top:.9rem" hidden>
+                <label for="dWazifaHoraire">Horaire de la Wazifa</label>
+                <input id="dWazifaHoraire" type="text" placeholder="Par exemple : chaque soir après Maghrib">
+              </div>
+            </fieldset>
+
+            <div class="champ">
+              <label for="dEffectif">Nombre de disciples affiliés</label>
+              <input id="dEffectif" type="number" min="0" step="1" inputmode="numeric">
+              <p class="erreur" data-pour="effectif" hidden></p>
+            </div>
+
+            <label class="case">
+              <input type="checkbox" id="dConsentement" required>
+              <span>Je suis responsable de cette Dahira et j'autorise l'ACS à publier son nom, sa ville et ses pratiques dans l'annuaire, après vérification. <span class="req" aria-hidden="true">*</span></span>
+            </label>
+            <p class="erreur" data-pour="consentement_publication" hidden></p>
+
+            <label class="case">
+              <input type="checkbox" id="dContactPublic">
+              <span>J'autorise l'affichage public du téléphone indiqué ci-dessus.</span>
+            </label>
+
+            <div class="piege" aria-hidden="true">
+              <label for="d_site_web">Ne pas remplir</label>
+              <input id="d_site_web" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn" id="btnDahira">Envoyer ma fiche</button>
+            </div>
+            <p class="statut" id="statutDahira" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+
+        <div class="confirmation" id="confirmationDahira" hidden tabindex="-1">
+          <h3>Votre fiche est bien reçue</h3>
+          <p style="margin:0;color:var(--encre-2)">Référence : <span class="ref" id="refDahira"></span></p>
+          <div class="avis" style="margin-bottom:0">
+            <b>Publication soumise à validation.</b> Votre Dahira n'apparaît pas encore dans l'annuaire. L'association vérifie la fiche, puis la publie. Comptez quelques jours.
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <h3 id="annuaire" style="font-family:Marcellus,serif;font-weight:400;font-size:1.5rem;margin-top:clamp(2.2rem,4vw,3.2rem)">Annuaire des Dahiras validées</h3>
+
+    <div class="carte-enveloppe" style="margin-bottom:1.8rem">
+      <div class="carte-cadre">
+        <div class="carte-outils">
+          <button type="button" data-act="plus" aria-label="Agrandir la carte">+</button>
+          <button type="button" data-act="moins" aria-label="Réduire la carte">−</button>
+          <button type="button" data-act="reset" aria-label="Revoir la France entière">⌂</button>
+        </div>
+        <svg id="carteDahiras" viewBox="0 0 640 620" role="img" aria-label="Carte des Dahiras référencées en France">
+          <g id="regionsDahiras"></g><g id="marqueurs"></g>
+        </svg>
+        <div class="infobulle" id="bulleDahira" hidden></div>
+      </div>
+      <div class="carte-cote">
+        <h3>Trouver une Dahira près de chez soi</h3>
+        <p class="aide-carte" id="infoCarteDahiras">Les Dahiras validées apparaissent ici.</p>
+        <div class="fiche-carte" id="ficheCarte" hidden></div>
+      </div>
+    </div>
+
+    <div class="filtres">
+      <div class="champ large">
+        <label for="fRecherche">Rechercher</label>
+        <input id="fRecherche" type="search" placeholder="Nom, ville, département, Moukhadam">
+      </div>
+      <div class="champ">
+        <label for="fZone">Zone</label>
+        <select id="fZone">
+          <option value="">Toutes les zones</option>
+          <option>Île-de-France</option><option>Nord</option><option>Grand-Est</option>
+          <option>Loire</option><option>Auvergne-Rhône-Alpes</option><option>Sud</option>
+        </select>
+      </div>
+      <div class="champ">
+        <label for="fKhadara">Khadara du vendredi</label>
+        <select id="fKhadara"><option value="">Peu importe</option><option value="oui">Oui</option><option value="non">Non</option></select>
+      </div>
+      <div class="champ">
+        <label for="fWazifa">Wazifa quotidienne</label>
+        <select id="fWazifa"><option value="">Peu importe</option><option value="oui">Oui</option><option value="non">Non</option></select>
+      </div>
+    </div>
+
+    <p class="resultats-info" id="infoResultats">Chargement de l'annuaire…</p>
+    <div class="cartes-dahira" id="listeDahiras"></div>
+  </div>
+</section>
+
+<!-- ================================================================
+     D. TRANSPARENCE ET SUIVI
+     ================================================================ -->
+<section class="sect" id="transparence">
+  <div class="wrap">
+    <div class="sect-lead">
+      <span class="etape">Transparence</span>
+      <h2>Où en est le projet</h2>
+      <p>Aucun emprunt, aucun financement extérieur. Le lieu appartiendra à ceux qui l'auront bâti. Voici comment l'équation se referme, et ce que nous savons à ce jour.</p>
+    </div>
+
+    <div class="avis">
+      <b>Mille engagements ne font pas automatiquement deux millions d'euros.</b>
+      Ce qui compte, c'est le montant de chacun, la durée sur laquelle il s'étale, et les versements réellement effectués. Les chiffres ci-dessous distinguent donc soigneusement ce qui est <b>déclaré</b> de ce qui est <b>reçu</b>.
+    </div>
+
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:2rem">Engagements enregistrés</h3>
+    <div class="kpis" style="margin-top:1rem">
+      <div class="kpi" id="kpiEngagements"><b>—</b><span>Engagements enregistrés sur 1 000</span><p class="delta"></p></div>
+      <div class="kpi" id="kpiMensuel"><b>—</b><span>Montant mensuel déclaré, au total</span><p class="delta"></p></div>
+      <div class="kpi" id="kpiPrevisionnel"><b>—</b><span>Prévisionnel à l'horizon de 24 mois</span><p class="delta"></p></div>
+      <div class="kpi" id="kpiVersements"><b>—</b><span>Versements reçus</span><p class="delta"></p></div>
+    </div>
+    <p class="maj" id="majDonnees"></p>
+
+    <div style="margin-top:1.6rem">
+      <div class="jauge-tete"><b>Avancement du prévisionnel sur l'objectif de 2 000 000 €</b><span id="jaugeTexte">—</span></div>
+      <div class="jauge"><i id="jaugeBarre" style="width:0%"></i></div>
+      <p class="maj">Cette jauge mesure des engagements déclarés, pas des sommes encaissées.</p>
+    </div>
+
+    <!-- puzzle -->
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Les 1 000 pièces</h3>
+    <div class="puzzle-tete" style="margin-top:.8rem">
+      <div class="puzzle-compte"><span id="puzzleCompte">0</span> <small>pièces posées sur 1 000</small></div>
+    </div>
+    <div class="puzzle-cadre">
+      <svg id="puzzleSVG" viewBox="0 0 1000 625" role="img"
+           aria-label="Puzzle de 1 000 pièces recouvrant la maquette de la Zawiya. Chaque engagement enregistré découvre une pièce, dans la couleur de son forfait.">
+        <rect x="0" y="0" width="1000" height="625" fill="var(--fond-puzzle)"/>
+        <image href="img/puzzle.jpg" x="0" y="0" width="1000" height="625" preserveAspectRatio="xMidYMid slice" opacity="0.66"/>
+        <path id="pose-gold" class="gold-pose" d=""/>
+        <path id="pose-argent" class="argent-pose" d=""/>
+        <path id="pose-bronze" class="bronze-pose" d=""/>
+        <path id="pose-libre" class="libre-pose" d=""/>
+        <path id="voile-gold" class="gold-voile" d=""/>
+        <path id="voile-argent" class="argent-voile" d=""/>
+        <path id="voile-bronze" class="bronze-voile" d=""/>
+        <path id="voile-libre" class="libre-voile" d=""/>
+      </svg>
+    </div>
+    <ul class="puzzle-legende" id="puzzleLegende"></ul>
+    <p class="puzzle-note" id="puzzleNote"></p>
+
+    <!-- l'équation -->
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">L'équation du financement</h3>
+    <p style="color:var(--encre-2);max-width:42em;margin-top:.5rem">Une seule configuration de référence gouverne tout ce que vous voyez sur cette page : le puzzle, le tableau ci-dessous et le simulateur en lisent les mêmes valeurs.</p>
+    <div class="scroll-x">
+      <table class="tbl" id="tableauEquation">
+        <caption id="legendeEquation"></caption>
+        <thead>
+          <tr><th scope="col">Part du puzzle</th><th scope="col">Pièces</th><th scope="col">Montant mensuel</th><th scope="col">Par mois, au total</th><th scope="col">Sur 24 mois</th></tr>
+        </thead>
+        <tbody id="corpsEquation"></tbody>
+        <tfoot id="piedEquation"></tfoot>
+      </table>
+    </div>
+
+    <div class="simu">
+      <h3>Tester une autre répartition</h3>
+      <p>Les forfaits fixes ne suffisent pas à eux seuls : la bordure du puzzle, à engagement libre, referme l'écart. Ce simulateur permet de voir l'effet d'une répartition différente avant que le bureau ne la fixe.</p>
+      <div class="simu-grille">
+        <div class="champ"><label for="simGold">Or, 100 €</label><input id="simGold" type="number" min="0" step="10"></div>
+        <div class="champ"><label for="simArgent">Argent, 50 €</label><input id="simArgent" type="number" min="0" step="10"></div>
+        <div class="champ"><label for="simBronze">Bronze, 25 €</label><input id="simBronze" type="number" min="0" step="10"></div>
+        <div class="champ"><label for="simDuree">Durée, en mois</label><input id="simDuree" type="number" min="6" step="6" value="24"></div>
+        <div class="champ"><label for="simLibreN">Engagements libres</label><input id="simLibreN" type="number" min="0" step="10"></div>
+        <div class="champ"><label for="simLibreM">Montant libre moyen, en €</label><input id="simLibreM" type="number" min="0" step="5"></div>
+      </div>
+      <div class="simu-sortie">
+        <div><b id="simNb">—</b><span>Engagements simulés</span></div>
+        <div><b id="simMensuel">—</b><span>Montant mensuel déclaré</span></div>
+        <div><b id="simTotal">—</b><span>Prévisionnel sur la période</span></div>
+      </div>
+      <p class="simu-verdict" id="simVerdict"></p>
+    </div>
+
+    <!-- répartition sur le territoire -->
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Les engagements sur le territoire</h3>
+    <p style="color:var(--encre-2);max-width:42em;margin-top:.5rem">Six zones, un quota chacune, proportionnel à sa taille. La teinte montre la part du quota déjà atteinte.</p>
+    <div class="carte-enveloppe">
+      <div class="carte-cadre">
+        <div class="carte-outils">
+          <button type="button" data-act="plus" aria-label="Agrandir la carte">+</button>
+          <button type="button" data-act="moins" aria-label="Réduire la carte">−</button>
+          <button type="button" data-act="reset" aria-label="Revoir la France entière">⌂</button>
+        </div>
+        <svg id="carteZones" viewBox="0 0 640 620" role="img" aria-label="Carte de France : engagements enregistrés par zone">
+          <g id="regionsZones"><path class="region" data-zone="nord" data-code="28" d="M164.4,119.2 L166.4,117.2 L171.4,117.1 L179.0,120.4 L193.3,122.0 L200.0,125.4 L205.6,124.6 L209.6,122.8 L214.5,118.5 L218.3,117.1 L223.0,116.9 L223.0,115.9 L220.3,116.3 L214.3,114.8 L212.2,111.8 L216.5,101.2 L218.2,99.5 L223.5,97.7 L233.5,91.5 L254.3,86.9 L264.9,79.3 L268.0,79.1 L268.2,81.0 L270.6,82.6 L274.0,86.9 L276.9,88.5 L278.3,90.5 L279.1,95.2 L281.0,98.1 L279.6,98.0 L279.4,99.6 L278.1,99.8 L278.2,101.4 L277.1,102.2 L278.0,103.1 L279.3,101.8 L279.6,103.0 L277.4,105.4 L278.3,106.7 L277.2,108.0 L278.3,108.8 L277.1,109.3 L278.0,109.5 L278.3,111.5 L279.3,111.9 L278.0,114.0 L279.1,114.9 L279.7,113.6 L281.0,114.1 L280.4,116.0 L278.3,117.8 L277.8,120.0 L278.9,120.0 L278.1,120.7 L279.7,122.5 L280.0,127.1 L281.2,128.2 L280.7,129.8 L279.5,128.2 L277.5,128.7 L277.2,130.8 L275.9,132.2 L275.3,136.8 L273.4,140.0 L269.7,140.6 L269.2,139.5 L269.0,141.2 L266.7,141.5 L268.0,144.3 L267.2,145.6 L267.6,146.3 L269.5,146.1 L268.4,147.0 L269.2,147.6 L268.7,148.5 L266.6,149.4 L267.5,151.0 L267.0,152.6 L263.0,154.9 L263.5,158.1 L261.5,159.4 L258.2,158.7 L257.3,159.4 L253.2,157.4 L252.9,160.0 L250.9,159.2 L249.6,161.1 L247.3,160.8 L245.0,162.1 L243.8,161.4 L242.6,163.4 L240.5,164.5 L241.2,166.7 L240.7,168.1 L241.8,168.2 L241.9,169.8 L244.9,171.3 L245.5,171.9 L244.9,172.8 L246.6,173.5 L245.5,175.1 L246.1,176.1 L245.2,176.5 L246.8,178.8 L244.0,182.9 L239.1,184.5 L238.2,185.7 L237.6,187.1 L239.7,187.7 L238.8,188.9 L240.5,192.6 L237.6,194.4 L236.1,193.3 L234.5,189.7 L232.8,189.3 L232.4,190.9 L228.5,189.9 L226.9,187.8 L227.4,187.1 L226.7,186.1 L226.3,186.8 L222.9,185.3 L222.2,181.2 L222.6,178.9 L221.6,176.9 L219.4,175.4 L214.2,176.1 L214.0,177.1 L213.0,176.6 L213.5,177.6 L209.9,179.4 L209.4,181.2 L206.9,180.0 L204.8,181.3 L205.0,176.6 L201.1,176.2 L200.2,172.8 L201.4,171.8 L198.9,169.5 L197.5,169.2 L196.6,170.3 L197.5,171.1 L196.2,172.9 L194.2,171.8 L192.8,174.2 L191.2,172.5 L186.5,172.3 L184.7,174.5 L182.9,174.4 L180.6,176.1 L180.1,173.5 L179.0,174.5 L177.4,174.2 L178.0,175.6 L176.1,176.3 L175.3,175.7 L175.5,174.5 L174.0,175.1 L172.8,172.3 L170.2,172.3 L168.4,171.0 L167.7,172.3 L166.3,172.6 L158.3,168.9 L156.0,168.9 L155.2,170.8 L153.3,171.3 L151.0,173.8 L146.6,171.5 L145.0,167.7 L145.7,166.7 L144.8,165.8 L145.1,164.7 L143.8,162.9 L145.5,162.9 L146.1,163.9 L148.7,163.4 L149.8,162.2 L152.7,163.1 L150.8,161.5 L151.9,159.5 L149.0,161.5 L148.9,160.5 L146.7,159.4 L145.8,156.7 L144.2,155.7 L144.3,151.0 L142.8,150.1 L144.2,148.9 L145.5,144.2 L145.6,146.4 L145.8,138.4 L147.8,138.9 L145.7,137.8 L144.9,140.0 L144.1,137.7 L144.0,133.5 L145.2,131.9 L144.2,126.5 L146.0,126.4 L144.2,125.3 L143.7,127.0 L141.8,122.6 L142.7,122.5 L141.6,122.1 L140.7,119.8 L142.2,119.4 L140.3,119.8 L137.8,116.5 L139.0,116.7 L136.9,116.6 L135.9,108.5 L134.4,107.0 L136.5,104.0 L136.3,100.6 L135.5,99.0 L132.6,97.8 L133.1,96.8 L132.7,95.1 L133.8,94.6 L135.3,96.0 L136.5,95.3 L137.6,97.1 L145.7,99.6 L145.0,99.8 L145.7,100.5 L146.3,99.4 L150.8,99.2 L151.5,97.5 L155.6,97.1 L159.7,98.0 L159.4,99.0 L160.6,100.7 L160.9,103.6 L159.9,103.2 L159.0,105.7 L159.2,104.9 L158.1,104.9 L157.6,107.6 L162.5,115.6 L162.9,116.9 L162.1,118.5 L164.4,119.2Z"/><path class="region" data-zone="nord" data-code="32" d="M374.3,84.9 L378.0,86.1 L377.4,88.8 L379.0,89.5 L378.9,91.5 L377.8,93.7 L377.4,95.5 L377.9,96.3 L377.1,97.2 L378.9,98.4 L376.4,102.1 L374.1,103.4 L373.7,106.2 L370.7,105.9 L370.1,106.8 L372.1,110.0 L371.1,111.6 L372.1,111.8 L372.2,113.2 L370.8,113.8 L370.9,116.3 L371.9,117.7 L370.7,118.2 L371.2,119.8 L370.7,123.0 L367.7,121.9 L366.2,120.1 L365.1,121.0 L362.1,120.5 L363.6,121.5 L363.4,124.0 L360.4,123.3 L355.0,126.0 L355.5,129.6 L356.4,130.8 L355.4,132.0 L356.6,133.1 L357.3,132.6 L357.8,134.3 L359.4,134.3 L359.3,135.6 L357.5,136.5 L354.2,136.0 L353.4,137.9 L354.9,140.5 L352.9,141.6 L352.8,142.9 L355.4,142.6 L356.5,144.4 L355.0,145.0 L354.3,147.4 L353.1,147.7 L353.5,148.7 L352.4,149.0 L352.0,150.7 L350.6,150.7 L347.9,155.2 L347.2,153.9 L344.6,153.2 L344.1,149.8 L342.6,150.9 L341.5,148.5 L339.9,149.1 L339.3,146.9 L336.0,144.6 L335.7,143.9 L336.9,142.2 L335.4,140.2 L335.9,139.2 L334.8,138.8 L332.0,138.1 L331.5,139.2 L331.9,140.1 L329.6,139.7 L328.7,141.0 L328.0,139.7 L323.4,141.0 L321.6,139.4 L318.6,141.6 L318.1,140.4 L317.1,141.4 L314.5,138.7 L312.5,140.4 L311.3,137.7 L310.5,138.0 L310.4,139.2 L308.7,138.8 L309.3,138.1 L308.0,137.0 L304.2,135.5 L303.5,136.2 L301.6,133.8 L300.6,135.4 L298.3,135.9 L297.8,135.7 L298.5,135.0 L297.9,134.1 L295.8,135.1 L295.7,134.1 L293.0,133.5 L292.3,132.2 L289.1,134.3 L288.0,133.8 L284.3,135.1 L281.2,133.6 L278.7,133.9 L277.6,132.2 L278.7,131.2 L277.0,130.5 L277.4,128.9 L279.5,128.2 L280.7,129.8 L281.2,128.2 L280.0,127.1 L279.7,122.5 L278.1,120.7 L278.9,120.0 L277.8,119.8 L278.3,117.8 L280.4,116.0 L281.0,114.1 L279.7,113.6 L279.1,114.9 L278.0,114.0 L279.3,111.9 L278.3,111.5 L278.0,109.5 L277.1,109.3 L278.3,108.8 L277.2,108.0 L278.3,106.7 L277.4,105.4 L279.6,102.3 L277.7,103.1 L277.1,102.2 L278.2,101.4 L278.1,99.8 L279.4,99.6 L279.6,98.0 L281.0,98.1 L279.1,95.2 L278.3,90.5 L276.9,88.5 L274.0,86.9 L270.6,82.6 L268.2,81.0 L268.0,79.1 L265.3,79.3 L268.2,76.6 L269.5,72.7 L271.3,70.6 L272.8,70.0 L274.0,72.0 L277.4,72.2 L276.6,70.3 L275.1,70.3 L273.9,67.6 L272.3,67.4 L271.8,66.2 L272.6,61.2 L275.3,60.9 L275.9,61.8 L272.6,58.9 L273.8,50.5 L276.8,52.2 L273.6,48.2 L273.2,38.8 L274.8,39.0 L274.4,38.5 L275.0,36.2 L274.2,29.8 L276.5,29.4 L282.0,24.8 L293.5,21.7 L295.2,22.8 L294.7,21.9 L296.3,20.1 L297.5,21.8 L297.9,21.1 L297.3,20.8 L298.1,20.0 L297.2,19.5 L298.8,20.3 L304.1,18.5 L305.8,19.2 L311.7,16.9 L312.7,22.1 L314.0,22.9 L315.0,25.7 L313.3,27.3 L314.0,27.9 L313.7,31.7 L314.3,31.7 L315.0,33.9 L318.5,34.1 L321.0,39.2 L323.3,39.4 L325.6,41.3 L327.3,37.7 L329.8,36.3 L332.7,36.3 L333.6,35.1 L335.1,35.3 L337.2,40.1 L339.4,40.8 L339.6,42.3 L338.6,43.4 L340.2,47.2 L340.5,51.6 L344.0,53.7 L346.8,52.7 L347.8,51.0 L349.6,51.7 L348.8,53.9 L353.0,53.3 L355.2,55.7 L355.7,59.1 L355.0,61.1 L357.1,65.1 L357.1,64.2 L357.9,64.7 L358.6,62.2 L362.5,62.0 L364.6,63.6 L369.4,61.6 L371.6,64.6 L373.1,64.9 L373.9,67.8 L375.1,67.6 L374.4,66.7 L374.9,65.8 L376.7,66.8 L377.2,68.0 L374.6,70.4 L374.8,73.5 L373.7,75.3 L376.4,75.2 L376.5,77.0 L377.8,79.1 L374.7,81.2 L374.1,82.8 L375.2,83.9 L374.3,84.9Z"/><path class="region" data-zone="nord" data-code="53" d="M125.9,165.6 L127.2,167.4 L126.3,168.2 L126.8,168.7 L126.1,170.1 L127.5,168.1 L128.1,168.6 L126.8,164.5 L128.1,164.9 L125.8,163.5 L126.3,162.6 L125.7,162.6 L125.3,160.3 L127.0,159.6 L127.1,158.4 L129.1,158.5 L128.3,158.1 L129.2,157.4 L130.5,158.2 L133.0,157.0 L133.3,159.0 L131.7,161.0 L132.6,162.8 L135.7,163.9 L143.8,162.9 L145.1,164.7 L144.8,165.8 L145.7,166.7 L145.0,167.7 L146.6,171.5 L148.2,171.7 L149.0,173.4 L152.1,173.2 L153.2,171.4 L155.2,170.8 L156.4,168.8 L163.7,171.3 L163.7,174.8 L162.9,175.8 L164.2,182.4 L161.6,186.3 L163.2,197.0 L164.3,198.4 L163.7,200.5 L164.4,202.4 L162.9,203.5 L159.8,203.2 L159.8,204.1 L158.5,204.4 L157.4,208.5 L156.6,209.0 L156.8,210.4 L155.4,211.2 L155.6,212.5 L154.4,213.9 L154.2,215.8 L149.3,214.1 L148.2,212.2 L144.8,211.6 L145.0,213.6 L138.6,215.7 L137.0,218.9 L128.7,218.5 L124.3,220.5 L123.8,219.1 L122.1,220.7 L121.1,220.4 L120.5,221.6 L119.3,221.5 L118.5,222.6 L118.9,224.3 L118.1,225.1 L118.1,228.6 L115.7,229.1 L115.2,231.1 L114.1,230.6 L114.4,229.7 L111.9,230.6 L111.0,230.1 L111.5,229.5 L109.8,229.1 L108.8,232.4 L105.3,232.5 L104.4,231.1 L101.9,233.2 L101.1,232.1 L101.7,231.3 L101.3,230.0 L102.6,230.7 L104.6,230.0 L100.0,227.7 L95.9,228.9 L97.0,227.5 L98.8,227.2 L98.1,227.1 L99.1,226.2 L98.0,225.4 L98.1,226.6 L97.2,227.3 L97.1,225.1 L96.3,227.3 L94.8,226.1 L94.6,227.0 L96.4,227.6 L94.6,227.9 L94.1,229.5 L92.1,228.5 L89.1,229.6 L86.9,228.6 L87.1,227.3 L84.2,225.3 L86.0,224.5 L86.9,226.2 L88.0,225.5 L88.1,226.3 L88.2,225.1 L89.1,226.3 L89.7,225.5 L90.4,226.6 L92.0,226.3 L92.7,223.5 L93.1,224.2 L94.2,222.5 L94.2,220.9 L93.5,220.8 L94.1,220.6 L93.2,219.8 L93.5,221.4 L92.9,221.5 L93.7,222.2 L92.9,221.9 L93.0,223.2 L90.4,221.4 L92.2,221.9 L91.4,220.3 L90.4,220.9 L89.8,219.8 L90.2,221.3 L86.9,221.0 L87.0,222.2 L85.7,222.1 L85.5,223.8 L84.1,223.0 L84.5,222.0 L84.1,222.6 L83.9,221.7 L83.7,223.0 L83.2,221.5 L83.9,220.5 L83.0,220.3 L82.3,218.3 L83.1,221.3 L82.3,221.5 L83.0,222.2 L82.3,222.7 L83.9,224.9 L81.9,224.5 L81.3,222.5 L81.4,224.0 L80.1,222.3 L80.2,223.8 L79.2,222.5 L78.7,223.6 L77.0,223.8 L76.6,223.1 L77.2,222.9 L75.9,221.6 L75.7,223.0 L76.2,223.0 L75.4,226.3 L77.2,229.6 L75.0,229.1 L74.2,225.9 L75.3,224.8 L75.3,222.7 L72.6,218.6 L72.8,217.0 L76.2,215.3 L74.6,215.4 L75.5,214.3 L76.2,215.1 L76.6,213.8 L77.4,214.3 L75.4,214.1 L76.3,212.5 L75.7,212.2 L75.1,213.5 L73.5,212.4 L74.7,213.5 L74.8,215.0 L73.6,214.9 L73.4,215.9 L72.7,215.3 L73.3,216.1 L72.4,217.2 L72.5,218.5 L69.2,215.5 L66.7,215.4 L68.2,214.6 L70.1,215.5 L68.8,214.2 L66.6,214.0 L67.6,213.7 L67.4,212.5 L69.2,211.8 L70.6,209.1 L69.8,209.5 L70.1,210.4 L68.8,211.3 L68.5,210.7 L68.5,211.8 L67.6,212.1 L66.0,208.1 L66.2,206.7 L65.7,207.8 L67.3,211.4 L67.1,212.6 L65.7,214.4 L63.0,214.6 L60.2,210.0 L60.8,207.8 L60.0,206.1 L60.8,204.9 L60.1,204.0 L60.6,205.2 L59.9,206.6 L60.6,208.0 L59.7,210.2 L55.4,209.1 L55.5,208.2 L54.0,208.8 L52.4,207.1 L55.9,205.8 L53.6,205.5 L52.0,207.0 L51.4,204.3 L51.6,207.3 L46.8,207.4 L47.0,206.5 L45.2,204.4 L46.2,203.1 L45.0,203.5 L44.6,203.1 L45.4,202.8 L42.5,199.6 L41.8,200.4 L42.2,203.1 L39.6,203.4 L37.7,202.1 L39.3,202.9 L38.1,201.3 L37.2,202.1 L35.6,199.0 L37.3,197.2 L38.5,197.6 L37.8,197.3 L38.4,196.7 L37.3,197.1 L38.0,195.7 L37.2,194.6 L37.8,195.5 L36.8,196.4 L37.2,197.5 L35.9,198.0 L35.5,199.8 L34.3,199.1 L36.1,200.3 L36.7,202.1 L34.2,203.2 L34.1,200.8 L33.2,201.9 L32.5,201.4 L34.6,203.8 L33.5,205.6 L32.1,204.7 L31.9,205.9 L25.6,205.0 L25.5,203.6 L27.0,202.5 L25.9,197.4 L23.5,193.5 L20.2,191.3 L20.5,189.9 L22.3,189.8 L20.2,189.7 L20.3,191.0 L19.0,191.9 L16.3,189.8 L12.0,188.7 L13.4,188.6 L13.2,187.4 L19.9,187.3 L25.6,186.0 L30.1,187.4 L31.8,184.9 L31.8,183.6 L30.9,183.3 L31.1,182.2 L30.3,180.4 L28.1,180.1 L24.5,177.7 L22.9,178.1 L23.0,178.9 L20.4,181.7 L20.7,179.2 L20.0,177.7 L21.3,176.8 L18.1,176.2 L18.5,175.0 L18.0,174.5 L20.4,174.6 L20.1,172.3 L22.2,171.1 L21.0,173.2 L21.8,174.7 L23.4,173.1 L22.6,174.0 L23.1,175.0 L26.6,174.5 L27.9,175.8 L32.6,174.9 L32.8,175.7 L31.8,176.2 L33.1,177.0 L32.6,177.3 L38.8,178.7 L38.5,180.3 L39.5,178.1 L37.9,178.8 L35.1,178.1 L32.2,176.0 L36.0,175.3 L32.3,173.9 L33.7,173.1 L30.2,173.7 L33.3,171.2 L30.5,172.1 L31.1,170.7 L29.8,171.8 L29.9,171.1 L28.4,172.7 L26.9,172.7 L27.8,171.6 L25.2,172.3 L27.6,169.2 L33.5,165.8 L27.9,168.7 L26.7,168.1 L26.4,169.0 L24.5,168.8 L19.2,171.1 L15.9,169.7 L14.7,171.2 L12.4,170.9 L12.3,169.1 L13.7,168.8 L12.1,168.9 L13.2,168.0 L12.0,165.6 L13.6,162.6 L15.5,162.2 L13.7,162.3 L13.5,159.3 L15.5,157.2 L16.6,157.7 L16.7,156.5 L19.9,156.3 L21.2,157.9 L24.6,158.8 L20.4,156.4 L21.2,154.6 L21.6,155.0 L21.2,155.5 L23.3,155.4 L25.8,157.2 L22.4,154.7 L23.5,153.1 L25.2,154.2 L27.7,153.2 L29.4,153.7 L28.0,152.4 L32.4,151.4 L33.8,152.5 L32.7,153.3 L33.5,154.3 L34.5,153.3 L37.7,153.4 L36.7,153.0 L38.0,151.6 L40.6,150.9 L42.6,151.4 L43.4,152.8 L43.1,151.9 L43.9,151.8 L43.8,150.8 L47.2,149.7 L46.9,152.9 L47.7,153.1 L47.2,156.5 L47.9,157.7 L47.6,154.4 L48.9,153.0 L50.1,153.4 L49.5,154.2 L51.2,156.0 L50.7,157.6 L51.4,157.5 L51.7,156.2 L52.9,156.2 L51.7,156.1 L51.2,153.5 L51.9,154.2 L51.7,152.4 L52.8,151.1 L53.1,151.8 L53.2,150.7 L58.7,153.2 L60.2,152.7 L59.7,153.5 L60.3,154.1 L59.4,154.9 L61.0,153.4 L61.5,154.4 L63.0,154.2 L62.7,151.5 L64.0,151.1 L64.3,149.9 L62.9,149.2 L63.0,147.9 L66.6,144.4 L66.6,145.3 L67.5,144.6 L68.2,145.9 L69.6,145.8 L68.9,147.1 L70.7,147.1 L73.9,145.1 L76.2,145.5 L78.0,143.4 L78.6,144.9 L78.1,145.6 L78.7,145.7 L77.1,148.4 L77.8,148.7 L79.6,145.2 L84.1,143.2 L82.9,144.0 L83.9,144.7 L83.2,144.4 L83.6,145.3 L82.9,146.1 L84.0,146.3 L81.6,150.5 L82.6,150.0 L83.9,147.0 L86.5,147.2 L86.5,148.5 L84.8,149.2 L89.4,151.4 L88.6,153.4 L93.1,157.8 L92.9,161.4 L97.2,164.3 L96.8,165.7 L98.2,168.3 L98.4,165.8 L100.4,166.3 L103.9,162.0 L107.2,160.9 L107.5,160.1 L106.7,159.4 L108.8,159.1 L109.5,160.4 L113.8,157.2 L115.0,158.8 L112.8,161.4 L113.5,162.0 L116.5,160.0 L116.1,160.8 L117.6,164.6 L118.4,162.4 L119.0,164.5 L120.3,162.0 L121.3,162.9 L120.3,161.0 L124.2,160.9 L126.4,164.5 L125.9,165.6Z M70.1,238.0 L69.1,236.2 L70.0,234.1 L73.5,235.8 L74.1,238.0 L77.5,239.6 L75.8,241.3 L72.8,239.6 L70.6,240.0 L69.5,238.6 L70.1,238.0Z"/><path class="region" data-zone="idf" data-code="11" d="M312.8,140.4 L314.5,138.7 L317.1,141.4 L318.1,140.4 L318.6,141.6 L321.6,139.4 L324.0,141.0 L328.0,139.7 L328.5,141.0 L329.6,139.7 L331.9,140.1 L331.5,139.2 L332.0,138.1 L335.9,139.2 L335.4,140.2 L336.9,142.4 L335.7,143.9 L336.0,144.6 L339.3,146.9 L339.9,149.1 L341.5,148.5 L342.6,150.9 L344.1,149.8 L344.6,153.2 L347.2,153.9 L347.9,155.2 L348.8,154.4 L348.9,156.7 L345.6,157.0 L347.2,158.1 L345.8,158.6 L345.3,160.1 L348.3,161.4 L348.1,163.3 L348.6,163.9 L347.1,166.0 L347.9,166.6 L347.5,167.8 L350.9,167.0 L350.3,167.8 L351.9,168.7 L349.7,169.6 L350.2,170.5 L348.2,171.7 L348.8,173.5 L345.7,174.3 L346.9,176.3 L344.8,177.3 L345.8,178.9 L345.2,180.7 L346.4,181.2 L346.1,182.8 L344.6,182.2 L344.1,183.9 L340.8,183.3 L339.6,184.3 L336.2,183.6 L333.5,185.3 L331.3,184.7 L331.0,186.5 L329.8,188.0 L331.2,191.4 L329.4,194.1 L326.7,195.5 L326.6,196.7 L323.8,197.2 L321.9,198.8 L320.9,198.1 L321.5,196.6 L318.4,196.5 L319.2,197.8 L315.5,199.3 L314.5,198.2 L311.1,198.0 L309.6,199.0 L306.4,199.0 L308.1,196.6 L309.4,196.5 L309.5,192.7 L305.7,190.7 L305.7,188.6 L304.8,187.0 L303.0,187.7 L301.4,186.3 L300.5,187.7 L299.3,187.3 L298.4,188.3 L298.5,186.3 L296.7,185.5 L295.8,187.5 L294.6,187.2 L295.1,188.3 L292.7,187.7 L290.1,189.1 L287.3,188.8 L287.7,188.4 L286.7,187.5 L287.5,187.3 L287.1,185.5 L288.0,184.2 L287.1,183.1 L287.6,181.8 L285.6,181.5 L286.2,179.4 L285.6,178.4 L283.3,179.4 L282.2,179.0 L281.9,177.7 L280.4,177.8 L279.5,175.1 L279.9,172.4 L278.7,171.1 L276.8,170.9 L277.1,168.6 L275.1,168.6 L274.2,166.3 L272.6,165.6 L273.0,163.9 L271.6,163.1 L273.6,160.4 L271.8,159.2 L271.7,156.8 L272.3,156.2 L271.8,155.3 L272.6,154.7 L270.5,152.7 L271.2,151.6 L270.2,149.6 L269.0,149.2 L269.2,147.6 L268.4,147.0 L269.5,146.1 L267.2,145.6 L268.0,144.3 L266.7,141.9 L267.3,140.8 L269.0,141.2 L269.2,139.5 L269.7,140.6 L273.8,139.6 L275.3,136.8 L276.1,131.9 L277.5,130.1 L278.7,131.2 L277.7,132.5 L279.3,134.2 L281.2,133.6 L284.3,135.1 L288.0,133.8 L289.1,134.3 L292.3,132.2 L293.0,133.5 L295.7,134.1 L295.8,135.1 L297.9,134.1 L298.5,135.0 L297.8,135.7 L298.3,135.9 L300.6,135.4 L301.6,133.8 L303.5,136.2 L304.2,135.5 L308.0,137.0 L309.3,138.1 L308.7,138.8 L310.4,139.2 L310.5,138.0 L311.4,137.7 L311.5,139.3 L312.8,140.4Z"/><path class="region" data-zone="grandest" data-code="44" d="M378.0,86.1 L381.0,85.3 L386.5,87.2 L389.5,86.4 L391.8,84.3 L396.2,83.5 L395.8,81.5 L396.3,79.9 L395.6,79.1 L396.0,78.0 L401.1,72.7 L401.4,73.6 L404.0,74.5 L402.9,75.7 L403.1,77.6 L402.2,76.8 L401.8,78.9 L401.0,79.0 L401.9,80.6 L400.0,84.9 L402.3,86.2 L404.1,88.6 L402.6,91.3 L403.7,94.1 L402.7,95.7 L408.4,95.2 L409.2,96.4 L412.4,97.3 L413.7,100.5 L415.0,100.1 L415.4,101.6 L419.5,101.3 L422.0,103.8 L421.0,105.3 L421.3,106.4 L422.8,105.2 L426.0,107.3 L426.4,108.9 L427.2,109.0 L426.6,109.9 L427.5,110.7 L426.9,112.0 L427.6,113.2 L431.2,111.2 L433.4,112.6 L434.6,109.8 L438.8,110.3 L439.7,108.8 L441.6,110.4 L442.3,110.0 L442.4,111.4 L443.5,112.5 L446.7,112.4 L447.9,113.0 L448.2,115.3 L450.7,115.5 L451.3,114.4 L453.1,115.1 L454.1,112.6 L455.4,112.5 L455.1,111.9 L458.5,111.1 L462.3,113.9 L466.1,113.1 L470.7,115.6 L471.4,116.4 L470.8,117.5 L473.3,119.6 L471.9,120.8 L474.1,123.5 L476.3,124.7 L476.0,126.1 L477.2,126.6 L477.5,128.7 L478.6,128.4 L479.0,129.2 L478.2,130.3 L479.4,131.8 L483.3,132.3 L484.3,130.5 L483.2,128.5 L486.7,127.7 L491.2,129.5 L491.0,130.8 L492.2,134.3 L493.9,131.5 L494.4,131.7 L494.1,132.5 L496.4,133.5 L499.8,132.8 L501.8,133.6 L502.9,131.8 L504.5,131.6 L504.5,129.9 L507.6,129.0 L507.4,130.3 L509.7,129.8 L510.2,130.7 L509.6,131.8 L511.3,134.2 L515.4,135.4 L515.7,136.6 L520.7,136.8 L522.1,135.5 L525.1,137.3 L527.7,135.6 L529.5,137.4 L534.1,139.3 L540.1,140.4 L538.7,141.2 L536.9,144.5 L535.1,150.7 L532.6,152.0 L532.1,153.6 L530.4,153.9 L530.2,156.2 L525.6,161.2 L524.2,164.7 L524.6,169.1 L523.2,170.8 L522.1,176.9 L522.8,180.8 L520.8,182.6 L520.0,187.6 L516.7,193.9 L516.7,199.3 L519.1,202.9 L516.7,208.7 L517.1,210.9 L516.0,215.0 L516.9,217.9 L515.5,220.0 L516.0,222.1 L519.2,226.1 L519.0,227.3 L515.6,229.7 L516.9,230.3 L516.6,231.2 L515.6,230.9 L515.9,232.7 L514.8,233.4 L512.9,232.6 L512.5,233.5 L514.0,234.1 L512.0,236.3 L508.9,236.1 L505.5,237.6 L504.9,236.5 L502.3,236.4 L503.4,233.2 L500.4,232.8 L500.9,231.5 L498.1,227.2 L495.6,227.8 L495.0,227.0 L494.9,225.3 L495.3,224.0 L496.2,224.0 L496.4,221.9 L494.9,218.3 L488.7,216.2 L487.6,213.7 L486.8,214.4 L485.0,212.2 L479.2,209.2 L477.5,206.8 L472.4,210.7 L470.4,207.2 L468.5,206.2 L461.0,208.3 L461.1,207.4 L458.7,206.3 L459.3,205.8 L458.8,203.8 L457.8,202.7 L454.1,204.1 L452.8,207.0 L451.3,207.1 L450.5,208.5 L449.6,208.4 L450.9,206.5 L449.7,205.9 L447.8,209.2 L448.0,210.5 L446.0,211.4 L445.4,212.7 L445.7,213.8 L442.9,213.4 L442.2,215.9 L440.2,215.8 L439.6,218.5 L440.9,219.1 L441.1,220.5 L440.0,222.3 L440.4,224.2 L436.5,225.2 L435.3,223.0 L433.8,225.2 L429.2,225.0 L426.7,230.4 L425.3,229.2 L422.5,231.4 L421.9,230.2 L422.7,228.6 L421.8,229.0 L419.1,226.9 L419.2,225.1 L417.1,227.3 L414.1,226.0 L413.7,225.5 L414.4,224.4 L413.1,224.5 L413.0,223.5 L410.6,225.0 L410.0,224.1 L410.6,222.4 L410.0,222.2 L410.1,220.4 L408.6,220.6 L408.3,219.5 L411.0,218.0 L411.4,216.8 L410.0,215.6 L409.7,214.0 L408.6,213.7 L407.5,210.7 L406.1,210.9 L405.8,212.2 L404.7,211.6 L406.0,209.5 L405.1,208.3 L402.7,208.1 L403.6,206.6 L402.7,205.5 L394.3,204.3 L392.3,205.8 L393.1,208.1 L383.2,208.6 L382.4,210.9 L380.5,210.7 L379.5,209.5 L379.6,208.1 L378.7,208.1 L378.7,210.0 L377.2,208.9 L374.9,211.0 L372.9,209.8 L372.2,211.1 L370.5,210.1 L366.1,210.9 L366.7,207.7 L365.9,206.5 L365.4,207.8 L364.2,207.6 L363.7,206.4 L365.0,206.4 L365.0,205.5 L363.0,203.9 L363.3,203.1 L362.0,201.3 L361.7,199.4 L359.5,198.5 L359.8,196.4 L358.4,196.0 L358.8,197.1 L356.6,198.1 L355.2,195.1 L353.0,195.4 L354.7,192.8 L353.8,192.2 L354.8,191.0 L354.4,190.0 L352.8,189.2 L353.3,188.2 L351.4,187.1 L349.5,184.0 L347.6,183.8 L346.7,184.7 L346.1,183.6 L346.4,181.2 L345.2,180.7 L345.8,178.9 L344.8,177.3 L346.9,176.6 L345.7,174.3 L348.8,173.5 L348.2,171.7 L350.2,170.5 L349.7,169.6 L351.9,168.8 L350.3,167.8 L350.9,167.0 L347.5,167.8 L347.9,166.6 L347.1,166.0 L348.6,163.9 L348.1,163.3 L348.3,161.4 L345.4,160.4 L345.8,158.6 L347.2,158.1 L345.6,157.0 L348.9,156.7 L348.7,153.5 L350.6,150.7 L352.3,150.5 L352.4,149.0 L353.5,148.7 L353.1,147.7 L354.3,147.4 L355.0,145.0 L356.5,144.4 L355.4,142.6 L352.8,142.9 L352.9,141.6 L354.9,140.5 L353.4,137.9 L354.2,136.0 L357.5,136.5 L359.3,135.6 L359.4,134.3 L357.8,134.3 L357.3,132.6 L356.6,133.1 L355.4,132.0 L356.4,130.8 L355.5,129.6 L355.0,126.0 L360.4,123.3 L363.4,124.0 L363.6,121.5 L362.1,120.5 L365.1,121.0 L366.2,120.1 L367.7,121.9 L370.7,123.0 L371.2,119.8 L370.7,118.2 L371.9,117.7 L370.9,116.3 L370.8,113.8 L372.2,113.2 L372.1,111.8 L371.1,111.6 L372.1,110.0 L370.0,106.9 L370.7,105.9 L373.7,106.2 L374.1,103.4 L376.4,102.1 L378.9,98.4 L377.1,97.2 L377.9,96.3 L377.4,95.5 L377.8,93.7 L378.9,91.5 L379.0,89.5 L377.4,88.8 L378.0,86.1Z"/><path class="region" data-zone="loire" data-code="24" d="M324.0,236.2 L326.4,241.2 L323.9,246.9 L324.1,248.4 L328.5,252.1 L328.4,254.1 L330.4,260.2 L330.0,264.0 L332.4,266.4 L331.9,269.4 L332.6,270.9 L331.3,273.8 L332.1,275.7 L331.7,278.8 L330.4,280.8 L327.7,280.2 L325.6,281.0 L322.7,283.9 L322.8,284.9 L320.6,284.4 L319.1,285.5 L318.1,283.7 L317.2,283.8 L316.7,285.4 L313.4,287.2 L313.6,289.0 L312.6,288.3 L311.0,289.4 L312.1,289.8 L311.9,291.7 L311.0,292.1 L312.4,293.0 L313.0,295.5 L309.7,297.6 L308.0,297.5 L308.0,296.7 L302.2,297.8 L300.7,299.3 L300.6,300.6 L299.7,300.4 L298.8,303.6 L295.3,303.1 L290.7,304.2 L286.0,302.1 L283.7,302.7 L283.1,302.0 L280.2,303.0 L277.9,301.2 L276.3,301.5 L276.8,302.9 L275.4,305.1 L273.5,303.4 L271.1,305.2 L270.4,303.0 L267.7,304.8 L267.6,303.2 L266.7,302.8 L262.2,307.5 L259.7,304.2 L257.9,304.5 L258.2,305.1 L257.4,306.0 L253.8,306.2 L253.5,304.7 L252.3,305.6 L253.6,302.1 L251.1,301.1 L250.4,299.7 L251.4,299.8 L250.4,298.1 L250.9,297.5 L248.7,295.6 L245.8,295.6 L245.5,293.6 L243.3,293.4 L241.1,291.4 L240.5,289.8 L241.5,288.4 L240.9,286.6 L242.0,285.9 L241.5,283.8 L237.4,279.9 L236.6,276.0 L235.5,275.9 L235.7,275.1 L235.0,275.4 L233.0,272.7 L232.6,268.3 L230.2,267.5 L229.6,266.2 L227.5,266.2 L228.6,269.3 L224.8,269.0 L221.9,270.7 L218.9,269.4 L217.1,270.5 L215.9,266.9 L216.8,266.4 L216.2,265.0 L216.6,263.0 L215.0,263.5 L215.0,262.0 L214.1,261.8 L212.5,262.8 L211.2,262.3 L212.3,260.5 L211.6,259.0 L210.7,259.8 L209.1,258.1 L207.4,258.6 L207.3,256.9 L206.3,256.0 L206.9,254.2 L206.4,253.8 L207.5,252.6 L207.1,250.7 L208.1,248.6 L207.6,248.5 L210.6,244.8 L210.4,243.8 L212.2,242.7 L211.0,241.6 L212.2,240.5 L212.3,238.2 L214.0,235.3 L214.3,233.8 L213.0,233.0 L214.7,230.7 L214.7,228.7 L220.7,231.5 L221.7,230.9 L220.2,228.2 L221.0,226.9 L223.7,228.4 L224.4,226.8 L229.9,225.3 L230.9,224.1 L229.9,224.4 L229.3,222.8 L231.3,220.5 L234.5,219.7 L234.0,218.7 L237.6,215.3 L237.1,211.7 L238.3,210.9 L239.2,212.4 L239.3,209.7 L240.8,209.1 L239.6,206.2 L240.6,203.7 L238.8,203.2 L238.7,201.2 L240.8,201.1 L241.0,199.8 L239.6,199.5 L240.7,199.2 L241.2,197.4 L243.9,197.1 L239.0,194.0 L240.5,192.6 L238.8,188.9 L239.7,187.7 L237.6,187.1 L238.9,184.6 L244.3,182.7 L246.8,178.6 L245.2,176.5 L246.1,176.1 L245.5,175.1 L246.6,173.5 L244.9,172.8 L245.5,171.9 L244.9,171.3 L241.9,169.8 L241.8,168.2 L240.7,168.1 L241.2,166.7 L240.4,164.7 L242.6,163.4 L243.8,161.4 L245.0,162.1 L247.3,160.8 L249.6,161.1 L250.9,159.2 L252.9,160.0 L253.2,157.4 L257.3,159.4 L261.6,159.3 L263.5,158.1 L263.0,154.9 L267.1,152.5 L267.5,151.0 L266.6,149.4 L267.6,148.5 L270.2,149.6 L271.2,151.6 L270.5,152.7 L272.6,154.7 L271.8,155.3 L272.3,156.2 L271.7,156.8 L271.8,159.2 L273.6,160.4 L271.6,163.1 L273.0,163.9 L272.6,165.6 L274.2,166.3 L275.1,168.6 L277.1,168.6 L276.8,170.9 L278.7,171.1 L279.9,172.4 L279.5,175.1 L280.4,177.8 L281.9,177.7 L282.2,179.0 L283.3,179.4 L285.6,178.4 L286.2,179.4 L285.6,181.5 L287.6,181.8 L287.1,183.1 L288.0,184.2 L287.1,185.5 L287.6,186.9 L286.7,187.7 L287.7,188.4 L287.3,188.8 L290.1,189.1 L292.7,187.7 L295.1,188.3 L294.6,187.2 L295.8,187.5 L296.7,185.5 L298.5,186.3 L298.4,188.3 L301.8,186.2 L303.0,187.7 L304.8,187.0 L305.7,188.6 L305.7,190.7 L309.5,192.7 L309.4,196.5 L308.1,196.6 L306.5,199.1 L311.1,198.0 L317.2,199.2 L319.2,197.8 L318.4,196.5 L320.9,196.4 L321.5,196.7 L321.1,198.7 L327.3,196.6 L330.4,198.6 L329.9,199.7 L330.7,199.7 L331.3,202.3 L334.3,204.9 L333.3,205.5 L334.3,206.3 L334.5,208.6 L331.3,212.3 L329.6,212.6 L329.7,214.5 L329.2,214.9 L330.5,216.0 L329.8,216.9 L330.3,219.8 L323.1,221.6 L323.0,224.1 L324.2,223.9 L324.2,225.0 L326.2,226.3 L325.9,227.0 L327.3,228.5 L326.4,229.7 L326.6,231.4 L328.3,233.2 L323.3,234.2 L322.9,235.0 L324.0,236.2Z"/><path class="region" data-zone="loire" data-code="27" d="M355.7,283.4 L354.0,282.7 L353.4,283.4 L354.4,285.0 L352.3,285.2 L352.9,287.2 L348.5,289.5 L347.5,285.8 L345.2,285.8 L343.8,287.5 L342.5,287.2 L341.9,285.5 L340.6,285.5 L337.6,287.8 L330.8,281.9 L330.6,280.4 L332.2,277.2 L331.3,273.8 L332.6,270.9 L331.9,269.4 L332.4,266.4 L330.0,264.0 L330.4,260.2 L328.4,254.1 L328.5,252.1 L324.1,248.4 L323.9,246.9 L326.4,241.2 L322.8,234.7 L328.3,233.2 L326.6,231.4 L326.4,229.7 L327.3,228.5 L325.9,227.0 L326.2,226.3 L324.2,225.0 L324.2,223.9 L323.0,224.1 L323.1,221.6 L330.3,219.8 L329.8,216.9 L330.5,216.0 L329.2,214.9 L329.7,214.5 L329.6,212.6 L331.3,212.3 L334.5,208.6 L334.3,206.3 L333.3,205.5 L334.3,204.9 L331.3,202.3 L330.7,199.7 L329.9,199.7 L330.4,198.6 L326.6,196.6 L326.7,195.5 L329.4,194.1 L331.2,191.4 L329.8,188.0 L331.0,186.5 L331.3,184.7 L333.5,185.3 L336.2,183.6 L337.4,184.4 L340.8,183.3 L343.8,184.0 L344.9,182.2 L346.1,182.8 L346.7,184.7 L347.6,183.8 L349.5,184.0 L351.4,187.1 L353.3,188.2 L352.8,189.2 L354.7,190.8 L353.8,192.2 L354.7,192.8 L352.8,195.1 L355.2,195.1 L356.6,198.1 L358.8,197.1 L358.4,196.0 L359.8,196.4 L359.5,198.5 L361.7,199.4 L362.0,201.3 L363.3,203.1 L363.0,203.9 L365.0,205.5 L365.0,206.4 L363.7,206.4 L364.2,207.6 L365.4,207.8 L365.9,206.5 L366.7,207.7 L366.3,211.1 L370.5,210.1 L372.2,211.1 L372.9,209.8 L374.9,211.0 L377.2,208.9 L378.7,210.0 L378.7,208.1 L379.6,208.1 L379.5,209.5 L380.5,210.7 L382.4,210.9 L383.2,208.6 L393.1,208.1 L392.3,205.8 L394.3,204.3 L402.7,205.5 L403.6,206.6 L402.7,208.1 L405.1,208.3 L406.0,209.5 L404.7,211.6 L405.8,212.2 L406.1,210.9 L407.5,210.7 L408.6,213.7 L409.7,214.0 L410.0,215.6 L411.4,216.8 L411.0,218.0 L408.3,219.5 L408.6,220.6 L410.1,220.4 L410.0,222.2 L410.6,222.4 L410.0,224.1 L410.6,225.0 L413.0,223.5 L413.1,224.5 L414.4,224.4 L413.7,225.5 L414.1,226.0 L417.1,227.3 L419.2,225.1 L419.1,226.9 L421.8,229.0 L422.7,228.6 L421.9,230.2 L422.5,231.4 L425.3,229.2 L426.7,230.4 L429.2,225.0 L433.8,225.2 L435.3,223.0 L436.5,225.2 L440.4,224.2 L440.0,222.3 L441.1,220.5 L440.9,219.1 L439.6,218.5 L440.2,215.8 L442.2,215.9 L442.9,213.4 L445.7,213.8 L445.4,212.7 L446.0,211.4 L448.0,210.5 L447.8,209.2 L449.7,205.9 L450.9,206.5 L449.6,208.4 L450.5,208.5 L451.3,207.1 L452.8,207.0 L454.1,204.1 L457.8,202.7 L458.8,203.8 L459.3,205.8 L458.7,206.3 L461.1,207.4 L461.0,208.3 L468.5,206.2 L470.4,207.2 L472.4,210.7 L477.5,206.8 L479.2,209.2 L485.0,212.2 L486.8,214.4 L487.6,213.7 L488.7,216.2 L494.9,218.3 L496.4,221.9 L496.2,224.0 L495.3,224.0 L494.9,225.3 L495.0,227.0 L495.6,227.8 L498.1,227.2 L500.9,231.5 L499.7,233.3 L494.3,233.7 L495.3,236.1 L492.8,237.5 L492.8,239.2 L491.8,239.3 L490.5,242.6 L496.1,241.0 L497.5,241.6 L497.9,243.3 L496.0,244.0 L495.5,245.8 L493.2,246.5 L494.0,249.1 L489.4,253.7 L490.2,254.1 L489.9,254.6 L483.9,259.5 L483.5,260.5 L484.7,261.4 L480.6,265.2 L475.6,266.5 L473.1,269.4 L474.5,271.7 L474.4,274.1 L473.3,276.5 L474.5,278.0 L474.3,278.8 L467.4,284.3 L460.5,291.5 L462.4,293.4 L459.1,298.4 L459.7,299.9 L455.6,304.9 L453.9,308.3 L453.1,308.1 L452.6,309.8 L450.9,311.1 L444.8,311.5 L444.3,308.6 L441.3,307.7 L441.2,306.5 L439.2,309.7 L438.0,309.7 L436.9,311.3 L434.2,311.7 L433.4,311.1 L433.8,308.1 L432.6,308.6 L431.9,306.6 L431.2,308.9 L431.0,307.1 L429.3,305.3 L429.9,304.6 L426.5,302.8 L427.5,301.8 L427.1,300.8 L422.9,299.5 L422.2,297.0 L420.7,296.4 L420.7,297.4 L419.4,297.1 L416.1,298.7 L413.0,296.8 L411.6,297.8 L411.2,296.6 L407.7,306.7 L407.8,308.4 L404.9,317.8 L402.6,317.7 L402.3,316.4 L402.9,315.7 L402.2,314.7 L403.0,314.4 L400.6,313.1 L401.8,311.6 L400.4,310.0 L398.6,310.4 L397.9,312.6 L396.4,312.3 L395.4,310.8 L394.8,312.1 L393.0,312.5 L391.1,310.7 L388.8,310.8 L388.2,315.9 L387.1,316.7 L387.6,317.6 L385.6,317.7 L383.7,319.5 L382.4,319.4 L382.6,317.6 L381.3,318.2 L380.5,317.2 L379.6,317.5 L379.7,318.4 L377.4,318.3 L376.1,317.0 L371.3,318.9 L370.5,316.8 L367.0,316.1 L367.8,314.1 L367.0,311.8 L369.3,310.8 L369.3,309.6 L371.8,309.2 L371.0,309.0 L371.2,306.6 L370.6,304.8 L371.8,302.1 L371.5,300.9 L369.5,299.9 L369.6,299.1 L365.8,299.3 L365.7,297.9 L364.8,297.8 L364.7,296.7 L363.2,297.5 L360.6,296.3 L360.3,292.5 L359.3,292.1 L359.7,290.9 L356.1,286.0 L355.7,283.4Z"/><path class="region" data-zone="loire" data-code="52" d="M102.8,232.8 L104.4,231.1 L105.3,232.5 L108.8,232.4 L109.8,229.1 L111.5,229.5 L111.0,230.1 L111.9,230.6 L114.4,229.7 L114.1,230.6 L115.2,231.1 L115.7,229.1 L118.1,228.6 L118.1,225.1 L118.9,224.3 L118.5,222.6 L119.3,221.5 L120.5,221.6 L121.1,220.4 L122.1,220.7 L123.8,219.1 L124.3,220.5 L128.7,218.5 L137.0,218.9 L138.6,215.7 L145.0,213.6 L144.8,211.6 L148.2,212.2 L149.3,214.1 L154.2,215.8 L154.4,213.9 L155.6,212.5 L155.4,211.2 L156.8,210.4 L156.6,209.0 L157.4,208.5 L158.5,204.4 L159.8,204.1 L159.8,203.2 L162.9,203.5 L164.4,202.4 L163.7,200.5 L164.3,198.4 L163.2,197.0 L161.6,186.3 L164.2,182.4 L162.9,175.8 L163.7,174.8 L163.3,172.4 L164.1,170.9 L166.3,172.6 L167.7,172.3 L168.4,171.0 L170.2,172.3 L172.8,172.3 L174.0,175.1 L175.5,174.5 L175.3,175.7 L176.1,176.3 L178.0,175.6 L177.4,174.2 L179.0,174.5 L180.1,173.5 L180.6,176.1 L182.9,174.4 L184.7,174.5 L186.5,172.3 L191.2,172.5 L192.8,174.2 L194.2,171.8 L196.2,172.9 L197.5,171.1 L196.6,170.3 L197.5,169.2 L198.9,169.5 L201.4,171.8 L200.2,172.8 L201.1,176.2 L205.0,176.6 L204.8,181.3 L206.9,180.0 L209.4,181.2 L209.9,179.4 L213.5,177.6 L213.0,176.6 L214.0,177.1 L214.2,176.1 L219.4,175.4 L221.6,176.9 L222.6,178.9 L222.3,184.0 L223.3,185.7 L226.3,186.8 L226.7,186.1 L227.4,187.1 L226.9,187.8 L228.5,189.9 L232.4,190.9 L232.8,189.3 L234.5,189.7 L237.0,194.1 L239.1,193.6 L243.9,197.1 L241.2,197.4 L240.7,199.2 L239.6,199.5 L241.0,199.8 L240.8,201.1 L238.7,201.2 L238.8,203.2 L240.6,203.7 L239.6,206.2 L240.8,209.1 L239.3,209.7 L239.2,212.4 L238.3,210.9 L237.1,211.7 L237.6,215.3 L234.0,218.7 L234.5,219.7 L231.3,220.5 L229.3,222.8 L230.7,224.8 L224.4,226.8 L223.7,228.4 L221.0,226.9 L220.2,228.2 L221.7,230.9 L220.7,231.5 L214.7,228.7 L214.7,230.7 L213.0,233.0 L214.3,233.8 L214.0,235.3 L212.3,238.2 L212.2,240.5 L211.0,241.6 L212.2,242.7 L210.4,243.8 L210.6,244.8 L207.6,248.5 L208.1,248.6 L207.1,250.7 L207.5,252.6 L206.4,253.8 L206.8,255.1 L205.6,256.0 L204.9,255.0 L203.6,256.2 L202.2,258.7 L202.8,259.2 L202.4,260.4 L200.3,259.4 L199.6,261.6 L198.4,262.2 L196.4,261.2 L198.1,259.6 L196.5,258.9 L195.3,259.7 L193.9,258.9 L187.4,259.5 L186.9,261.0 L183.7,261.7 L184.7,259.9 L183.2,259.8 L180.6,260.9 L181.1,262.8 L178.8,264.9 L175.7,264.4 L173.7,265.5 L170.8,264.0 L169.9,265.1 L168.4,264.9 L168.0,266.0 L165.9,265.9 L167.5,266.5 L167.6,267.3 L166.8,267.5 L169.7,269.2 L168.6,271.3 L170.5,274.0 L173.9,276.1 L172.6,278.8 L175.4,283.0 L174.3,283.8 L176.1,285.3 L175.1,286.9 L177.0,287.9 L176.4,290.7 L177.2,293.3 L175.3,294.6 L176.8,298.1 L175.5,299.5 L175.2,301.6 L176.0,302.0 L176.5,300.6 L179.5,302.5 L178.4,304.0 L176.7,303.9 L174.3,306.6 L172.6,305.9 L170.4,307.2 L168.1,305.7 L168.1,304.6 L166.6,304.7 L166.1,306.0 L164.6,305.4 L162.7,306.4 L161.3,305.5 L162.9,302.6 L160.9,303.7 L157.6,303.7 L155.7,305.9 L151.2,305.4 L150.8,308.4 L147.3,304.7 L147.3,306.7 L148.1,306.9 L147.1,306.8 L145.3,303.4 L140.1,303.2 L138.3,299.3 L132.7,298.0 L127.5,293.2 L126.0,293.1 L124.6,285.8 L121.3,280.5 L120.3,280.5 L119.1,277.9 L113.4,272.2 L113.2,267.9 L114.9,267.6 L114.8,266.8 L118.1,263.4 L118.9,260.8 L121.0,259.8 L120.1,257.8 L116.2,254.2 L110.3,252.7 L113.8,250.9 L114.3,248.3 L113.5,246.6 L114.1,244.6 L113.4,243.8 L108.6,246.4 L105.6,243.4 L103.7,243.4 L103.8,244.5 L103.2,244.5 L98.5,242.2 L100.0,241.8 L100.5,240.0 L99.9,238.1 L98.4,237.0 L102.3,234.5 L103.7,235.0 L102.7,234.3 L103.3,233.6 L102.8,232.8Z M111.6,264.0 L108.9,263.2 L107.4,261.3 L107.9,260.0 L107.3,259.2 L110.7,259.9 L110.9,261.4 L110.0,261.1 L110.3,262.5 L113.7,264.9 L113.2,267.5 L111.6,264.0Z"/><path class="region" data-zone="ara" data-code="84" d="M404.9,317.8 L407.8,308.4 L407.7,306.7 L411.2,296.6 L411.6,297.8 L413.0,296.8 L416.1,298.7 L419.4,297.1 L420.7,297.4 L420.7,296.4 L422.2,297.0 L422.9,299.5 L427.1,300.8 L427.5,301.8 L426.5,302.8 L429.9,304.6 L429.3,305.3 L431.0,307.1 L431.2,308.9 L431.9,306.6 L432.6,308.6 L433.8,308.1 L433.4,311.1 L434.2,311.7 L436.9,311.3 L438.0,309.7 L439.2,309.7 L441.2,306.5 L441.3,307.7 L444.3,308.6 L444.8,311.5 L450.9,311.1 L452.6,309.8 L453.1,308.1 L453.9,308.3 L455.6,304.9 L458.6,301.5 L460.3,301.9 L463.5,304.3 L460.8,309.5 L461.8,311.5 L455.5,313.9 L455.1,315.1 L456.5,315.9 L455.0,319.3 L459.0,317.7 L462.6,318.2 L466.1,314.4 L469.1,312.8 L469.6,310.9 L469.0,310.4 L467.8,311.5 L466.5,309.7 L467.3,306.7 L469.1,304.1 L470.8,303.8 L472.8,305.6 L477.7,301.4 L486.8,300.8 L490.2,301.5 L489.0,304.2 L493.1,308.1 L490.7,313.1 L491.2,314.5 L490.4,315.7 L490.6,317.1 L495.1,317.8 L494.3,322.5 L496.7,321.3 L501.4,327.9 L501.9,329.9 L500.7,330.4 L499.7,333.3 L496.5,335.2 L495.0,334.7 L494.6,336.3 L492.5,335.6 L491.9,339.1 L492.4,342.5 L494.5,344.8 L496.5,345.0 L497.1,346.7 L500.8,347.3 L500.0,350.6 L500.9,351.6 L501.3,355.6 L503.6,356.0 L503.4,357.4 L505.8,357.6 L506.4,359.7 L509.5,361.1 L508.8,364.0 L506.6,366.2 L508.0,370.5 L505.3,373.5 L504.1,372.6 L500.7,373.8 L500.0,376.2 L497.6,376.5 L497.7,378.4 L495.8,379.0 L492.3,377.2 L491.1,378.7 L488.5,378.6 L486.5,380.6 L484.1,379.8 L482.6,381.4 L481.3,380.8 L480.0,381.8 L480.4,384.1 L475.1,383.5 L475.0,381.6 L473.6,380.3 L471.9,381.3 L470.4,380.2 L469.2,381.3 L469.9,383.6 L468.8,384.0 L468.3,387.3 L470.4,388.3 L473.5,387.9 L473.6,390.8 L475.2,391.4 L475.2,396.8 L472.3,395.7 L470.7,397.1 L465.5,396.5 L462.3,399.6 L460.5,398.5 L457.7,400.5 L459.1,401.9 L457.9,403.3 L454.9,404.2 L452.5,403.5 L451.5,406.7 L452.8,407.7 L451.1,410.0 L449.5,409.5 L448.4,411.0 L444.6,410.4 L444.9,412.8 L442.9,417.1 L445.9,419.5 L444.4,419.6 L443.7,421.6 L436.9,420.0 L437.3,423.1 L438.8,423.7 L437.8,424.8 L435.3,424.6 L436.4,426.6 L436.0,427.9 L437.3,428.1 L438.7,429.8 L439.9,429.0 L441.1,430.2 L444.8,429.9 L443.8,431.6 L445.2,432.0 L445.6,434.0 L447.4,433.9 L446.8,435.2 L447.5,438.4 L446.0,438.7 L445.7,439.9 L447.4,440.3 L447.2,441.3 L445.2,441.1 L445.5,440.1 L443.8,438.7 L442.6,439.0 L442.2,440.0 L443.0,440.8 L441.3,442.4 L437.5,443.3 L436.6,441.3 L434.2,441.2 L434.2,438.4 L432.9,437.6 L430.6,438.2 L428.3,436.7 L427.4,437.9 L424.1,436.8 L424.3,434.6 L423.6,434.1 L424.5,433.2 L424.5,431.7 L421.9,434.1 L420.5,433.7 L419.8,432.2 L414.2,435.2 L411.9,435.3 L409.6,437.4 L408.5,432.7 L406.7,431.5 L401.7,431.3 L401.8,435.0 L397.7,433.1 L397.3,431.6 L395.7,431.5 L395.3,430.5 L393.1,430.9 L392.6,434.3 L390.8,434.1 L390.3,433.3 L390.9,431.3 L390.2,430.5 L385.9,432.4 L385.9,433.9 L384.6,435.6 L381.0,432.4 L379.5,432.7 L378.7,431.2 L375.4,432.5 L374.7,431.7 L375.7,429.7 L374.9,428.0 L376.1,427.1 L374.7,426.2 L374.7,424.6 L372.5,423.0 L372.5,421.1 L370.9,417.0 L369.9,417.1 L368.8,415.7 L368.3,412.1 L367.2,410.5 L367.8,409.3 L366.8,408.4 L367.4,406.6 L365.7,406.2 L365.6,404.4 L364.5,405.1 L362.4,402.9 L361.6,400.6 L358.1,401.2 L358.5,399.6 L356.7,398.1 L355.1,398.4 L354.9,401.5 L354.1,400.9 L350.1,402.5 L347.5,397.3 L347.3,394.4 L345.4,393.3 L345.4,392.4 L341.7,395.4 L340.0,394.6 L340.1,396.0 L339.1,396.4 L339.5,397.8 L337.4,399.4 L335.4,396.8 L333.8,397.9 L333.6,401.2 L332.4,400.9 L332.6,401.7 L331.3,402.9 L331.4,405.5 L330.4,407.6 L330.9,408.4 L330.0,408.4 L328.4,412.7 L326.5,410.5 L325.9,407.6 L326.3,406.3 L325.4,405.5 L326.5,404.7 L325.8,403.5 L324.3,403.8 L322.9,400.1 L323.1,398.6 L320.7,398.6 L319.4,399.8 L319.5,396.5 L317.9,394.5 L316.4,396.6 L315.2,396.8 L314.2,398.9 L312.8,399.1 L311.9,400.5 L311.8,403.6 L309.6,405.8 L309.4,407.7 L310.1,408.0 L307.4,409.9 L307.0,411.9 L306.0,412.8 L301.0,412.9 L299.8,411.1 L298.0,411.2 L295.0,412.2 L295.2,413.9 L294.6,414.3 L292.9,412.9 L292.6,411.4 L293.4,410.7 L292.6,409.3 L291.3,409.2 L292.4,406.5 L292.1,405.0 L293.0,404.4 L293.0,402.3 L289.4,397.7 L289.5,396.6 L290.4,396.2 L289.2,394.7 L288.5,392.1 L291.7,391.3 L291.9,390.3 L290.0,387.2 L292.0,385.4 L293.5,385.7 L294.2,383.6 L293.7,382.4 L296.0,380.7 L294.7,379.7 L294.2,377.1 L296.4,375.6 L299.7,371.0 L301.6,370.1 L301.2,369.6 L302.0,367.1 L301.3,365.4 L306.7,368.1 L308.7,367.3 L308.6,366.1 L307.2,365.2 L308.5,356.9 L306.1,354.2 L307.2,351.4 L308.6,351.5 L308.8,347.2 L307.2,344.9 L305.4,344.3 L303.1,340.0 L304.9,339.6 L305.7,338.8 L305.4,337.6 L307.5,337.8 L308.0,336.3 L310.2,334.8 L309.7,334.3 L310.6,332.2 L312.7,331.2 L311.9,330.1 L312.3,327.4 L310.9,326.6 L310.1,324.2 L310.5,318.8 L309.1,317.9 L308.6,314.7 L307.6,314.3 L306.8,311.8 L304.7,312.0 L304.7,310.4 L303.5,309.2 L302.3,310.3 L299.6,308.4 L301.2,307.1 L300.9,306.2 L299.0,305.9 L298.9,301.8 L302.4,297.6 L308.0,296.7 L308.0,297.5 L309.7,297.6 L313.0,295.5 L312.4,293.0 L311.0,292.1 L311.9,291.7 L312.1,289.8 L311.0,289.4 L312.6,288.3 L313.6,289.0 L313.4,287.2 L316.7,285.4 L316.8,284.1 L318.0,283.6 L319.1,285.5 L320.6,284.4 L322.8,284.9 L322.7,283.9 L325.6,281.0 L330.0,280.4 L332.0,283.8 L334.7,284.9 L337.6,287.8 L340.6,285.5 L341.9,285.5 L342.5,287.2 L343.8,287.5 L345.2,285.8 L347.0,285.7 L348.3,287.1 L347.9,288.8 L349.5,289.5 L350.9,287.5 L352.9,287.2 L352.3,285.1 L354.4,285.0 L353.4,283.4 L354.4,282.7 L355.7,283.4 L356.1,286.0 L359.7,290.9 L359.3,291.9 L360.3,292.5 L360.6,296.3 L363.2,297.5 L364.7,296.7 L364.8,297.8 L365.7,297.9 L365.8,299.3 L369.6,299.1 L369.5,299.9 L371.5,300.9 L371.8,302.1 L370.6,304.8 L371.2,306.6 L371.0,309.0 L371.8,309.2 L369.3,309.6 L369.3,310.8 L367.3,311.4 L367.8,314.1 L367.4,316.4 L370.5,316.8 L371.3,318.9 L376.1,317.0 L377.4,318.3 L379.7,318.4 L379.6,317.5 L380.5,317.2 L381.3,318.2 L382.6,317.6 L382.4,319.4 L383.7,319.5 L385.6,317.7 L387.6,317.6 L387.1,316.7 L388.2,315.9 L388.8,310.8 L391.1,310.7 L393.0,312.5 L394.8,312.1 L395.4,310.8 L396.4,312.3 L397.9,312.6 L398.6,310.4 L400.4,310.0 L401.8,311.6 L400.6,313.1 L403.0,314.4 L402.2,314.7 L402.9,315.7 L402.3,316.4 L402.6,317.7 L404.9,317.8Z"/><path class="region" data-zone="sud" data-code="75" d="M262.1,307.5 L266.7,302.8 L267.6,303.2 L267.7,304.8 L270.4,303.0 L271.1,305.2 L273.5,303.4 L275.4,305.1 L276.8,302.9 L276.3,301.5 L277.9,301.2 L280.2,303.0 L286.0,302.1 L290.7,304.2 L297.5,303.2 L298.8,303.6 L299.0,305.9 L300.9,306.2 L301.2,307.1 L299.7,307.6 L300.5,309.2 L302.3,310.3 L303.2,309.1 L304.7,310.4 L304.7,312.0 L305.6,311.3 L307.2,312.2 L307.6,314.3 L308.6,314.7 L309.1,317.9 L310.5,318.8 L310.1,324.2 L310.9,326.6 L312.3,327.4 L311.9,329.9 L312.6,331.5 L310.6,332.2 L309.7,334.3 L310.2,334.8 L308.0,336.3 L307.5,337.8 L305.4,337.6 L305.7,338.8 L304.9,339.6 L303.1,340.0 L305.4,344.3 L307.2,344.9 L308.8,347.2 L308.6,351.5 L307.2,351.4 L306.1,354.2 L308.5,356.9 L307.2,365.2 L308.9,366.8 L306.7,368.1 L301.3,365.4 L302.0,367.1 L301.2,369.6 L301.6,370.1 L299.7,371.0 L296.4,375.6 L294.2,377.1 L294.7,379.7 L296.0,380.7 L293.7,382.4 L294.2,383.6 L293.5,385.7 L292.0,385.4 L290.0,387.2 L291.9,390.3 L291.6,391.6 L285.4,392.1 L283.6,393.5 L283.2,392.2 L281.8,391.9 L277.1,395.3 L274.9,394.3 L275.0,393.2 L273.2,392.5 L269.8,388.3 L266.1,388.6 L265.8,387.5 L260.2,389.8 L261.5,395.4 L260.2,395.8 L261.5,397.8 L258.1,399.6 L258.0,401.7 L255.1,402.6 L255.1,404.0 L256.1,404.6 L255.8,406.1 L255.1,405.8 L254.5,407.6 L253.8,407.1 L251.7,409.4 L248.3,410.2 L248.6,412.2 L245.9,414.9 L246.3,416.2 L245.0,415.8 L242.3,418.3 L240.9,417.8 L242.4,420.2 L242.0,421.7 L242.7,422.2 L242.8,424.6 L244.1,425.0 L244.3,428.0 L243.6,429.0 L239.3,428.9 L238.9,430.0 L237.9,427.5 L236.9,427.6 L236.8,429.8 L235.6,432.0 L237.7,432.5 L239.1,434.3 L238.1,434.7 L238.1,437.0 L237.0,439.4 L234.7,439.7 L236.3,440.5 L236.4,442.6 L235.2,443.3 L231.8,442.1 L232.2,444.2 L230.3,444.3 L229.4,447.1 L226.0,449.3 L223.1,445.8 L221.3,447.3 L217.1,447.1 L216.3,448.7 L213.6,450.0 L210.7,449.7 L210.1,450.8 L207.0,449.6 L207.0,448.8 L205.1,449.2 L203.6,451.7 L202.8,451.6 L202.3,449.9 L199.1,452.3 L199.9,455.1 L199.1,456.2 L195.5,454.1 L196.9,452.7 L195.1,450.7 L193.5,453.1 L192.5,452.8 L192.3,454.0 L191.1,453.0 L189.5,454.0 L188.6,453.3 L186.4,454.8 L185.9,455.9 L188.2,457.7 L187.1,458.2 L188.0,459.8 L187.8,461.1 L186.2,461.2 L187.0,464.2 L186.4,464.7 L187.5,465.6 L184.9,467.3 L185.4,468.2 L184.5,469.4 L185.3,469.6 L185.1,470.6 L184.2,470.7 L184.1,471.7 L183.4,471.2 L183.4,472.7 L184.8,472.9 L184.9,475.0 L187.9,474.2 L188.6,475.3 L191.4,475.3 L191.4,477.6 L192.7,477.4 L193.8,479.7 L193.3,480.9 L194.7,482.2 L192.5,482.6 L192.2,484.4 L193.1,485.4 L192.3,485.9 L193.4,485.9 L195.3,483.9 L195.8,485.3 L195.0,488.3 L196.5,490.0 L195.6,491.2 L194.0,490.9 L193.0,492.7 L194.2,494.6 L192.7,497.8 L191.6,497.4 L191.7,500.2 L190.0,500.8 L189.5,499.9 L188.1,503.1 L185.9,503.8 L185.6,506.9 L186.3,507.7 L182.9,508.4 L182.7,509.9 L181.5,510.3 L181.5,514.8 L179.4,515.8 L180.0,519.7 L176.6,522.7 L173.9,522.9 L171.4,520.9 L170.0,523.0 L168.3,523.6 L168.4,522.2 L166.8,522.0 L166.8,520.4 L163.6,517.0 L161.2,516.2 L161.4,513.2 L160.4,511.7 L157.6,512.6 L153.5,511.6 L151.8,512.2 L144.4,507.5 L143.1,508.4 L142.2,506.7 L139.3,505.3 L137.8,505.9 L135.8,504.3 L137.7,501.3 L134.3,502.6 L133.7,506.6 L129.8,505.3 L128.5,502.8 L131.3,500.4 L132.0,497.3 L132.9,496.7 L132.9,492.4 L126.4,489.8 L125.1,490.2 L124.4,492.5 L123.0,492.3 L122.2,490.2 L122.5,488.9 L120.6,488.2 L117.8,489.3 L117.5,487.1 L115.4,485.7 L115.4,484.0 L120.8,483.8 L123.8,481.3 L131.5,468.7 L139.6,436.7 L142.8,419.2 L142.9,413.9 L145.2,410.6 L146.1,407.1 L148.4,407.1 L148.0,408.2 L154.4,408.1 L153.8,406.2 L151.7,405.0 L153.1,405.3 L152.5,404.4 L147.7,399.9 L147.3,401.7 L144.6,404.8 L143.8,409.1 L143.1,408.5 L149.6,367.8 L150.4,357.0 L153.5,351.8 L158.0,350.7 L156.6,348.3 L155.7,348.6 L148.9,343.3 L148.0,343.8 L149.4,344.8 L147.9,344.5 L147.7,338.1 L152.4,337.0 L151.1,333.7 L153.5,333.6 L155.4,330.3 L155.3,328.9 L154.4,328.4 L155.9,328.1 L153.6,324.8 L156.1,325.4 L156.6,324.4 L154.8,319.2 L153.0,318.4 L153.8,318.1 L153.7,317.2 L151.8,316.4 L152.4,315.3 L150.4,315.8 L149.0,314.7 L150.8,313.2 L151.0,311.7 L154.9,308.9 L154.5,305.2 L156.6,305.6 L157.6,303.7 L160.9,303.7 L162.9,302.6 L161.3,305.5 L162.7,306.4 L164.6,305.4 L166.1,306.0 L166.6,304.7 L168.1,304.6 L168.1,305.7 L171.5,307.3 L172.6,305.9 L174.6,306.5 L176.7,303.9 L178.4,304.0 L179.5,302.5 L176.5,300.6 L176.0,302.0 L175.2,301.6 L175.5,299.5 L176.8,298.1 L175.4,293.9 L176.9,293.7 L177.2,292.4 L176.4,290.7 L177.0,287.9 L175.1,286.9 L176.1,285.3 L174.3,283.8 L175.4,283.0 L172.6,278.8 L173.9,276.1 L170.5,274.0 L168.6,271.3 L169.7,269.2 L166.8,267.5 L167.6,267.3 L167.5,266.5 L165.9,265.9 L168.0,266.0 L168.4,264.9 L169.9,265.1 L170.8,264.0 L173.7,265.5 L175.7,264.4 L178.8,264.9 L181.1,262.8 L180.6,260.9 L183.2,259.8 L184.7,259.9 L183.7,261.7 L186.9,261.0 L187.4,259.5 L193.9,258.9 L195.3,259.7 L196.5,258.9 L198.1,259.6 L196.4,261.2 L198.4,262.2 L199.6,261.6 L200.3,259.4 L202.4,260.4 L202.8,259.2 L202.2,258.7 L203.6,256.2 L204.9,255.0 L205.6,256.0 L206.1,255.5 L207.3,256.9 L207.4,258.6 L209.1,258.1 L210.7,259.8 L211.6,259.0 L212.3,260.5 L211.2,262.3 L212.5,262.8 L214.1,261.8 L215.0,262.0 L215.0,263.5 L216.6,263.0 L216.2,265.0 L216.8,266.4 L215.9,266.9 L217.1,270.5 L218.9,269.4 L221.9,270.7 L224.8,269.0 L228.6,269.3 L227.5,266.2 L229.6,266.2 L230.2,267.5 L232.6,268.3 L233.0,272.7 L235.0,275.4 L235.7,275.1 L235.5,275.9 L236.6,276.0 L237.4,279.9 L241.5,283.8 L242.0,285.9 L240.9,286.6 L241.5,288.4 L240.5,289.8 L241.4,291.8 L243.3,293.4 L245.5,293.6 L245.8,295.6 L248.7,295.6 L250.9,297.5 L250.4,298.1 L251.4,299.8 L250.4,299.7 L251.1,301.1 L253.6,302.1 L252.3,305.6 L253.5,304.7 L253.8,306.2 L257.4,306.0 L258.2,305.1 L257.9,304.5 L259.7,304.2 L262.1,307.5Z M139.0,311.2 L140.1,310.2 L142.0,310.2 L140.8,311.0 L141.2,311.6 L144.4,311.8 L148.5,314.6 L145.9,315.7 L139.8,311.8 L136.8,311.6 L135.7,309.0 L138.4,308.2 L139.4,309.8 L137.7,310.4 L139.0,311.2Z M147.6,334.1 L146.9,331.8 L142.2,327.3 L141.4,321.3 L143.1,322.0 L145.3,324.9 L148.6,325.7 L148.6,329.2 L150.4,331.7 L149.4,333.9 L149.9,335.2 L148.5,336.7 L147.6,334.1Z"/><path class="region" data-zone="sud" data-code="76" d="M274.2,539.6 L271.5,538.5 L272.0,536.9 L266.0,536.2 L263.6,534.3 L260.4,534.5 L260.3,536.9 L258.5,537.5 L256.4,532.3 L254.7,531.3 L255.0,530.3 L250.3,530.5 L249.2,529.6 L246.4,530.7 L242.5,525.7 L238.4,525.7 L237.2,524.5 L235.6,525.5 L232.7,523.2 L226.0,520.8 L223.7,522.1 L224.1,524.2 L223.0,525.5 L223.9,526.0 L222.8,527.3 L224.4,529.2 L224.2,531.2 L220.7,530.2 L212.7,530.9 L210.0,528.7 L206.9,531.8 L205.6,530.5 L205.4,529.1 L201.7,527.7 L192.9,530.5 L190.9,529.9 L190.6,528.4 L188.9,528.2 L186.6,523.3 L185.3,524.0 L180.2,520.4 L179.4,515.8 L181.5,514.8 L181.2,511.1 L182.7,509.9 L182.7,508.5 L186.3,507.7 L185.6,506.9 L185.9,503.8 L188.1,503.1 L189.5,499.9 L190.0,500.8 L191.7,500.2 L191.6,497.4 L192.7,497.8 L194.2,494.6 L193.0,492.7 L194.0,490.9 L195.6,491.2 L196.5,490.0 L195.0,488.3 L195.8,485.3 L195.3,483.9 L193.4,485.9 L192.3,485.9 L193.1,485.4 L192.2,484.4 L192.5,482.6 L194.7,482.2 L193.3,480.9 L193.8,479.7 L192.7,477.4 L191.4,477.6 L191.4,475.3 L188.6,475.3 L187.9,474.2 L184.9,475.0 L184.8,472.9 L183.4,472.7 L183.4,471.2 L184.1,471.7 L184.2,470.7 L185.1,470.6 L185.3,469.6 L184.5,469.4 L185.4,468.2 L184.9,467.3 L187.5,465.6 L186.4,464.7 L187.0,464.2 L186.2,461.2 L187.8,461.1 L188.0,459.8 L187.1,458.2 L188.2,457.7 L185.9,455.6 L188.6,453.3 L189.5,454.0 L191.1,453.0 L192.3,454.0 L192.5,452.8 L193.5,453.1 L195.1,450.7 L196.9,452.7 L195.5,454.1 L199.1,456.2 L199.9,455.1 L199.1,452.3 L202.3,449.9 L202.8,451.6 L203.6,451.7 L205.1,449.2 L207.0,448.8 L207.0,449.6 L210.1,450.8 L210.7,449.7 L213.6,450.0 L216.3,448.7 L217.1,447.1 L221.3,447.3 L223.1,445.8 L226.7,449.2 L227.1,448.0 L229.4,447.1 L230.3,444.3 L232.2,444.2 L231.8,442.1 L235.2,443.3 L236.4,442.6 L236.3,440.5 L234.7,439.7 L237.0,439.4 L238.1,437.0 L238.1,434.7 L239.1,434.3 L237.7,432.5 L235.6,432.0 L236.8,429.8 L236.9,427.6 L237.9,427.5 L238.9,430.0 L239.3,428.9 L243.6,429.0 L244.3,428.0 L244.1,425.0 L242.8,424.6 L242.7,422.2 L242.0,421.7 L242.4,420.2 L240.9,417.8 L242.3,418.3 L245.0,415.8 L246.3,416.2 L245.9,414.9 L248.6,412.2 L248.3,410.2 L251.7,409.4 L253.8,407.1 L254.5,407.6 L255.1,405.8 L255.8,406.1 L256.1,404.6 L255.1,404.0 L255.1,402.6 L258.0,401.7 L258.1,399.6 L261.5,397.8 L260.2,395.8 L261.5,395.4 L260.2,389.8 L265.8,387.5 L266.1,388.6 L269.8,388.3 L273.2,392.5 L275.0,393.2 L274.9,394.3 L277.1,395.3 L281.8,391.9 L283.2,392.2 L283.6,393.5 L285.4,392.1 L288.5,392.1 L289.2,394.7 L290.4,396.2 L289.5,396.6 L289.4,397.7 L293.0,402.3 L293.0,404.4 L292.1,405.0 L292.4,406.5 L291.3,409.2 L292.6,409.3 L293.4,410.7 L292.6,411.4 L292.9,412.9 L294.6,414.3 L295.2,413.9 L295.0,412.2 L298.0,411.2 L299.8,411.1 L301.0,412.9 L306.7,412.3 L307.4,409.9 L310.1,408.0 L309.4,407.7 L309.6,405.8 L311.8,403.6 L311.9,400.5 L317.9,394.5 L319.5,396.5 L319.4,399.8 L320.7,398.6 L323.1,398.6 L322.9,400.1 L324.3,403.8 L325.8,403.5 L326.5,404.7 L325.4,405.5 L326.3,406.3 L325.9,407.6 L326.5,410.5 L328.4,412.7 L330.0,408.4 L330.9,408.4 L330.4,407.6 L331.4,405.5 L331.3,402.9 L332.6,401.7 L332.4,400.9 L333.6,401.2 L333.8,397.9 L335.4,396.8 L337.4,399.4 L339.5,397.8 L339.1,396.4 L340.1,396.0 L340.0,394.6 L341.7,395.4 L345.4,392.4 L345.4,393.3 L347.3,394.4 L347.5,397.3 L350.1,402.5 L354.1,400.9 L354.9,401.5 L355.1,398.4 L356.7,398.1 L358.5,399.6 L358.1,401.2 L361.6,400.6 L362.4,402.9 L364.5,405.1 L365.6,404.4 L365.7,406.2 L367.4,406.6 L366.8,408.4 L367.8,409.3 L367.2,410.5 L368.3,412.1 L368.8,415.7 L369.9,417.1 L370.9,417.0 L372.5,421.1 L372.5,423.0 L374.7,424.6 L374.7,426.2 L376.1,427.1 L374.9,428.0 L375.7,429.7 L374.7,431.7 L375.2,432.4 L378.7,431.2 L379.5,432.7 L381.0,432.4 L384.6,435.6 L385.9,433.9 L385.8,432.5 L387.5,431.0 L390.3,430.5 L390.6,433.9 L392.6,434.3 L393.1,430.9 L395.4,430.6 L395.7,431.5 L397.3,431.6 L397.7,433.1 L401.3,434.2 L403.1,437.2 L402.9,438.4 L404.4,438.3 L404.4,439.7 L405.1,440.0 L404.5,444.9 L405.2,446.5 L406.8,446.1 L410.7,450.8 L410.6,452.2 L409.3,452.2 L409.4,453.6 L407.9,455.2 L402.0,459.7 L402.0,460.7 L403.1,461.0 L402.0,461.9 L402.5,464.8 L400.8,468.5 L401.5,470.9 L397.6,469.6 L395.3,470.2 L392.7,474.8 L394.7,475.5 L394.2,477.0 L388.7,480.4 L387.8,479.1 L388.3,480.8 L384.5,482.7 L384.1,485.1 L379.5,483.3 L379.0,482.2 L380.0,480.7 L379.0,479.7 L373.6,479.8 L368.7,482.4 L364.8,486.5 L361.6,488.1 L361.6,489.0 L358.0,490.1 L352.0,497.0 L348.5,495.9 L345.8,496.6 L341.2,499.6 L336.8,504.0 L333.4,509.5 L331.5,514.6 L331.0,518.0 L332.0,518.9 L331.0,531.5 L330.3,532.0 L331.0,532.1 L331.6,541.8 L335.6,543.6 L334.8,544.2 L335.0,545.3 L336.3,545.9 L337.1,548.5 L333.1,549.1 L331.1,546.1 L327.8,546.7 L326.8,545.6 L325.5,547.2 L322.0,547.0 L319.1,549.9 L317.1,549.2 L314.4,550.4 L314.3,551.4 L313.4,551.5 L314.5,554.2 L309.7,553.2 L308.0,554.7 L305.6,554.3 L303.4,551.0 L295.5,548.2 L293.0,549.5 L290.7,549.2 L287.6,552.8 L284.5,553.7 L282.2,551.5 L281.0,547.1 L278.9,547.4 L275.9,545.0 L271.7,544.5 L271.9,541.0 L274.2,539.6Z"/><path class="region" data-zone="sud" data-code="93" d="M501.6,407.8 L502.6,409.9 L501.8,410.0 L500.5,413.8 L498.9,414.1 L497.9,415.7 L499.1,418.6 L502.3,421.6 L499.9,422.3 L499.9,425.9 L501.4,426.5 L503.1,429.8 L504.9,430.7 L505.6,433.4 L513.5,435.1 L517.9,438.6 L520.6,438.2 L521.3,439.9 L522.8,439.3 L524.3,440.0 L524.4,438.9 L530.3,437.0 L532.7,437.2 L533.4,435.4 L535.2,435.4 L534.9,438.2 L537.3,441.0 L536.7,443.6 L535.0,444.5 L535.5,446.3 L534.8,447.9 L531.2,449.7 L531.1,452.6 L528.3,454.5 L530.1,459.6 L528.4,461.0 L528.3,462.1 L527.0,461.5 L524.8,464.1 L522.6,464.1 L521.5,465.3 L522.4,466.2 L521.6,467.0 L520.8,465.1 L520.4,466.5 L519.5,465.7 L517.6,466.4 L516.4,469.0 L514.0,468.7 L512.6,472.9 L513.5,474.0 L513.4,475.5 L511.5,474.0 L509.0,476.3 L508.1,475.4 L505.7,476.0 L504.7,477.7 L505.6,478.6 L504.5,479.7 L504.2,481.7 L502.9,483.2 L501.4,482.9 L501.3,484.3 L496.4,484.1 L495.1,487.0 L495.3,488.5 L489.6,493.1 L490.0,494.0 L493.2,493.7 L493.7,492.8 L494.7,493.5 L493.3,495.1 L493.3,496.9 L494.1,497.6 L492.5,498.5 L492.7,499.7 L491.4,500.3 L490.6,498.9 L488.8,498.5 L486.0,501.0 L481.0,501.7 L480.0,503.2 L480.3,505.3 L476.2,503.3 L472.8,503.7 L470.9,506.0 L470.8,508.7 L471.8,508.9 L470.7,509.4 L468.1,508.9 L469.9,508.0 L469.0,505.9 L464.9,506.4 L464.1,504.8 L460.5,505.1 L460.9,504.0 L460.3,503.7 L458.5,505.0 L459.8,505.2 L459.3,506.4 L461.1,506.1 L461.6,507.1 L459.0,506.6 L457.7,508.5 L456.4,508.5 L454.6,507.3 L455.2,504.5 L453.4,504.5 L454.0,503.6 L453.5,503.1 L450.1,502.9 L449.7,500.7 L446.8,500.3 L446.0,502.0 L442.8,498.8 L441.2,499.9 L434.1,499.2 L435.6,496.5 L434.2,494.9 L435.4,494.1 L432.6,490.1 L428.9,492.2 L420.9,492.6 L419.5,491.6 L419.7,490.8 L418.0,488.5 L418.6,488.2 L417.4,488.0 L417.2,486.6 L414.9,486.2 L413.8,487.9 L413.4,487.3 L414.2,486.3 L413.3,487.0 L412.2,484.9 L411.8,485.1 L413.0,487.5 L410.7,486.7 L412.4,488.2 L411.3,488.6 L412.8,488.8 L410.9,489.7 L413.4,490.9 L414.9,489.4 L411.3,492.6 L408.5,491.5 L400.1,490.9 L398.7,489.6 L400.4,488.1 L400.1,487.1 L397.5,485.3 L384.1,485.1 L384.5,482.7 L388.3,480.8 L387.8,479.1 L388.7,480.4 L394.2,477.0 L394.7,475.5 L392.7,474.8 L395.3,470.2 L397.6,469.6 L401.5,470.9 L400.8,468.5 L402.5,464.8 L402.0,461.9 L403.1,461.0 L402.0,460.7 L402.0,459.7 L407.9,455.2 L409.4,453.6 L409.3,452.2 L410.7,452.0 L410.7,450.8 L409.6,450.2 L408.1,447.4 L406.8,446.1 L405.2,446.6 L404.5,445.1 L405.1,440.0 L404.4,439.7 L404.4,438.3 L402.9,438.4 L403.1,437.2 L401.8,435.5 L401.7,431.3 L407.4,431.8 L408.5,432.7 L409.6,437.4 L411.9,435.3 L414.2,435.2 L419.8,432.2 L420.5,433.7 L421.9,434.1 L424.5,431.7 L424.5,433.2 L423.6,434.1 L424.3,434.6 L424.1,436.8 L427.4,437.9 L428.3,436.7 L430.6,438.2 L432.9,437.6 L434.2,438.4 L434.2,441.2 L436.6,441.3 L437.5,443.3 L441.3,442.4 L443.0,440.8 L442.2,440.0 L442.6,439.0 L443.8,438.7 L445.5,440.1 L445.2,441.1 L447.2,441.3 L447.4,440.3 L445.7,439.9 L446.0,438.7 L447.5,438.4 L446.8,435.2 L447.4,433.9 L445.6,434.0 L445.2,432.0 L443.8,431.6 L444.8,429.9 L441.1,430.2 L439.9,429.0 L438.7,429.8 L437.3,428.1 L436.0,427.9 L436.4,426.6 L435.3,424.6 L437.8,424.8 L438.8,423.7 L437.3,423.1 L436.9,420.0 L443.7,421.6 L444.4,419.6 L445.9,419.5 L442.9,417.1 L444.9,412.8 L444.6,410.4 L448.4,411.0 L449.5,409.5 L451.1,410.0 L452.8,407.7 L451.5,406.7 L452.5,403.5 L454.9,404.2 L457.9,403.3 L459.1,401.9 L457.7,400.5 L460.5,398.5 L462.3,399.6 L465.5,396.5 L470.7,397.1 L472.3,395.7 L475.2,396.8 L475.2,391.4 L473.6,390.8 L473.5,387.9 L470.4,388.3 L468.3,387.3 L468.8,384.0 L469.9,383.6 L469.1,381.4 L470.4,380.2 L471.9,381.3 L473.6,380.3 L475.0,381.6 L475.1,383.5 L478.9,384.5 L480.4,384.1 L480.0,381.8 L481.3,380.8 L482.1,381.4 L484.1,379.8 L486.2,380.2 L488.0,382.8 L488.6,386.0 L491.7,386.2 L492.1,387.2 L491.5,387.7 L492.7,389.3 L491.9,390.9 L492.6,391.1 L492.3,392.8 L497.3,396.0 L499.5,396.2 L500.2,395.0 L504.4,397.3 L503.4,399.4 L507.2,405.9 L503.2,405.5 L501.6,407.8Z M412.3,428.9 L413.4,426.2 L415.6,424.7 L417.8,425.6 L417.7,427.0 L420.2,427.8 L418.1,429.0 L416.6,433.2 L412.4,432.6 L411.9,431.4 L412.5,430.6 L411.3,430.2 L412.3,428.9Z"/><path class="region" data-zone="sud" data-code="94" d="M622.5,572.1 L623.4,581.0 L622.0,583.2 L622.8,583.7 L622.8,585.2 L621.2,585.8 L621.5,587.1 L619.3,586.6 L618.2,588.6 L619.0,589.3 L619.9,588.0 L622.3,588.6 L621.3,590.7 L618.2,592.8 L618.8,593.5 L618.1,594.6 L619.1,595.5 L618.2,596.4 L618.7,596.8 L616.4,598.3 L616.1,600.1 L616.5,600.6 L618.2,599.0 L618.2,599.9 L616.6,602.9 L614.7,603.1 L612.4,601.3 L610.7,601.9 L611.7,598.7 L609.3,598.7 L609.6,596.7 L607.9,598.1 L605.7,596.5 L605.2,597.2 L604.0,596.2 L602.2,596.5 L600.1,594.5 L598.4,594.9 L598.8,593.2 L595.5,592.2 L596.4,591.8 L595.0,590.7 L595.7,588.1 L599.2,587.0 L600.9,584.1 L596.2,583.1 L594.9,584.1 L594.3,581.5 L591.3,582.9 L591.1,581.9 L589.0,582.0 L592.1,579.7 L591.1,578.1 L593.9,577.2 L594.4,576.0 L592.8,575.2 L594.5,574.8 L593.9,572.8 L594.9,571.9 L592.5,569.8 L591.1,571.5 L586.0,572.6 L586.6,570.1 L585.0,568.4 L588.2,567.5 L587.9,565.3 L591.7,562.6 L590.3,561.9 L589.3,559.0 L587.4,559.8 L585.2,557.9 L583.7,558.3 L583.9,556.9 L582.7,557.4 L584.2,555.9 L582.7,555.8 L583.7,555.3 L583.5,553.6 L582.8,553.8 L583.0,552.3 L581.4,551.9 L588.2,549.4 L586.6,547.5 L583.9,547.2 L585.0,545.7 L584.4,544.7 L581.8,546.0 L581.0,543.8 L583.9,542.5 L583.7,540.6 L586.0,540.4 L586.2,539.3 L585.5,538.9 L586.8,537.2 L585.4,536.9 L585.9,534.5 L588.3,533.6 L587.6,530.5 L588.4,530.0 L588.5,531.3 L589.7,530.6 L591.0,531.5 L592.0,530.5 L591.7,528.6 L594.6,528.0 L595.1,526.7 L597.3,525.5 L601.1,525.5 L603.0,524.2 L602.8,522.0 L605.6,519.6 L610.0,519.0 L611.7,519.9 L613.3,522.5 L614.4,521.5 L615.5,518.1 L615.1,514.7 L613.5,512.6 L614.7,510.6 L613.7,508.7 L615.4,506.9 L614.1,502.8 L617.5,501.3 L619.6,502.7 L619.2,504.3 L621.9,513.7 L620.4,522.0 L625.0,529.3 L626.0,536.6 L625.8,540.1 L627.5,545.5 L627.9,550.8 L628.0,556.5 L622.7,565.8 L622.5,572.1Z"/></g><g id="etiquettesZones"></g>
+        </svg>
+      </div>
+      <div class="carte-cote">
+        <h3>Quotas par zone</h3>
+        <p class="aide-carte">Molette ou boutons pour zoomer, glisser pour déplacer.</p>
+        <ul class="legende-zones" id="legendeZones"></ul>
+      </div>
+    </div>
+
+    <!-- gouvernance -->
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Qui décide, qui pilote, qui accompagne</h3>
+    <div class="trio">
+      <div class="acteur">
+        <h4>ACS</h4><p class="role">Pilotage</p>
+        <ul><li>Porte le projet et signera l'acquisition</li><li>Organise et coordonne la collecte</li><li>Rend compte aux contributeurs</li></ul>
+      </div>
+      <div class="acteur centre">
+        <h4>Les disciples de Cheikh Ibrahim Niasse</h4><p class="role">Acteurs et décisionnaires</p>
+        <ul><li>Financent intégralement le projet</li><li>Les Muqadaams servent de guides de proximité et de relais sur le terrain</li></ul>
+      </div>
+      <div class="acteur">
+        <h4>Fédération Ansaruddîne France</h4><p class="role">Accompagnement</p>
+        <ul><li>Structure nationale de référence</li><li>Orientation spirituelle</li><li>Mise en réseau des sections</li></ul>
+      </div>
+    </div>
+
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Documents</h3>
+    <ul class="autres">
+      <li><b>Statuts de l'association</b><span>Sur demande à l'association</span></li>
+      <li><b>Rapport financier annuel</b><span>Présenté en assemblée générale, disponible sur demande</span></li>
+      <li><b>Composition du bureau</b><span>Sokhna Aminata Ndiaye, présidente — bureau élu le 8 février 2025</span></li>
+      <li><b>Dossier de présentation du projet</b><span>Sur demande à l'association</span></li>
+    </ul>
+    <p class="maj">Ces documents ne sont pas encore publiés en ligne. Écrivez-nous et nous vous les transmettons.</p>
+
+    <!-- FAQ -->
+    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Questions fréquentes</h3>
+    <div class="faq">
+      <details>
+        <summary>Est-ce que je paie quelque chose sur ce site ?</summary>
+        <div class="reponse">Non. Le site n'encaisse aucun paiement, ne demande aucune coordonnée bancaire et ne met en place aucun prélèvement. Le formulaire enregistre une intention de contribution. L'association vous contacte ensuite pour convenir des modalités de versement.</div>
+      </details>
+      <details>
+        <summary>Est-ce la même chose qu'adhérer à l'association ?</summary>
+        <div class="reponse">Ce formulaire enregistre un <b>engagement de contribution au projet de Zawiya</b>. Si vous souhaitez par ailleurs devenir membre de l'Association Connaissance et Savoir, écrivez-nous : ce sont deux démarches distinctes, avec des conditions différentes.</div>
+      </details>
+      <details>
+        <summary>Puis-je modifier ou arrêter mon engagement ?</summary>
+        <div class="reponse">Oui, à tout moment et sans justification. Écrivez à l'association avec votre référence. Vous pouvez aussi interrompre seulement les rappels mensuels, grâce au lien figurant en bas de chaque e-mail : votre engagement reste alors inchangé.</div>
+      </details>
+      <details>
+        <summary>Pourquoi 1 000 engagements ne suffisent-ils pas à réunir 2 millions ?</summary>
+        <div class="reponse">Parce que 2 000 000 € sur 24 mois représentent environ 83 333 € par mois, soit 83 € en moyenne par engagement. Les forfaits Bronze, Argent et Or se situent en dessous de cette moyenne. C'est pourquoi une partie des places — la bordure du puzzle — est réservée à des engagements libres d'un montant plus élevé. Le tableau de l'équation détaille le calcul.</div>
+      </details>
+      <details>
+        <summary>Que deviennent mes données ?</summary>
+        <div class="reponse">Elles sont enregistrées dans une base privée hébergée en France, accessible au seul bureau de l'association. Elles ne sont jamais publiées, ni transmises à un tiers, ni envoyées au navigateur des autres visiteurs. Voir la <a href="confidentialite.html">page de confidentialité</a>.</div>
+      </details>
+      <details>
+        <summary>Le bien a-t-il déjà été trouvé ?</summary>
+        <div class="reponse">Non. La recherche est en cours sur les départements et selon les critères détaillés plus haut. Aucune acquisition n'est signée à ce jour.</div>
+      </details>
+      <details>
+        <summary>Comment saurai-je où va mon argent ?</summary>
+        <div class="reponse">Les chiffres de cette page sont mis à jour à partir des engagements enregistrés. Les versements réellement encaissés sont publiés séparément, avec leur date d'arrêté, une fois consolidés par le trésorier. Le rapport financier est présenté chaque année en assemblée générale.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     E. HISTORIQUE
+     ================================================================ -->
+<section class="sect sect-craie" id="historique">
+  <div class="wrap">
+    <div class="sect-lead">
+      <h2>Vingt-trois ans de chemin</h2>
+      <p>Le projet n'est pas né hier. Il s'est construit par étapes, porté par plusieurs générations de responsables.</p>
+    </div>
+    <ol class="frise">
+      <li class="jalon"><time>2003</time><p><strong>Naissance du projet KBF</strong> à Cergy.</p></li>
+      <li><time>2008</time><p>Ouverture d'une bibliothèque à Bagnolet.</p></li>
+      <li><time>2009</time><p>Création de l'association KBF. Cheikh Mouhamed Sékou Sidibé, président.</p></li>
+      <li><time>2010</time><p>Enseignements du GRAD : <em>Ruhul Adab</em> et commentaire de <em>Nurul Basar</em>.</p></li>
+      <li><time>2012</time><p>Premier Gamou de Paris.</p></li>
+      <li><time>2014</time><p>Édition et distribution des ouvrages de Baye en français.</p></li>
+      <li class="jalon"><time>2016</time><p><strong>KBF devient ACS.</strong> Ibrahima Jacquel, président.</p></li>
+      <li><time>2017</time><p>Mise en ligne du site de l'ACS et du HGFT.</p></li>
+      <li><time>8 février 2025</time><p>Nouveau bureau. Sokhna Aminata Ndiaye, présidente.</p></li>
+      <li class="jalon"><time>9 mai 2026</time><p><strong>Dîner de levée de fonds</strong> à Champigny-sur-Marne.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sect-nuit citation">
+  <div class="narrow">
+    <blockquote>« Ceux qui se mettent à mon service verront leurs vœux comblés et atteindront félicité et richesse. »</blockquote>
+    <p class="ar" lang="ar">إِنَّ الَّذِينَ خَدَمُونِي نَالُوا مُرَادَهُمْ سَعَادَةٌ وَمَالٌ</p>
+    <cite>Cheikh Ibrahim Niasse, <i>Rihla Konakiriya</i></cite>
+  </div>
+</section>
+
+<!-- ================================================================
+     F. CONTACT
+     ================================================================ -->
+<section class="sect" id="contact">
+  <div class="wrap">
+    <div class="sect-lead">
+      <h2>Nous contacter et verser</h2>
+      <p>Indiquez la référence reçue lors de votre engagement sur chacun de vos virements : c'est ce qui permet de rattacher votre versement à votre engagement.</p>
+    </div>
+    <div class="duo">
+      <div class="rib">
+        <h3>Coordonnées bancaires de l'association</h3>
+        <p class="titulaire">ASS CONNAISSANCE ET SAVOIR<br>35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes</p>
+        <dl>
+          <dt>IBAN</dt><dd class="iban">FR76 1010 7003 1900 9210 2803 703</dd>
+          <dt>BIC</dt><dd>BREDFRPPXXX</dd>
+          <dt>Banque</dt><dd>BRED Banque Populaire — agence de Torcy</dd>
+        </dl>
+        <div class="actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="copierIban">Copier l'IBAN</button>
+        </div>
+        <p class="statut" id="statutRib" role="status"></p>
+      </div>
+      <div>
+        <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.2rem">Joindre l'association</h3>
+        <ul class="autres">
+          <li><b>Téléphone</b><span><a href="tel:+33676551098">06 76 55 10 98</a> · <a href="tel:+33645536162">06 45 53 61 62</a></span></li>
+          <li><b>Site de l'association</b><span><a href="https://www.connaissance-et-savoir.org" target="_blank" rel="noopener">connaissance-et-savoir.org</a></span></li>
+          <li><b>Autres moyens de verser</b><span>HelloAsso, Koppar Express, Wave et Orange Money (+221 71 012 49 30)</span></li>
+          <li><b>Vos données</b><span><a href="confidentialite.html">Page de confidentialité</a></span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="pied">
+  <div class="wrap">
+    <div class="pied-grid">
+      <div class="logos">
+        <img loading="lazy" src="img/logoacs.jpg" alt="Logo de l'Association Connaissance et Savoir">
+        <img loading="lazy" src="img/logofaf.jpg" alt="Logo de la Fédération Ansaruddîne France">
+      </div>
+      <div>
+        <p style="margin:0 0 .3rem"><b style="color:var(--encre);font-weight:500">Association Connaissance et Savoir</b> — association loi 1901</p>
+        <p style="margin:0">35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes · <a href="confidentialite.html">Confidentialité</a></p>
+      </div>
+      <a class="btn" href="#adherer">Adhérer au projet</a>
+    </div>
+    <div class="pied-bas">
+      <span>En partenariat avec la Fédération Ansaruddîne France</span>
+      <span>Perspectives d'architecte non contractuelles</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIGURATION DE RÉFÉRENCE
+   Source unique : le puzzle, le tableau de l'équation et le simulateur
+   lisent tous ces valeurs. Changer un chiffre ici les met tous à jour.
+   ===================================================================== */
+const CONFIG = {
+  objectif: 2000000,
+  horizon: 24,
+  objectifPieces: 1000,
+  forfaits: [
+    { cle:'gold',   nom:'Gold',   prix:100,  trait:'var(--tr-or)',     voile:'var(--voile-or)' },
+    { cle:'argent', nom:'Argent', prix:50,   trait:'var(--tr-argent)', voile:'var(--voile-argent)' },
+    { cle:'bronze', nom:'Bronze', prix:25,   trait:'var(--tr-bronze)', voile:'var(--voile-bronze)' },
+    { cle:'libre',  nom:'Libre',  prix:null, trait:'var(--tr-libre)',  voile:'var(--voile-libre)' },
+  ],
+  puzzle: { colonnes:40, rangs:25, peripherie:2, coeur:{ gold:300, argent:300, bronze:156 } },
+  zones: [
+    { cle:'Île-de-France',        quota:300 },
+    { cle:'Sud',                  quota:200 },
+    { cle:'Auvergne-Rhône-Alpes', quota:150 },
+    { cle:'Grand-Est',            quota:150 },
+    { cle:'Loire',                quota:100 },
+    { cle:'Nord',                 quota:100 },
+  ],
+  zonesCarte: { 'Nord':'nord', 'Île-de-France':'idf', 'Grand-Est':'grandest',
+                'Loire':'loire', 'Auvergne-Rhône-Alpes':'ara', 'Sud':'sud' },
+};
+
+const PROJ = {"N": 0.7256048376793132, "F": 1.846147349754342, "R0": 0.947760080015475, "L0": 0.05235987755982989, "mnx": -0.09013165923965855, "mxy": 0.08011777688638222, "sc": 3519.6906170794937, "ox": 12.0, "oy": 16.85046122039745, "W": 640.0, "H": 620.0, "ancres": {"nord": [250.0, 95.0], "idf": [309.3, 164.7], "grandest": [442.5, 155.1], "loire": [240.0, 300.0], "ara": [399.0, 361.9], "sud": [300.0, 505.0]}};
+const ANCRES = PROJ.ancres;
+
+const euro  = n => Number(n).toLocaleString('fr-FR', { maximumFractionDigits:0 }) + ' €';
+const euro2 = n => Number(n).toLocaleString('fr-FR', { minimumFractionDigits:2, maximumFractionDigits:2 }) + ' €';
+const nb    = n => Number(n).toLocaleString('fr-FR');
+const echapper = t => String(t ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                                     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+let ETAT = { donnees:null, dahiras:[] };
+
+/* =====================================================================
+   MENU MOBILE
+   ===================================================================== */
+(function menu(){
+  const btn = document.getElementById('menuBtn');
+  const nav = document.getElementById('menuMobile');
+  if(!btn || !nav) return;
+  const fermer = () => { nav.classList.remove('ouvert'); btn.setAttribute('aria-expanded','false'); };
+  btn.addEventListener('click', () => {
+    const ouvert = nav.classList.toggle('ouvert');
+    btn.setAttribute('aria-expanded', ouvert ? 'true' : 'false');
+  });
+  nav.addEventListener('click', e => { if(e.target.tagName === 'A') fermer(); });
+  document.addEventListener('click', e => { if(!nav.contains(e.target) && !btn.contains(e.target)) fermer(); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape') fermer(); });
+})();
+
+/* =====================================================================
+   PUZZLE DES 1 000 PIÈCES
+   Découpe et ordre de révélation tirés à graine fixe : identiques d'une
+   visite à l'autre.
+   ===================================================================== */
+const PZ = { cols: CONFIG.puzzle.colonnes, rangs: CONFIG.puzzle.rangs, larg:25, haut:25 };
+
+function generateur(graine){
+  return function(){
+    graine = (graine + 0x6D2B79F5) | 0;
+    let t = Math.imul(graine ^ (graine >>> 15), 1 | graine);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function melanger(liste, graine){
+  const tirage = generateur(graine);
+  for(let i = liste.length - 1; i > 0; i--){
+    const j = Math.floor(tirage() * (i + 1));
+    [liste[i], liste[j]] = [liste[j], liste[i]];
+  }
+  return liste;
+}
+
+const DECOUPE = (() => {
+  const tirage = generateur(20260509);
+  const h = [], v = [];
+  for(let r = 0; r <= PZ.rangs; r++){ h[r] = []; for(let c = 0; c < PZ.cols; c++) h[r][c] = tirage() < .5 ? -1 : 1; }
+  for(let r = 0; r < PZ.rangs; r++){ v[r] = []; for(let c = 0; c <= PZ.cols; c++) v[r][c] = tirage() < .5 ? -1 : 1; }
+  return { h, v };
+})();
+
+function pointsBord(ax, ay, bx, by, d){
+  const dx = bx - ax, dy = by - ay, nx = -dy, ny = dx;
+  const P = (t, o) => [ax + dx*t + nx*o, ay + dy*t + ny*o];
+  return [P(.14,0), P(.28,.02*d), P(.42,0), P(.28,.34*d), P(.72,.34*d), P(.58,0), P(.72,-.02*d), P(.86,0), P(1,0)];
+}
+const n1 = v => Math.round(v * 10) / 10;
+const courbes = pts => { let d=''; for(let i=0;i<pts.length;i+=3) d += 'C' + pts.slice(i,i+3).map(p => n1(p[0])+','+n1(p[1])).join(' '); return d; };
+const inverser = (pts, ax, ay) => { const r = pts.slice(0,8).reverse(); r.push([ax,ay]); return r; };
+
+function cheminPiece(r, c){
+  const x0 = c*PZ.larg, y0 = r*PZ.haut, x1 = x0+PZ.larg, y1 = y0+PZ.haut;
+  let d = 'M' + x0 + ',' + y0;
+  d += (r === 0) ? 'L'+x1+','+y0 : courbes(pointsBord(x0,y0,x1,y0, DECOUPE.h[r][c]));
+  d += (c === PZ.cols-1) ? 'L'+x1+','+y1 : courbes(pointsBord(x1,y0,x1,y1, DECOUPE.v[r][c+1]));
+  d += (r === PZ.rangs-1) ? 'L'+x0+','+y1 : courbes(inverser(pointsBord(x0,y1,x1,y1, DECOUPE.h[r+1][c]), x0, y1));
+  d += (c === 0) ? 'Z' : courbes(inverser(pointsBord(x0,y0,x0,y1, DECOUPE.v[r][c]), x0, y0)) + 'Z';
+  return d;
+}
+const CHEMINS = (() => { const t=[]; for(let r=0;r<PZ.rangs;r++) for(let c=0;c<PZ.cols;c++) t.push(cheminPiece(r,c)); return t; })();
+
+/* Révélation du centre vers les bords : l'image reste lisible dès les premières pièces. */
+const ORDRE = (() => {
+  const tirage = generateur(424242);
+  const cx = (PZ.cols-1)/2, cy = (PZ.rangs-1)/2, rmax = Math.hypot(cx, cy);
+  return CHEMINS.map((_, i) => {
+    const c = i % PZ.cols, r = (i / PZ.cols) | 0;
+    return { i, rang: Math.hypot(c-cx, r-cy)/rmax + tirage()*0.42 };
+  }).sort((a,b) => a.rang - b.rang).map(o => o.i);
+})();
+
+function entrelacer(rep){
+  const parts = CONFIG.forfaits.filter(f => (rep[f.cle]||0) > 0).map(f => ({cle:f.cle, reste:rep[f.cle], pose:0}));
+  const total = parts.reduce((t,p) => t + p.reste, 0);
+  const suite = [];
+  for(let i = 0; i < total; i++){
+    let choix = parts[0], meilleur = Infinity;
+    for(const p of parts){ if(p.pose >= p.reste) continue; const r = p.pose/p.reste; if(r < meilleur){ meilleur = r; choix = p; } }
+    choix.pose++; suite.push(choix.cle);
+  }
+  return melanger(suite, 987654);
+}
+
+/* La bordure va aux engagements libres : c'est elle qui referme l'équation. */
+const PIECES_PAR_FORFAIT = (() => {
+  const prof = Math.max(0, CONFIG.puzzle.peripherie|0);
+  const libres = [], coeur = [];
+  for(let i = 0; i < CHEMINS.length; i++){
+    const c = i % PZ.cols, r = (i / PZ.cols) | 0;
+    (Math.min(r, c, PZ.rangs-1-r, PZ.cols-1-c) < prof ? libres : coeur).push(i);
+  }
+  const fixes = CONFIG.forfaits.filter(f => f.cle !== 'libre');
+  const brut = {}; let somme = 0;
+  fixes.forEach(f => { brut[f.cle] = Math.max(0, CONFIG.puzzle.coeur[f.cle]|0); somme += brut[f.cle]; });
+  const q = {}; let reste = coeur.length;
+  fixes.forEach((f, i) => {
+    if(i === fixes.length-1) q[f.cle] = Math.max(0, reste);
+    else { q[f.cle] = somme ? Math.round(brut[f.cle]*coeur.length/somme) : 0; reste -= q[f.cle]; }
+  });
+  const suite = entrelacer(q);
+  const groupes = { libre: libres };
+  fixes.forEach(f => { groupes[f.cle] = []; });
+  suite.forEach((cle, k) => groupes[cle].push(coeur[k]));
+  const rang = new Array(CHEMINS.length);
+  ORDRE.forEach((idx, pos) => { rang[idx] = pos; });
+  CONFIG.forfaits.forEach(f => groupes[f.cle].sort((a,b) => rang[a] - rang[b]));
+  return groupes;
+})();
+
+const QUOTAS = Object.fromEntries(CONFIG.forfaits.map(f => [f.cle, PIECES_PAR_FORFAIT[f.cle].length]));
+
+const EQUATION = (() => {
+  const cible = CONFIG.objectif / CONFIG.horizon;
+  const coeur = CONFIG.forfaits.reduce((t,f) => t + (f.prix||0)*QUOTAS[f.cle], 0);
+  const manque = Math.max(0, cible - coeur);
+  const moyenLibre = QUOTAS.libre ? manque / QUOTAS.libre : 0;
+  // arrondi au supérieur : sinon la configuration de référence manque la cible de peu
+  return { cible, coeur, manque, moyenLibre, moyenLibreAffiche: Math.ceil(moyenLibre) };
+})();
+
+function poseesParForfait(rep){
+  const pose = {}; let surplus = 0;
+  CONFIG.forfaits.forEach(f => {
+    const demande = Math.max(0, (rep && rep[f.cle])|0);
+    pose[f.cle] = Math.min(demande, QUOTAS[f.cle]);
+    surplus += demande - pose[f.cle];
+  });
+  for(const f of CONFIG.forfaits){
+    if(surplus <= 0) break;
+    const pris = Math.min(QUOTAS[f.cle] - pose[f.cle], surplus);
+    pose[f.cle] += pris; surplus -= pris;
+  }
+  return pose;
+}
+
+function construirePuzzle(rep){
+  if(!document.getElementById('puzzleSVG')) return;
+  const pose = poseesParForfait(rep || {});
+  const total = CONFIG.forfaits.reduce((t,f) => t + pose[f.cle], 0);
+
+  CONFIG.forfaits.forEach(f => {
+    const liste = PIECES_PAR_FORFAIT[f.cle], n = pose[f.cle];
+    document.getElementById('pose-'+f.cle).setAttribute('d', liste.slice(0,n).map(i => CHEMINS[i]).join(''));
+    document.getElementById('voile-'+f.cle).setAttribute('d', liste.slice(n).map(i => CHEMINS[i]).join(''));
+  });
+  document.getElementById('puzzleCompte').textContent = nb(total);
+
+  document.getElementById('puzzleLegende').innerHTML = CONFIG.forfaits
+    .filter(f => QUOTAS[f.cle] > 0)
+    .map(f => {
+      const reste = QUOTAS[f.cle] - pose[f.cle];
+      const prix = f.prix ? f.prix + ' €' : '≈ ' + EQUATION.moyenLibreAffiche + ' €';
+      return '<li><span class="tete"><i style="border-color:'+f.trait+'; background:'+f.voile+'"></i>'
+           + f.nom + ' · ' + prix + ' / mois</span>'
+           + '<span class="chiffres">' + nb(pose[f.cle]) + ' <em>/ ' + nb(QUOTAS[f.cle]) + '</em></span>'
+           + '<span class="reste">' + (reste === 0 ? 'complet' : 'il reste ' + nb(reste) + ' pièces') + '</span></li>';
+    }).join('');
+
+  document.getElementById('puzzleNote').textContent =
+    'Chaque engagement enregistré découvre une pièce, dans la couleur de son forfait. '
+    + 'Les ' + nb(QUOTAS.libre) + ' pièces de la bordure sont à engagement libre : ce sont elles qui referment l’équation. '
+    + (total === 0 ? 'Le puzzle attend sa première pièce.' : 'Il en reste ' + nb(CHEMINS.length - total) + ' à poser.');
+}
+
+/* =====================================================================
+   TABLEAU DE L'ÉQUATION
+   ===================================================================== */
+(function equation(){
+  const corps = document.getElementById('corpsEquation');
+  if(!corps) return;
+  const lignes = CONFIG.forfaits.filter(f => QUOTAS[f.cle] > 0).map(f => {
+    const prix = f.prix ?? EQUATION.moyenLibreAffiche;
+    const parMois = prix * QUOTAS[f.cle];
+    return { nom: f.cle === 'libre' ? 'Libre — la bordure' : f.nom, pieces: QUOTAS[f.cle],
+             prix, parMois, sur24: parMois * CONFIG.horizon, libre: f.cle === 'libre' };
+  });
+  corps.innerHTML = lignes.map(l =>
+    '<tr' + (l.libre ? ' class="privilegie"' : '') + '><td>' + l.nom
+    + (l.libre ? '<span class="sub">montant moyen nécessaire</span>' : '')
+    + '</td><td>' + nb(l.pieces) + '</td><td>' + (l.libre ? '≈ ' : '') + euro(l.prix)
+    + '</td><td>' + euro(l.parMois) + '</td><td>' + euro(l.sur24) + '</td></tr>').join('');
+
+  const totPieces = lignes.reduce((t,l) => t + l.pieces, 0);
+  const totMois = lignes.reduce((t,l) => t + l.parMois, 0);
+  document.getElementById('piedEquation').innerHTML =
+    '<tr><td>Total</td><td>' + nb(totPieces) + '</td><td>—</td><td>' + euro(totMois)
+    + '</td><td>' + euro(totMois * CONFIG.horizon) + '</td></tr>';
+  document.getElementById('legendeEquation').textContent =
+    'Pour réunir ' + euro(CONFIG.objectif) + ' en ' + CONFIG.horizon + ' mois, il faut ' + euro(EQUATION.cible)
+    + ' par mois. Les forfaits fixes en apportent ' + euro(EQUATION.coeur)
+    + ' ; les ' + nb(QUOTAS.libre) + ' engagements libres de la bordure doivent apporter les ' + euro(EQUATION.manque)
+    + ' restants, soit environ ' + euro(EQUATION.moyenLibreAffiche) + ' chacun par mois.';
+})();
+
+/* =====================================================================
+   SIMULATEUR
+   ===================================================================== */
+(function simulateur(){
+  const ids = ['simGold','simArgent','simBronze','simLibreN','simLibreM','simDuree'];
+  if(!document.getElementById('simGold')) return;
+  document.getElementById('simGold').value   = CONFIG.puzzle.coeur.gold;
+  document.getElementById('simArgent').value = CONFIG.puzzle.coeur.argent;
+  document.getElementById('simBronze').value = CONFIG.puzzle.coeur.bronze;
+  document.getElementById('simLibreN').value = QUOTAS.libre;
+  document.getElementById('simLibreM').value = EQUATION.moyenLibreAffiche;
+  document.getElementById('simDuree').value  = CONFIG.horizon;
+
+  const lire = id => parseFloat(document.getElementById(id).value) || 0;
+  function calculer(){
+    const n = lire('simGold') + lire('simArgent') + lire('simBronze') + lire('simLibreN');
+    const mensuel = lire('simGold')*100 + lire('simArgent')*50 + lire('simBronze')*25 + lire('simLibreN')*lire('simLibreM');
+    const duree = lire('simDuree') || CONFIG.horizon;
+    const total = mensuel * duree;
+    document.getElementById('simNb').textContent = nb(n) + ' engagements';
+    document.getElementById('simMensuel').textContent = euro(mensuel);
+    document.getElementById('simTotal').textContent = euro(total);
+    const v = document.getElementById('simVerdict');
+    if(mensuel <= 0){
+      v.textContent = 'Renseignez un nombre d’engagements pour voir le résultat.';
+      v.classList.remove('court');
+    } else if(total >= CONFIG.objectif){
+      v.textContent = 'Cette répartition atteint ' + euro(CONFIG.objectif) + ' en ' + Math.ceil(CONFIG.objectif/mensuel) + ' mois. L’objectif est tenu.';
+      v.classList.remove('court');
+    } else {
+      v.textContent = 'Cette répartition déclare ' + euro(total) + ' sur ' + duree + ' mois : il manquerait ' + euro(CONFIG.objectif-total)
+        + '. Il faudrait ' + Math.ceil(CONFIG.objectif/mensuel) + ' mois au même rythme, ou compléter par des dons ponctuels.';
+      v.classList.add('court');
+    }
+  }
+  ids.forEach(id => document.getElementById(id).addEventListener('input', calculer));
+  calculer();
+})();
+
+/* =====================================================================
+   CARTES
+   ===================================================================== */
+function projeter(lon, lat){
+  const p = lat*Math.PI/180, l = lon*Math.PI/180;
+  const r = PROJ.F / Math.pow(Math.tan(Math.PI/4 + p/2), PROJ.N);
+  const x = r*Math.sin(PROJ.N*(l - PROJ.L0));
+  const y = PROJ.R0 - r*Math.cos(PROJ.N*(l - PROJ.L0));
+  return { x: PROJ.ox + (x - PROJ.mnx)*PROJ.sc, y: PROJ.oy + (PROJ.mxy - y)*PROJ.sc };
+}
+
+function rendreCarteZones(parZone){
+  const svg = document.getElementById('carteZones');
+  if(!svg) return;
+  const teinte = pct => 'color-mix(in srgb, var(--vert) ' + Math.round(8 + pct*62) + '%, var(--pierre-2))';
+
+  svg.querySelectorAll('.region').forEach(r => {
+    const z = CONFIG.zones.find(x => CONFIG.zonesCarte[x.cle] === r.dataset.zone);
+    const n = (parZone && z && parZone[z.cle]) || 0;
+    const pct = z ? Math.min(1, n / z.quota) : 0;
+    r.style.fill = teinte(pct);
+    if(z) r.setAttribute('aria-label', z.cle + ' : ' + n + ' engagements enregistrés');
+  });
+
+  document.getElementById('etiquettesZones').innerHTML = CONFIG.zones.map(z => {
+    const [x, y] = ANCRES[CONFIG.zonesCarte[z.cle]];
+    const n = (parZone && parZone[z.cle]) || 0;
+    const w = Math.max(78, z.cle.length*6.4 + 16);
+    return '<g class="etiq-zone"><rect class="fond" x="'+(x-w/2)+'" y="'+(y-20)+'" width="'+w+'" height="38" rx="3"/>'
+         + '<text class="nom" x="'+x+'" y="'+(y-6)+'" text-anchor="middle">'+echapper(z.cle)+'</text>'
+         + '<text class="val" x="'+x+'" y="'+(y+12)+'" text-anchor="middle">'+n+' / '+z.quota+'</text></g>';
+  }).join('');
+
+  document.getElementById('legendeZones').innerHTML = CONFIG.zones.map(z => {
+    const n = (parZone && parZone[z.cle]) || 0;
+    return '<li><span class="pastille-couleur" style="background:'+teinte(Math.min(1,n/z.quota))+'"></span>'
+         + echapper(z.cle) + '<span class="val">' + n + ' / ' + z.quota + '</span></li>';
+  }).join('');
+}
+
+function rendreCarteDahiras(){
+  const svg = document.getElementById('carteDahiras');
+  const source = document.getElementById('regionsZones');
+  if(!svg || !source) return;
+  const fond = svg.querySelector('#regionsDahiras');
+  if(fond.childElementCount === 0){
+    Array.from(source.children).forEach(p => { const c = p.cloneNode(false); c.style.fill=''; fond.appendChild(c); });
+  }
+  const gm = svg.querySelector('#marqueurs');
+  const situees = ETAT.dahiras.filter(d => typeof d.latitude === 'number' && typeof d.longitude === 'number');
+  gm.innerHTML = situees.map((d, i) => {
+    const p = projeter(d.longitude, d.latitude);
+    return '<g class="marqueur" data-i="'+i+'" tabindex="0" role="button" aria-label="'+echapper(d.nom)+'">'
+         + '<circle class="halo" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="11"/>'
+         + '<circle class="point" cx="'+p.x.toFixed(1)+'" cy="'+p.y.toFixed(1)+'" r="5"/></g>';
+  }).join('');
+
+  const info = document.getElementById('infoCarteDahiras');
+  if(info){
+    const sans = ETAT.dahiras.length - situees.length;
+    info.textContent = ETAT.dahiras.length === 0
+      ? 'Les Dahiras validées apparaîtront ici.'
+      : situees.length + (situees.length > 1 ? ' Dahiras situées sur la carte.' : ' Dahira située sur la carte.')
+        + (sans > 0 ? ' ' + sans + ' en attente de localisation.' : '');
+  }
+
+  const bulle = document.getElementById('bulleDahira');
+  gm.querySelectorAll('.marqueur').forEach(m => {
+    const d = situees[+m.dataset.i];
+    const montrer = () => {
+      const pt = m.querySelector('.point'), boite = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal;
+      const ech = boite.width / vb.width;
+      bulle.innerHTML = '<b>' + echapper(d.nom) + '</b>' + echapper(d.ville);
+      bulle.style.left = ((+pt.getAttribute('cx') - vb.x) * ech) + 'px';
+      bulle.style.top  = ((+pt.getAttribute('cy') - vb.y) * ech) + 'px';
+      bulle.hidden = false;
+    };
+    m.addEventListener('mouseenter', montrer); m.addEventListener('focus', montrer);
+    m.addEventListener('mouseleave', () => { bulle.hidden = true; });
+    m.addEventListener('blur', () => { bulle.hidden = true; });
+    const ouvrir = () => {
+      gm.querySelectorAll('.marqueur').forEach(x => x.classList.remove('actif'));
+      m.classList.add('actif'); ouvrirFiche(d);
+    };
+    m.addEventListener('click', ouvrir);
+    m.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); ouvrir(); } });
+  });
+}
+
+function ouvrirFiche(d){
+  const f = document.getElementById('ficheCarte');
+  if(!f) return;
+  f.innerHTML = '<h4>' + echapper(d.nom) + '</h4>'
+    + (d.guide ? '<p>' + echapper(d.guide) + '</p>' : '')
+    + '<p>' + echapper(d.ville) + ' (' + echapper(d.code_postal) + ')</p>'
+    + '<p>Khadara du vendredi : ' + (d.khadara_vendredi ? 'oui' : 'non')
+    + ' · Wazifa quotidienne : ' + (d.wazifa_quotidienne ? 'oui' : 'non') + '</p>'
+    + (d.telephone_public ? '<p><a href="tel:'+echapper(String(d.telephone_public).replace(/\s/g,''))+'">'+echapper(d.telephone_public)+'</a></p>' : '<p>Contact via l’ACS</p>');
+  f.hidden = false;
+}
+
+function rendreCarteManipulable(svg){
+  if(!svg || svg.dataset.pret) return;
+  svg.dataset.pret = '1';
+  const base = { x:0, y:0, w:PROJ.W, h:PROJ.H };
+  let vb = { ...base };
+  const cadre = svg.parentElement;
+  const appliquer = () => {
+    svg.setAttribute('viewBox', vb.x + ' ' + vb.y + ' ' + vb.w + ' ' + vb.h);
+    cadre.classList.toggle('zoomee', vb.w < base.w - .5);
+  };
+  function zoomer(k, cx, cy){
+    const nw = Math.min(base.w, Math.max(base.w/8, vb.w*k)), nh = nw*(base.h/base.w);
+    if(cx === undefined){ cx = vb.x + vb.w/2; cy = vb.y + vb.h/2; }
+    vb.x = cx - (cx - vb.x)*(nw/vb.w); vb.y = cy - (cy - vb.y)*(nh/vb.h);
+    vb.w = nw; vb.h = nh;
+    vb.x = Math.max(base.x - vb.w*.15, Math.min(base.x + base.w - vb.w*.85, vb.x));
+    vb.y = Math.max(base.y - vb.h*.15, Math.min(base.y + base.h - vb.h*.85, vb.y));
+    appliquer();
+  }
+  const outils = cadre.querySelector('.carte-outils');
+  if(outils){
+    outils.querySelector('[data-act=plus]').addEventListener('click', () => zoomer(1/1.5));
+    outils.querySelector('[data-act=moins]').addEventListener('click', () => zoomer(1.5));
+    outils.querySelector('[data-act=reset]').addEventListener('click', () => { vb = { ...base }; appliquer(); });
+  }
+  svg.addEventListener('wheel', e => {
+    e.preventDefault();
+    const b = svg.getBoundingClientRect();
+    zoomer(e.deltaY > 0 ? 1.18 : 1/1.18,
+           vb.x + ((e.clientX-b.left)/b.width)*vb.w,
+           vb.y + ((e.clientY-b.top)/b.height)*vb.h);
+  }, { passive:false });
+
+  let tire = null;
+  svg.addEventListener('pointerdown', e => {
+    if(e.target.closest('.marqueur')) return;
+    if(e.pointerType !== 'mouse' && vb.w >= base.w - .5) return;  // le doigt fait défiler la page
+    tire = { x:e.clientX, y:e.clientY, vx:vb.x, vy:vb.y };
+    svg.classList.add('attrape'); svg.setPointerCapture(e.pointerId);
+  });
+  svg.addEventListener('pointermove', e => {
+    if(!tire) return;
+    const b = svg.getBoundingClientRect();
+    vb.x = tire.vx - (e.clientX - tire.x)*(vb.w/b.width);
+    vb.y = tire.vy - (e.clientY - tire.y)*(vb.h/b.height);
+    appliquer();
+  });
+  const lacher = e => { tire = null; svg.classList.remove('attrape'); try{ svg.releasePointerCapture(e.pointerId); }catch(_){} };
+  svg.addEventListener('pointerup', lacher);
+  svg.addEventListener('pointercancel', lacher);
+  appliquer();
+}
+
+/* =====================================================================
+   ANNUAIRE
+   ===================================================================== */
+const fRecherche = document.getElementById('fRecherche');
+const fZone = document.getElementById('fZone');
+const fKhadara = document.getElementById('fKhadara');
+const fWazifa = document.getElementById('fWazifa');
+[fRecherche, fZone, fKhadara, fWazifa].forEach(el => el && el.addEventListener('input', rendreDahiras));
+
+function rendreDahiras(){
+  const hote = document.getElementById('listeDahiras');
+  const info = document.getElementById('infoResultats');
+  if(!hote) return;
+  const q = (fRecherche.value || '').trim().toLowerCase();
+  const liste = ETAT.dahiras.filter(d => {
+    if(fZone.value && d.zone !== fZone.value) return false;
+    if(fKhadara.value && (d.khadara_vendredi ? 'oui' : 'non') !== fKhadara.value) return false;
+    if(fWazifa.value && (d.wazifa_quotidienne ? 'oui' : 'non') !== fWazifa.value) return false;
+    if(!q) return true;
+    return [d.nom, d.guide, d.ville, d.code_postal, d.zone].join(' ').toLowerCase().includes(q);
+  });
+
+  if(ETAT.dahiras.length === 0){
+    info.textContent = '';
+    hote.innerHTML = '<div class="vide" style="grid-column:1/-1"><b>L’annuaire est encore vide</b>'
+      + 'Soyez la première Dahira référencée : le formulaire est juste au-dessus.</div>';
+    return;
+  }
+  info.textContent = liste.length === 0
+    ? 'Aucune Dahira ne correspond à cette recherche.'
+    : liste.length + (liste.length > 1 ? ' Dahiras validées' : ' Dahira validée')
+      + (liste.length !== ETAT.dahiras.length ? ' sur ' + ETAT.dahiras.length : '') + '.';
+
+  hote.innerHTML = liste.map(d => {
+    const tel = d.telephone_public
+      ? '<a href="tel:' + echapper(String(d.telephone_public).replace(/\s/g,'')) + '">' + echapper(d.telephone_public) + '</a>'
+      : '<span class="effectif">Contact via l’ACS</span>';
+    return '<article class="dahira-carte"><h3>' + echapper(d.nom) + '</h3>'
+      + (d.guide ? '<p class="guide">' + echapper(d.guide) + '</p>' : '')
+      + '<p class="lieu">' + echapper(d.ville) + ' (' + echapper(d.code_postal) + ')'
+      + (d.zone ? ' · ' + echapper(d.zone) : '') + '</p>'
+      + '<div class="pratiques">'
+      + '<span class="pastille' + (d.khadara_vendredi ? ' oui' : '') + '">Khadara du vendredi : ' + (d.khadara_vendredi ? 'oui' : 'non') + '</span>'
+      + '<span class="pastille' + (d.wazifa_quotidienne ? ' oui' : '') + '">Wazifa quotidienne : ' + (d.wazifa_quotidienne ? 'oui' : 'non') + '</span></div>'
+      + (d.khadara_vendredi && d.khadara_horaire ? '<p class="lieu">' + echapper(d.khadara_horaire) + '</p>' : '')
+      + '<div class="bas">' + tel
+      + (d.effectif ? '<span class="effectif">' + d.effectif + ' disciples</span>' : '') + '</div></article>';
+  }).join('');
+
+  const dl = document.getElementById('listeDahiraNoms');
+  if(dl) dl.innerHTML = ETAT.dahiras.map(d => '<option value="' + echapper(d.nom) + '">').join('');
+}
+
+/* =====================================================================
+   TABLEAU DE BORD
+   ===================================================================== */
+function kpi(id, valeur, delta, indisponible){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('indispo', Boolean(indisponible));
+  el.querySelector('b').textContent = indisponible ? 'Données en cours de consolidation' : valeur;
+  el.querySelector('.delta').textContent = indisponible ? '' : (delta || '');
+}
+
+function rendreTableauDeBord(d){
+  const enConso = !d || d.statut_donnees === 'en_consolidation';
+
+  if(enConso){
+    ['kpiEngagements','kpiMensuel','kpiPrevisionnel','kpiVersements'].forEach(id => kpi(id, '', '', true));
+    document.getElementById('jaugeBarre').style.width = '0%';
+    document.getElementById('jaugeTexte').textContent = 'en cours de consolidation';
+    document.getElementById('majDonnees').textContent = d && d.commentaire_public
+      ? d.commentaire_public
+      : "Les chiffres seront publiés dès que l'association les aura consolidés.";
+    construirePuzzle({});
+    rendreCarteZones({});
+    return;
+  }
+
+  const objectif = d.objectif_euros || CONFIG.objectif;
+  kpi('kpiEngagements', nb(d.engagements_enregistres),
+      'Il en manque ' + nb(Math.max(0, CONFIG.objectifPieces - d.engagements_enregistres)));
+  kpi('kpiMensuel', euro(d.mensuel_declare_total),
+      'Cible : ' + euro(objectif / (d.horizon_mois || CONFIG.horizon)) + ' / mois');
+  kpi('kpiPrevisionnel', euro(d.previsionnel_horizon_24),
+      'Engagements déclarés, ramenés à 24 mois');
+
+  if(d.versements_recus_euros === null || d.versements_recus_euros === undefined){
+    kpi('kpiVersements', '', '', true);
+  } else {
+    kpi('kpiVersements', euro(d.versements_recus_euros),
+        d.versements_arretes_au ? 'Arrêtés au ' + dateFR(d.versements_arretes_au) : '');
+  }
+
+  const pct = objectif ? Math.min(100, (d.previsionnel_horizon_24 / objectif) * 100) : 0;
+  document.getElementById('jaugeBarre').style.width = pct + '%';
+  document.getElementById('jaugeTexte').textContent =
+    euro(d.previsionnel_horizon_24) + ' déclarés sur ' + euro(objectif);
+
+  document.getElementById('majDonnees').textContent =
+    (d.dernier_enregistrement ? 'Dernier engagement enregistré le ' + dateFR(d.dernier_enregistrement) + '. ' : '')
+    + 'Page actualisée le ' + dateFR(d.genere_le) + '.';
+
+  construirePuzzle(d.par_forfait || {});
+  rendreCarteZones(d.par_zone || {});
+}
+
+function dateFR(iso){
+  try {
+    return new Date(iso).toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+  } catch { return iso; }
+}
+
+/* =====================================================================
+   CHARGEMENT DES DONNÉES PUBLIQUES
+   ===================================================================== */
+async function chargerDonnees(){
+  let d = null;
+  try {
+    const r = await fetch('/api/donnees-publiques', { headers:{ Accept:'application/json' } });
+    if(r.ok) d = await r.json();
+  } catch(e){ /* page utilisable hors ligne : on reste en consolidation */ }
+
+  ETAT.donnees = d;
+  ETAT.dahiras = (d && Array.isArray(d.dahiras)) ? d.dahiras : [];
+
+  try { rendreTableauDeBord(d); } catch(e){ console.error('tableau de bord', e); }
+  try { rendreCarteManipulable(document.getElementById('carteZones')); } catch(e){ console.error('carte zones', e); }
+  try {
+    rendreDahiras();
+    rendreCarteDahiras();
+    rendreCarteManipulable(document.getElementById('carteDahiras'));
+  } catch(e){ console.error('annuaire', e); }
+}
+
+/* =====================================================================
+   OUTILS DE FORMULAIRE
+   ===================================================================== */
+function erreurChamp(form, nomChamp, texte){
+  const p = form.querySelector('.erreur[data-pour="' + nomChamp + '"]');
+  if(p){ p.textContent = texte || ''; p.hidden = !texte; }
+}
+function viderErreurs(form){
+  form.querySelectorAll('.erreur').forEach(p => { p.hidden = true; p.textContent = ''; });
+  form.querySelectorAll('[aria-invalid]').forEach(e => e.removeAttribute('aria-invalid'));
+}
+function marquerInvalide(id){
+  const el = document.getElementById(id);
+  if(el) el.setAttribute('aria-invalid','true');
+  return el;
+}
+function annoncer(id, texte, ko){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.textContent = texte;
+  el.classList.toggle('ko', Boolean(ko));
+}
+function nouvelleCle(){
+  return (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+}
+
+/* =====================================================================
+   FORMULAIRE D'ENGAGEMENT
+   ===================================================================== */
+(function engagement(){
+  const form = document.getElementById('formEngagement');
+  if(!form) return;
+  const btn = document.getElementById('btnEngagement');
+  const blocLibre = document.getElementById('blocLibre');
+  const champLibre = document.getElementById('montantLibre');
+  const CLE_BROUILLON = 'acs-engagement-brouillon';
+  let cleIdempotence = nouvelleCle();
+  const ouvertLe = Date.now();
+  let envoiEnCours = false;
+
+  const forfaitChoisi = () => (form.querySelector('input[name="forfait"]:checked') || {}).value;
+  const montant = () => {
+    const f = forfaitChoisi();
+    if(f === 'libre') return parseFloat(String(champLibre.value).replace(',','.')) || 0;
+    const def = CONFIG.forfaits.find(x => x.cle === f);
+    return def ? def.prix : 0;
+  };
+  const duree = () => parseInt(document.getElementById('duree').value, 10) || CONFIG.horizon;
+
+  function majTotal(){
+    const m = montant(), d = duree();
+    document.getElementById('totalAffiche').textContent = m > 0 ? euro(m * d) : '—';
+    const horizon = m * Math.min(d, CONFIG.horizon);
+    document.getElementById('sousTotal').textContent = m > 0
+      ? (d === CONFIG.horizon
+          ? euro2(m) + ' par mois pendant ' + d + ' mois'
+          : euro2(m) + ' par mois pendant ' + d + ' mois, dont ' + euro(horizon) + ' sur les 24 mois du projet')
+      : '';
+    document.getElementById('aideDuree').textContent = d === CONFIG.horizon
+      ? ''
+      : 'Seuls les ' + CONFIG.horizon + ' premiers mois comptent dans l’horizon du projet.';
+  }
+
+  function sauver(){
+    try {
+      const d = {
+        forfait: forfaitChoisi(), montantLibre: champLibre.value,
+        duree: document.getElementById('duree').value,
+        preference: document.getElementById('preference').value,
+        prenom: document.getElementById('prenom').value, nom: document.getElementById('nom').value,
+        email: document.getElementById('email').value, telephone: document.getElementById('telephone').value,
+        codePostal: document.getElementById('codePostal').value, zone: document.getElementById('zone').value,
+        dahira: document.getElementById('dahira').value, message: document.getElementById('message').value,
+      };
+      localStorage.setItem(CLE_BROUILLON, JSON.stringify(d));
+    } catch(e){ /* stockage indisponible : le formulaire fonctionne quand même */ }
+  }
+  function charger(){
+    try {
+      const brut = localStorage.getItem(CLE_BROUILLON);
+      if(!brut) return;
+      const d = JSON.parse(brut);
+      Object.entries(d).forEach(([k, v]) => {
+        if(k === 'forfait'){
+          const r = form.querySelector('input[name="forfait"][value="' + v + '"]');
+          if(r){ r.checked = true; blocLibre.hidden = v !== 'libre'; }
+          return;
+        }
+        const el = document.getElementById(k === 'montantLibre' ? 'montantLibre' : k);
+        if(el && v) el.value = v;
+      });
+    } catch(e){ /* brouillon illisible : on repart propre */ }
+  }
+
+  form.addEventListener('change', e => {
+    if(e.target.name === 'forfait'){
+      blocLibre.hidden = e.target.value !== 'libre';
+      if(e.target.value === 'libre') champLibre.focus();
+    }
+    majTotal(); sauver();
+  });
+  form.addEventListener('input', () => { majTotal(); sauver(); });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if(envoiEnCours) return;                      // garde-fou contre le double clic
+    viderErreurs(form);
+    annoncer('statutEngagement', '');
+
+    // --- validation côté navigateur (le serveur revérifie tout) ---
+    let premier = null;
+    const exiger = (id, champ, message) => {
+      if(!document.getElementById(id).value.trim()){
+        erreurChamp(form, champ, message);
+        premier = premier || marquerInvalide(id);
+      }
+    };
+    exiger('prenom', 'prenom', 'Indiquez votre prénom.');
+    exiger('nom', 'nom', 'Indiquez votre nom.');
+
+    const email = document.getElementById('email').value.trim();
+    const tel = document.getElementById('telephone').value.trim();
+    if(!email && !tel){
+      erreurChamp(form, 'email', 'Indiquez au moins un e-mail ou un téléphone.');
+      premier = premier || marquerInvalide('email');
+    } else if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+      erreurChamp(form, 'email', 'Cette adresse e-mail ne semble pas valide.');
+      premier = premier || marquerInvalide('email');
+    }
+    if(montant() <= 0){
+      erreurChamp(form, 'montant_mensuel_declare', 'Indiquez le montant mensuel que vous choisissez.');
+      premier = premier || marquerInvalide('montantLibre');
+    }
+    if(!document.getElementById('consentement').checked){
+      erreurChamp(form, 'consentement', 'Cochez cette case pour enregistrer votre engagement.');
+      premier = premier || marquerInvalide('consentement');
+    }
+    if(premier){
+      premier.focus();
+      premier.scrollIntoView({ block:'center', behavior:'smooth' });
+      return;
+    }
+
+    envoiEnCours = true;
+    btn.disabled = true;
+    const libelle = btn.textContent;
+    btn.textContent = 'Enregistrement…';
+    annoncer('statutEngagement', 'Enregistrement en cours…');
+
+    const charge = {
+      cle_idempotence: cleIdempotence,
+      duree_saisie_ms: Date.now() - ouvertLe,
+      site_web: document.getElementById('site_web').value,
+      prenom: document.getElementById('prenom').value,
+      nom: document.getElementById('nom').value,
+      email, telephone: tel,
+      code_postal: document.getElementById('codePostal').value,
+      zone: document.getElementById('zone').value,
+      dahira: document.getElementById('dahira').value,
+      forfait: forfaitChoisi(),
+      montant_mensuel_declare: montant(),
+      duree_mois: duree(),
+      preference_reglement: document.getElementById('preference').value,
+      message: document.getElementById('message').value,
+      consentement: true,
+      consentement_rappels: document.getElementById('consentementRappels').checked,
+    };
+
+    try {
+      const r = await fetch('/api/engagement', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(charge),
+      });
+      const rep = await r.json().catch(() => ({}));
+
+      if(r.ok && rep.ok){
+        afficherConfirmation(rep, charge);
+        try { localStorage.removeItem(CLE_BROUILLON); } catch(e){}
+        cleIdempotence = nouvelleCle();
+        return;                                   // le formulaire reste masqué
+      }
+
+      if(r.status === 422 && rep.fautes){
+        Object.entries(rep.fautes).forEach(([champ, msg]) => erreurChamp(form, champ, msg));
+        annoncer('statutEngagement', rep.message || 'Certains champs sont à corriger.', true);
+      } else {
+        annoncer('statutEngagement',
+          rep.message || "L'enregistrement a échoué. Vos informations sont conservées : réessayez dans un instant.", true);
+      }
+    } catch(err){
+      annoncer('statutEngagement',
+        "Connexion impossible. Vos informations sont conservées : vérifiez votre réseau et réessayez.", true);
+    } finally {
+      envoiEnCours = false;
+      btn.disabled = false;
+      btn.textContent = libelle;
+    }
+  });
+
+  function afficherConfirmation(rep, charge){
+    const boite = document.getElementById('confirmationEngagement');
+    const lignes = [
+      ['Votre référence', '<span class="ref">' + echapper(rep.reference) + '</span>'],
+      ['Montant mensuel déclaré', euro2(charge.montant_mensuel_declare)],
+      ['Durée choisie', charge.duree_mois + ' mois'],
+      ['Total prévisionnel', euro(charge.montant_mensuel_declare * charge.duree_mois)],
+    ];
+    if(charge.duree_mois !== CONFIG.horizon){
+      lignes.push(['Dont sur les 24 mois du projet',
+        euro(charge.montant_mensuel_declare * Math.min(charge.duree_mois, CONFIG.horizon))]);
+    }
+    if(charge.email) lignes.push(['Accusé de réception envoyé à', echapper(charge.email)]);
+    document.getElementById('confirmationDetails').innerHTML =
+      lignes.map(([t, v]) => '<dt>' + t + '</dt><dd>' + v + '</dd>').join('');
+    form.hidden = true;
+    boite.hidden = false;
+    boite.focus();
+    boite.scrollIntoView({ block:'center', behavior:'smooth' });
+    annoncer('statutEngagement', '');
+  }
+
+  document.getElementById('viderEngagement').addEventListener('click', () => {
+    form.reset();
+    blocLibre.hidden = true;
+    viderErreurs(form);
+    try { localStorage.removeItem(CLE_BROUILLON); } catch(e){}
+    majTotal();
+    document.getElementById('prenom').focus();
+  });
+
+  charger();
+  majTotal();
+})();
+
+/* =====================================================================
+   FORMULAIRE DE RÉFÉRENCEMENT D'UNE DAHIRA
+   ===================================================================== */
+(function dahira(){
+  const form = document.getElementById('formDahira');
+  if(!form) return;
+  const btn = document.getElementById('btnDahira');
+  let cleIdempotence = nouvelleCle();
+  const ouvertLe = Date.now();
+  let envoiEnCours = false;
+
+  form.addEventListener('change', e => {
+    if(e.target.name === 'dKhadara') document.getElementById('blocKhadara').hidden = e.target.value !== 'oui';
+    if(e.target.name === 'dWazifa')  document.getElementById('blocWazifa').hidden  = e.target.value !== 'oui';
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if(envoiEnCours) return;
+    viderErreurs(form);
+    annoncer('statutDahira', '');
+
+    let premier = null;
+    const exiger = (id, champ, message) => {
+      if(!document.getElementById(id).value.trim()){
+        erreurChamp(form, champ, message);
+        premier = premier || marquerInvalide(id);
+      }
+    };
+    exiger('dNom', 'nom', 'Indiquez le nom de la Dahira.');
+    exiger('dVille', 'ville', 'Indiquez la ville.');
+    exiger('dRespNom', 'responsable_nom', 'Indiquez la personne responsable.');
+
+    const cp = document.getElementById('dCp').value.trim();
+    if(!/^\d{5}$/.test(cp)){
+      erreurChamp(form, 'code_postal', 'Indiquez un code postal à 5 chiffres.');
+      premier = premier || marquerInvalide('dCp');
+    }
+    const mail = document.getElementById('dRespMail').value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)){
+      erreurChamp(form, 'responsable_email', 'Indiquez un e-mail valide.');
+      premier = premier || marquerInvalide('dRespMail');
+    }
+    if(!document.getElementById('dConsentement').checked){
+      erreurChamp(form, 'consentement_publication', 'Cochez cette case : sans votre accord, la fiche ne peut pas être publiée.');
+      premier = premier || marquerInvalide('dConsentement');
+    }
+    if(premier){
+      premier.focus();
+      premier.scrollIntoView({ block:'center', behavior:'smooth' });
+      return;
+    }
+
+    envoiEnCours = true;
+    btn.disabled = true;
+    const libelle = btn.textContent;
+    btn.textContent = 'Envoi…';
+
+    const charge = {
+      cle_idempotence: cleIdempotence,
+      duree_saisie_ms: Date.now() - ouvertLe,
+      site_web: document.getElementById('d_site_web').value,
+      nom: document.getElementById('dNom').value,
+      guide: document.getElementById('dGuide').value,
+      zone: document.getElementById('dZone').value,
+      ville: document.getElementById('dVille').value,
+      code_postal: cp,
+      lieu_activites: document.getElementById('dLieu').value,
+      responsable_nom: document.getElementById('dRespNom').value,
+      responsable_email: mail,
+      responsable_telephone: document.getElementById('dRespTel').value,
+      contact_public_telephone: document.getElementById('dTelPublic').value,
+      contact_public_autorise: document.getElementById('dContactPublic').checked,
+      khadara_vendredi: (form.querySelector('input[name="dKhadara"]:checked') || {}).value === 'oui',
+      khadara_horaire: document.getElementById('dKhadaraHoraire').value,
+      wazifa_quotidienne: (form.querySelector('input[name="dWazifa"]:checked') || {}).value === 'oui',
+      wazifa_horaire: document.getElementById('dWazifaHoraire').value,
+      effectif: document.getElementById('dEffectif').value,
+      consentement_publication: true,
+    };
+
+    try {
+      const r = await fetch('/api/dahira', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(charge),
+      });
+      const rep = await r.json().catch(() => ({}));
+      if(r.ok && rep.ok){
+        document.getElementById('refDahira').textContent = rep.reference;
+        form.hidden = true;
+        const boite = document.getElementById('confirmationDahira');
+        boite.hidden = false; boite.focus();
+        boite.scrollIntoView({ block:'center', behavior:'smooth' });
+        cleIdempotence = nouvelleCle();
+        return;
+      }
+      if(r.status === 422 && rep.fautes){
+        Object.entries(rep.fautes).forEach(([champ, msg]) => erreurChamp(form, champ, msg));
+        annoncer('statutDahira', rep.message || 'Certains champs sont à corriger.', true);
+      } else {
+        annoncer('statutDahira',
+          rep.message || "L'envoi a échoué. Vos informations sont conservées : réessayez dans un instant.", true);
+      }
+    } catch(err){
+      annoncer('statutDahira', 'Connexion impossible. Vos informations sont conservées.', true);
+    } finally {
+      envoiEnCours = false;
+      btn.disabled = false;
+      btn.textContent = libelle;
+    }
+  });
+})();
+
+/* =====================================================================
+   COPIE DE L'IBAN
+   ===================================================================== */
+(function iban(){
+  const b = document.getElementById('copierIban');
+  if(!b) return;
+  b.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText('FR76 1010 7003 1900 9210 2803 703');
+      annoncer('statutRib', 'IBAN copié.');
+    } catch {
+      annoncer('statutRib', 'La copie est bloquée par votre navigateur. Sélectionnez le texte à la main.', true);
+    }
+    setTimeout(() => annoncer('statutRib', ''), 6000);
+  });
+})();
+
+/* démarrage */
+construirePuzzle({});
+rendreCarteZones({});
+chargerDonnees();
+</script>
+</body>
+</html>

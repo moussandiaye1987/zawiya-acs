@@ -1,0 +1,51 @@
+# =====================================================================
+# Configuration Netlify — Zawiya Cheikh Ibrahim Niasse (ACS)
+# Le site est déployé depuis GitHub : Netlify publie le dossier `public`
+# et transforme `netlify/functions` en points d'accès /api/*.
+# =====================================================================
+
+[build]
+  publish = "public"
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# --- Les aperçus de pull request n'envoient jamais de vrais e-mails ---
+[context.deploy-preview.environment]
+  MODE_APERCU = "1"
+
+[context.branch-deploy.environment]
+  MODE_APERCU = "1"
+
+# --- Cache : les ressources ne changent jamais, la page oui ---
+[[headers]]
+  for = "/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.mp4"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# --- En-têtes de sécurité ---
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=()"
+    Cross-Origin-Opener-Policy = "same-origin"
