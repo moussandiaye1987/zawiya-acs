@@ -25,6 +25,12 @@ export const ZONES = [
 
 export const DUREES = [12, 24, 36];
 
+/** Devises acceptées. Les totaux ne les additionnent jamais entre elles. */
+export const DEVISES = {
+  EUR: { nom: 'Euro', symbole: '€', plancher: 5, plafond: 100000 },
+  XOF: { nom: 'Franc CFA', symbole: 'FCFA', plancher: 1000, plafond: 50000000 },
+};
+
 export function json(donnees, statut = 200, entetes = {}) {
   return new Response(JSON.stringify(donnees), {
     status: statut,

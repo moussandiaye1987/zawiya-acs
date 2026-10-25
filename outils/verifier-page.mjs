@@ -171,6 +171,61 @@ setTimeout(() => {
   v('aucune adresse postale complète demandée',
     !d.querySelector('#formEngagement input[autocomplete="street-address"]'));
 
+  console.log('\nACCORDÉONS');
+  const accordeons = [...d.querySelectorAll('details.replier')];
+  v('accordéons présents', accordeons.length >= 8, accordeons.length + ' sections repliables');
+  v('tous ont un titre explicite',
+    accordeons.every(a => (a.querySelector('summary')?.textContent || '').trim().length > 12),
+    accordeons.map(a => a.querySelector('summary').textContent.trim().split('—')[0].trim()).join(' · '));
+  v('aucun accordéon imbriqué',
+    accordeons.every(a => !a.querySelector('details.replier')));
+  v('tous fermés au chargement', accordeons.every(a => !a.open));
+  v('ouverture et fermeture fonctionnent', (() => {
+    const a = accordeons[0];
+    a.open = true;
+    const ouvert = a.open === true;
+    a.open = false;
+    return ouvert && a.open === false;
+  })());
+  v('navigation au clavier native (details/summary)',
+    accordeons.every(a => a.querySelector('summary') && a.tagName === 'DETAILS'));
+  v('le film et la galerie sont conservés',
+    Boolean(d.querySelector('video')) && d.querySelectorAll('.galerie figure').length === 4);
+  v('aucune image ni vidéo perdue',
+    d.querySelectorAll('img').length >= 9 && d.querySelectorAll('video source').length === 1,
+    d.querySelectorAll('img').length + ' images');
+  v('l\'historique est conservé en entier', d.querySelectorAll('.frise li').length === 10);
+  v('la FAQ garde ses 7 questions', d.querySelectorAll('.faq details').length === 7);
+  v('les boutons de participation restent visibles',
+    [...d.querySelectorAll('a[href="#adherer"]')].some(a => !a.closest('details')));
+  v('le formulaire d\'engagement n\'est pas replié',
+    !d.getElementById('formEngagement').closest('details'));
+  v('les compteurs de suivi restent visibles',
+    !d.getElementById('kpiEngagements').closest('details'));
+  v('le puzzle reste visible', !d.getElementById('puzzleSVG').closest('details'));
+
+  console.log('\nDEVISE');
+  v('sélecteur de devise présent', Boolean(d.getElementById('devise')));
+  v('euro et franc CFA proposés',
+    [...d.querySelectorAll('#devise option')].map(o => o.value).join(',') === 'EUR,XOF');
+  v('euro par défaut', d.getElementById('devise').value === 'EUR');
+  v('le sélecteur est masqué hors montant libre', d.getElementById('blocLibre').hidden === true);
+  v('le total passe en FCFA avec le forfait libre', (() => {
+    const libre = d.querySelector('input[name="forfait"][value="libre"]');
+    libre.checked = true;
+    libre.dispatchEvent(new w.Event('change', { bubbles:true }));
+    d.getElementById('montantLibre').value = '25000';
+    d.getElementById('devise').value = 'XOF';
+    d.getElementById('devise').dispatchEvent(new w.Event('change', { bubbles:true }));
+    const t = d.getElementById('totalAffiche').textContent;
+    const argent = d.querySelector('input[name="forfait"][value="argent"]');
+    argent.checked = true;
+    argent.dispatchEvent(new w.Event('change', { bubbles:true }));
+    return t.includes('FCFA');
+  })());
+  v('le total revient en euros avec un forfait fixe',
+    d.getElementById('totalAffiche').textContent.includes('€'));
+
   console.log('\nACCESSIBILITÉ ET MOBILE');
   v('langue déclarée', d.documentElement.lang === 'fr');
   v('viewport présent', Boolean(d.querySelector('meta[name=viewport]')));

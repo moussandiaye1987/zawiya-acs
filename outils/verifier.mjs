@@ -67,6 +67,9 @@ globalThis.fetch = async (url, options = {}) => {
     }
 
     const table = segments;
+    if(table === 'v_export_suivi'){
+      return repJSON((BASE.engagements || []).filter(e => !e.est_test));
+    }
     const lignes = BASE[table] || (BASE[table] = []);
 
     if(methode === 'POST'){
@@ -464,6 +467,130 @@ serie('RELANCE WHATSAPP');
   r = await relance(new Request('https://site.test/api/relance-whatsapp?cle=admin-de-test'));
   const html2 = await r.text();
   verifier('la personne a disparu de la liste', !html2.includes('ZAWIYA-2026-QQQQQQ'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('CSV — format et sécurité');
+{
+  const { fabriquerCSV, nomFichierCSV, neutraliser, totauxParDevise, montant } =
+    await import('../netlify/functions/lib/csv.mjs');
+
+  const lignes = [
+    { reference:'ZAWIYA-2026-AAA111', recu_le:'2026-10-25T14:30:00Z', prenom:'Aminata',
+      nom:'NDIAYE', email:'a@exemple.test', telephone:'+33 6 11 22 33 44',
+      code_postal:'93100', ville:'Montreuil', departement:'93', zone:'Île-de-France',
+      dahira:'Nasrul Ilm', forfait:'argent', montant_mensuel_declare:50, devise:'EUR',
+      periodicite:'mensuelle', duree_mois:24, total_previsionnel:1200,
+      preference_reglement:'Virement mensuel', statut:'Nouveau',
+      debut_engagement:'2026-10-01', fin_engagement:'2028-10-01',
+      rappel_email:true, rappel_whatsapp:false, consentement_le:'2026-10-25T14:30:00Z',
+      message:'Qu\'Allah facilite' },
+    { reference:'ZAWIYA-2026-BBB222', recu_le:'2026-10-25T15:00:00Z', prenom:'Ibrahima',
+      nom:'DIOP', email:'b@exemple.test', telephone:'+221 77 123 45 67',
+      code_postal:null, ville:'Dakar', departement:null, zone:'Hors de France',
+      dahira:null, forfait:'libre', montant_mensuel_declare:25000, devise:'XOF',
+      periodicite:'mensuelle', duree_mois:24, total_previsionnel:600000,
+      preference_reglement:null, statut:'Nouveau',
+      debut_engagement:'2026-10-01', fin_engagement:'2028-10-01',
+      rappel_email:false, rappel_whatsapp:true, consentement_le:'2026-10-25T15:00:00Z',
+      message:null },
+  ];
+
+  const csv = fabriquerCSV(lignes);
+  const rangs = csv.split('\r\n');
+
+  verifier('le fichier commence par le BOM', csv.charCodeAt(0) === 0xFEFF);
+  verifier('le séparateur est le point-virgule', rangs[0].includes('";"') || rangs[0].split(';').length > 20);
+  verifier('les en-têtes sont en français',
+    rangs[0].includes('"Référence"') && rangs[0].includes('"Montant déclaré"') && rangs[0].includes('"Devise"'));
+  verifier('la périodicité est une colonne', rangs[0].includes('"Périodicité"'));
+  verifier('une ligne par engagement', rangs.filter(r => r.trim()).length === 3, `${rangs.filter(r=>r.trim()).length} lignes`);
+  verifier('les accents sont intacts', csv.includes('Île-de-France') && csv.includes('Référence'));
+  verifier('les montants ont la virgule décimale', rangs[1].includes(';50,00;'));
+  verifier('les dates sont au format français', /;25\/10\/2026 \d{2}:\d{2};/.test(rangs[1]));
+  verifier('les devises sont lisibles', rangs[1].includes('"EUR"') && rangs[2].includes('"FCFA"'));
+  verifier('les booléens sont en français', rangs[1].includes('"Oui"') && rangs[1].includes('"Non"'));
+
+  // injection de formule
+  const piege = [{ ...lignes[0],
+    prenom:'=HYPERLINK("http://mechant.test","cliquez")',
+    nom:'+1+1', ville:'-2+3', message:'@SUM(A1:A9)', dahira:'\tonglet' }];
+  const csvPiege = fabriquerCSV(piege);
+  verifier('formule « = » neutralisée', csvPiege.includes('"\'=HYPERLINK'));
+  verifier('formule « + » neutralisée', csvPiege.includes('"\'+1+1"'));
+  verifier('formule « - » neutralisée', csvPiege.includes('"\'-2+3"'));
+  verifier('formule « @ » neutralisée', csvPiege.includes('"\'@SUM'));
+  verifier('tabulation neutralisée', csvPiege.includes('"\'') && neutraliser('\tx').startsWith("'"));
+  verifier('aucune cellule ne commence par un caractère de formule',
+    csvPiege.split('\r\n').slice(1).every(r =>
+      r.split(';').every(c => !/^["']?[=+\-@]/.test(c.replace(/^"/, '')) || c.startsWith('"\''))));
+  verifier('les guillemets internes sont doublés',
+    fabriquerCSV([{ ...lignes[0], ville:'Saint-"Denis"' }]).includes('Saint-""Denis""'));
+  verifier('les retours à la ligne ne cassent pas le fichier',
+    fabriquerCSV([{ ...lignes[0], message:'ligne 1\nligne 2' }]).split('\r\n').filter(r => r.trim()).length === 2);
+
+  verifier('le nom du fichier est daté',
+    /^engagements-zawiya-\d{4}-\d{2}-\d{2}\.csv$/.test(nomFichierCSV(new Date('2026-10-25T12:00:00Z'))),
+    nomFichierCSV(new Date('2026-10-25T12:00:00Z')));
+
+  // totaux par devise
+  const t = totauxParDevise(lignes);
+  verifier('les devises sont séparées', t.length === 2);
+  verifier('les euros ne sont pas mélangés aux FCFA',
+    t.find(x => x.devise === 'EUR').mensuel === 50 && t.find(x => x.devise === 'XOF').mensuel === 25000);
+  verifier('le prévisionnel sur 24 mois est juste',
+    t.find(x => x.devise === 'EUR').horizon24 === 1200);
+  verifier('la périodicité est remontée',
+    t.every(x => x.periodicites.includes('mensuelle')));
+  verifier('le formatage respecte la devise',
+    montant(50, 'EUR').includes('€') && montant(25000, 'XOF').includes('FCFA'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('E-MAIL À L\'ASSOCIATION — pièce jointe et cloisonnement');
+{
+  reinitialiser();
+  const r = await engagement(requete(engagementValide({ email:'nouvelle@exemple.test' })));
+  verifier('engagement enregistré', r.status === 200);
+
+  const pourAssoc = APPELS.mails.find(m => m.to[0].email === 'bureau@exemple.test');
+  const pourParticipant = APPELS.mails.find(m => m.to[0].email === 'nouvelle@exemple.test');
+
+  verifier('le bureau reçoit une pièce jointe',
+    Array.isArray(pourAssoc.attachment) && pourAssoc.attachment.length === 1);
+  verifier('la pièce jointe est un CSV daté',
+    /^engagements-zawiya-\d{4}-\d{2}-\d{2}\.csv$/.test(pourAssoc.attachment[0].name),
+    pourAssoc.attachment[0].name);
+
+  const contenu = Buffer.from(pourAssoc.attachment[0].content, 'base64').toString('utf8');
+  verifier('la pièce jointe contient le BOM', contenu.charCodeAt(0) === 0xFEFF);
+  verifier('la pièce jointe contient le nouvel engagement', contenu.includes('Ndiaye') || contenu.includes('Aminata'));
+  verifier('le récapitulatif figure dans le message',
+    /Tous les engagements enregistrés/.test(pourAssoc.htmlContent));
+  verifier('le récapitulatif est horodaté', /Arrêté au /.test(pourAssoc.htmlContent));
+  verifier('le récapitulatif précise la périodicité', /périodicité mensuelle/.test(pourAssoc.htmlContent));
+  verifier('plus aucun lien « tableau de suivi »',
+    !/tableau de suivi/i.test(pourAssoc.htmlContent) && !/github/i.test(pourAssoc.htmlContent));
+
+  verifier('le participant ne reçoit AUCUNE pièce jointe',
+    !pourParticipant.attachment || pourParticipant.attachment.length === 0);
+  verifier('le participant ne voit que ses informations',
+    !/Tous les engagements/.test(pourParticipant.htmlContent));
+  verifier('le participant ne voit aucune autre référence',
+    (pourParticipant.htmlContent.match(/ZAWIYA-\d{4}-[A-Z0-9]{6}/g) || [])
+      .every((v, _, t) => v === t[0]));
+
+  // les lignes de test ne doivent jamais entrer dans l'export réel
+  reinitialiser();
+  BASE.engagements.push({ id:'t1', reference:'TEST-X', prenom:'Faux', nom:'TEST',
+    email:'faux@exemple.test', est_test:true, montant_mensuel_declare:999,
+    devise:'EUR', duree_mois:24, total_previsionnel:23976, forfait:'gold' });
+  await engagement(requete(engagementValide({ email:'reel@exemple.test' })));
+  const assoc2 = APPELS.mails.find(m => m.to[0].email === 'bureau@exemple.test');
+  const csv2 = Buffer.from(assoc2.attachment[0].content, 'base64').toString('utf8');
+  verifier('les engagements de test sont exclus du CSV', !csv2.includes('TEST-X'));
+  verifier('les engagements de test sont exclus du récapitulatif',
+    !assoc2.htmlContent.includes('23 976') && !assoc2.htmlContent.includes('999'));
 }
 
 /* ------------------------------------------------------------------ */

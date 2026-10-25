@@ -117,7 +117,6 @@ export default async (req) => {
 
 async function notifier(f) {
   const destAssoc = process.env.EMAIL_ASSOCIATION;
-  const tableauBord = process.env.URL_TABLEAU_BORD || '';
   const taches = [];
 
   if (destAssoc) {
@@ -134,8 +133,7 @@ async function notifier(f) {
         <tr><td style="color:#6b7d71">Wazifa quotidienne</td><td>${f.wazifa_quotidienne ? 'oui' : 'non'} ${echapper(f.wazifa_horaire || '')}</td></tr>
         <tr><td style="color:#6b7d71">Disciples affiliés</td><td>${f.effectif ?? '—'}</td></tr>
       </table>
-      <p>Pour publier : passer le statut de « En attente » à « Publiée » dans la table <code>dahiras</code>.</p>
-      ${tableauBord ? `<p><a href="${tableauBord}" style="color:#1E7A43">Ouvrir le tableau de suivi</a></p>` : ''}`;
+      <p>Pour publier : passer le statut de « En attente » à « Publiée » dans la table <code>dahiras</code>, depuis votre tableau de bord Supabase.</p>`;
     taches.push(journaliser(f, destAssoc, 'dahira_association', envoyer({
       destinataire: destAssoc,
       sujet: `Dahira à valider — ${f.nom} (${f.ville})`,

@@ -25,7 +25,7 @@ netlify/functions/      traitement côté serveur
   rappels-mensuels.mjs  tâche planifiée, toutes les heures (e-mail)
   rappels-test.mjs      GET  /api/rappels-test        (déclenchement manuel, protégé)
   relance-whatsapp.mjs  GET  /api/relance-whatsapp    (page du bureau, protégée)
-  lib/                  base, e-mails, validation, logique des rappels
+  lib/                  base, e-mails, validation, CSV, rappels, téléphones
 outils/verifier.mjs     banc d'essai des fonctions serveur
 outils/verifier-page.mjs banc d'essai de la page publique
 .github/workflows/      vérification automatique à chaque envoi
@@ -73,7 +73,6 @@ Jamais dans le dépôt. `.env.example` en donne la liste commentée.
 | `MAIL_EXPEDITEUR` | pour les e-mails | adresse vérifiée chez le fournisseur |
 | `MAIL_EXPEDITEUR_NOM` | non | défaut : « Association Connaissance et Savoir » |
 | `EMAIL_ASSOCIATION` | oui | adresse qui reçoit les notifications |
-| `URL_TABLEAU_BORD` | non | lien Supabase glissé dans les e-mails internes |
 | `SEL_EMPREINTE` | oui | chaîne aléatoire, pour hacher les adresses IP |
 | `SECRET_LIENS` | oui | chaîne aléatoire, pour signer les liens personnels |
 | `SECRET_ADMIN` | oui | chaîne aléatoire, pour `/api/rappels-test` |
@@ -260,7 +259,35 @@ page. `instructions_reglement` et `contact_difficulte` alimentent le
 texte du message, comme pour l'e-mail. La colonne `canal_sms` subsiste
 dans le schéma mais reste à faux : le SMS n'est plus branché.
 
-## 8. Confidentialité
+## 8. L'e-mail de l'association
+
+À chaque nouvel engagement, le bureau reçoit un message qui contient :
+
+1. **le nouvel engagement**, en détail ;
+2. **le récapitulatif de tous les engagements** à l'heure de l'envoi,
+   présenté **devise par devise** — les euros et les francs CFA ne sont
+   jamais additionnés — avec la périodicité ;
+3. **un fichier CSV joint**, `engagements-zawiya-AAAA-MM-JJ.csv`.
+
+Le fichier s'ouvre directement dans Excel en français : encodé en UTF-8
+avec BOM (sans lui, les accents sont illisibles), séparé par des
+points-virgules, montants à virgule décimale et dates en JJ/MM/AAAA.
+Une ligne par engagement, 25 colonnes aux intitulés français.
+
+Les cellules commençant par `=`, `+`, `-` ou `@` sont précédées d'une
+apostrophe : sans cette précaution, un participant pourrait glisser une
+formule dans son nom ou son message et piéger celui qui ouvre le
+fichier. Effet de bord visible : un téléphone saisi « +33… » apparaît
+avec une apostrophe, qu'Excel masque.
+
+Les engagements marqués comme tests, annulés ou en doublon sont exclus
+du récapitulatif comme du fichier.
+
+**Le participant, lui, ne reçoit que ses propres informations** : ni
+récapitulatif collectif, ni pièce jointe. Le fichier n'est jamais déposé
+sur le site ; il n'existe que dans le message adressé au bureau.
+
+## 9. Confidentialité
 
 - Les tables ont la sécurité au niveau des lignes activée **sans aucune
   politique** : sans la clé de service, personne ne lit ni n'écrit rien.
@@ -275,7 +302,7 @@ dans le schéma mais reste à faux : le SMS n'est plus branché.
 
 ---
 
-## 9. Chaîne automatique
+## 10. Chaîne automatique
 
 ```
 Claude modifie le projet
@@ -283,7 +310,7 @@ Claude modifie le projet
         ▼
    git push origin main
         │
-        ├──▶ GitHub Actions : 146 contrôles
+        ├──▶ GitHub Actions : 204 contrôles
         │      échec → croix rouge sur le commit
         │
         └──▶ Netlify : déploiement automatique
@@ -297,14 +324,14 @@ n'importe quelle version antérieure.
 Les contrôles tournent sur GitHub sans aucun secret : la base et le
 service d'e-mail sont simulés.
 
-## 10. Vérifier avant de livrer
+## 11. Vérifier avant de livrer
 
 ```bash
 npm install     # la première fois seulement
 npm run verifier
 ```
 
-146 contrôles hors ligne — 87 sur les fonctions serveur, 59 sur la page : validation, pièges
+204 contrôles hors ligne — 125 sur les fonctions serveur, 79 sur la page : validation, pièges
 publique dans un navigateur simulé : validation, pièges anti-robot,
 doublons, panne du service d'e-mail, confidentialité des réponses, liens
 personnels, rappels, format des numéros, page de relance WhatsApp,

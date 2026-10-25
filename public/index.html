@@ -190,8 +190,17 @@ p{margin:0 0 1em}
 /* ---------- blocs dépliables ---------- */
 .replier{border:1px solid var(--trait-fort); border-radius:var(--rayon); margin-top:1rem; background:var(--craie)}
 .sect-craie .replier{background:var(--pierre)}
+.duo-libre{display:grid; grid-template-columns:1.4fr 1fr; gap:.9rem}
+@media (max-width:560px){ .duo-libre{grid-template-columns:1fr} }
 .replier > summary{cursor:pointer; padding:1.1rem 1.2rem; font-family:"Marcellus",serif; font-size:1.15rem;
-  list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem}
+  list-style:none; display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  min-height:58px; -webkit-tap-highlight-color:transparent}
+.replier > summary:hover{color:var(--vert)}
+.replier + .replier{margin-top:.6rem}
+@media (max-width:620px){
+  .replier > summary{font-size:1.04rem; padding:1rem; min-height:56px}
+  .replier > summary::after{font-size:1.7rem}
+}
 .replier > summary::-webkit-details-marker{display:none}
 .replier > summary::after{content:"+"; font-size:1.5rem; color:var(--vert); line-height:1}
 .replier[open] > summary::after{content:"–"}
@@ -609,6 +618,9 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       </div>
     </div>
 
+    <details class="replier">
+      <summary>Maquette, photos et vidéos — voir le bâtiment en images</summary>
+      <div class="contenu">
     <div class="film">
       <video controls preload="none" playsinline poster="img/poster.jpg">
         <source src="maquette-zawiya.mp4" type="video/mp4">
@@ -623,6 +635,8 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <figure class="g-mid"><img loading="lazy" decoding="async" src="img/hall2.jpg" alt="Hall d'accueil lumineux, sol en terrazzo, hautes ouvertures en ogive."><figcaption>Hall d'accueil</figcaption></figure>
       <figure class="g-mid"><img loading="lazy" decoding="async" src="img/conf.jpg" alt="Salle de conférence avec estrade et sièges verts."><figcaption>Salle de conférence, 500 places</figcaption></figure>
     </div>
+      </div>
+    </details>
 
     <p style="margin-top:2rem"><a class="btn" href="#adherer">Adhérer au projet</a></p>
 
@@ -741,10 +755,23 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
               <b class="nom">Libre</b><b class="prix">Autre</b><span class="pour">Le montant que vous choisissez</span></span>
           </label>
         </div>
-        <div class="champ" id="blocLibre" style="margin-top:1rem" hidden>
-          <label for="montantLibre">Montant mensuel choisi, en euros <span class="req" aria-hidden="true">*</span></label>
-          <input id="montantLibre" name="montantLibre" type="number" min="5" step="1" inputmode="decimal" placeholder="Par exemple 150">
-          <p class="erreur" data-pour="montant_mensuel_declare" hidden></p>
+        <div id="blocLibre" style="margin-top:1rem" hidden>
+          <div class="duo-libre">
+            <div class="champ">
+              <label for="montantLibre">Montant mensuel choisi <span class="req" aria-hidden="true">*</span></label>
+              <input id="montantLibre" name="montantLibre" type="number" min="1" step="1" inputmode="decimal" placeholder="Par exemple 150">
+              <p class="erreur" data-pour="montant_mensuel_declare" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="devise">Devise</label>
+              <select id="devise" name="devise">
+                <option value="EUR" selected>Euro (€)</option>
+                <option value="XOF">Franc CFA (FCFA)</option>
+              </select>
+              <p class="erreur" data-pour="devise" hidden></p>
+            </div>
+          </div>
+          <p class="aide" id="aideDevise" style="margin:.5rem 0 0"></p>
         </div>
       </fieldset>
 
@@ -1118,7 +1145,10 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     <p class="puzzle-note" id="puzzleNote"></p>
 
     <!-- l'équation -->
-    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">L'équation du financement</h3>
+    <details class="replier">
+      <summary>L'équation du financement — le détail des calculs et le simulateur</summary>
+      <div class="contenu">
+
     <p style="color:var(--encre-2);max-width:42em;margin-top:.5rem">Une seule configuration de référence gouverne tout ce que vous voyez sur cette page : le puzzle, le tableau ci-dessous et le simulateur en lisent les mêmes valeurs.</p>
     <div class="scroll-x">
       <table class="tbl" id="tableauEquation">
@@ -1151,7 +1181,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     </div>
 
     <!-- répartition sur le territoire -->
-    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Les engagements sur le territoire</h3>
+      </div>
+    </details>
+
+    <details class="replier">
+      <summary>Les engagements sur le territoire — carte et quotas par zone</summary>
+      <div class="contenu">
+
     <p style="color:var(--encre-2);max-width:42em;margin-top:.5rem">Six zones, un quota chacune, proportionnel à sa taille. La teinte montre la part du quota déjà atteinte.</p>
     <div class="carte-enveloppe">
       <div class="carte-cadre">
@@ -1172,7 +1208,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     </div>
 
     <!-- gouvernance -->
-    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Qui décide, qui pilote, qui accompagne</h3>
+      </div>
+    </details>
+
+    <details class="replier">
+      <summary>Gouvernance — qui décide, qui pilote, qui accompagne</summary>
+      <div class="contenu">
+
     <div class="trio">
       <div class="acteur">
         <h4>ACS</h4><p class="role">Pilotage</p>
@@ -1187,8 +1229,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
         <ul><li>Structure nationale de référence</li><li>Orientation spirituelle</li><li>Mise en réseau des sections</li></ul>
       </div>
     </div>
+      </div>
+    </details>
 
-    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Documents</h3>
+    <details class="replier">
+      <summary>Documents de l'association — statuts, rapport financier, bureau</summary>
+      <div class="contenu">
+
     <ul class="autres">
       <li><b>Statuts de l'association</b><span>Sur demande à l'association</span></li>
       <li><b>Rapport financier annuel</b><span>Présenté en assemblée générale, disponible sur demande</span></li>
@@ -1198,7 +1245,12 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     <p class="maj">Ces documents ne sont pas encore publiés en ligne. Écrivez-nous et nous vous les transmettons.</p>
 
     <!-- FAQ -->
+      </div>
+    </details>
+
     <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Questions fréquentes</h3>
+    <p style="color:var(--encre-2);font-size:.95rem;margin-top:.4rem">Cliquez sur une question pour voir la réponse.</p>
+
     <div class="faq">
       <details>
         <summary>Est-ce que je paie quelque chose sur ce site ?</summary>
@@ -1241,6 +1293,9 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <h2>Vingt-trois ans de chemin</h2>
       <p>Le projet n'est pas né hier. Il s'est construit par étapes, porté par plusieurs générations de responsables.</p>
     </div>
+    <details class="replier">
+      <summary>Les étapes, de 2003 à aujourd'hui</summary>
+      <div class="contenu">
     <ol class="frise">
       <li class="jalon"><time>2003</time><p><strong>Naissance du projet KBF</strong> à Cergy.</p></li>
       <li><time>2008</time><p>Ouverture d'une bibliothèque à Bagnolet.</p></li>
@@ -1253,6 +1308,8 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <li><time>8 février 2025</time><p>Nouveau bureau. Sokhna Aminata Ndiaye, présidente.</p></li>
       <li class="jalon"><time>9 mai 2026</time><p><strong>Dîner de levée de fonds</strong> à Champigny-sur-Marne.</p></li>
     </ol>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -1933,6 +1990,19 @@ function nouvelleCle(){
   let envoiEnCours = false;
 
   const forfaitChoisi = () => (form.querySelector('input[name="forfait"]:checked') || {}).value;
+  const deviseChoisie = () =>
+    forfaitChoisi() === 'libre' ? (document.getElementById('devise').value || 'EUR') : 'EUR';
+  const DEVISES = {
+    EUR: { court:'€', plancher:5, plafond:100000 },
+    XOF: { court:'FCFA', plancher:1000, plafond:50000000 },
+  };
+  const somme = (v, dev) => {
+    const d = dev || deviseChoisie();
+    const n = Number(v) || 0;
+    return d === 'XOF'
+      ? n.toLocaleString('fr-FR', { maximumFractionDigits:0 }) + ' FCFA'
+      : n.toLocaleString('fr-FR', { maximumFractionDigits:2 }) + ' €';
+  };
   const montant = () => {
     const f = forfaitChoisi();
     if(f === 'libre') return parseFloat(String(champLibre.value).replace(',','.')) || 0;
@@ -1962,14 +2032,21 @@ function nouvelleCle(){
   }
 
   function majTotal(){
-    const m = montant(), d = duree();
-    document.getElementById('totalAffiche').textContent = m > 0 ? euro(m * d) : '—';
+    const m = montant(), d = duree(), dev = deviseChoisie();
+    document.getElementById('totalAffiche').textContent = m > 0 ? somme(m * d, dev) : '—';
     const horizon = m * Math.min(d, CONFIG.horizon);
     document.getElementById('sousTotal').textContent = m > 0
       ? (d === CONFIG.horizon
-          ? euro2(m) + ' par mois pendant ' + d + ' mois'
-          : euro2(m) + ' par mois pendant ' + d + ' mois, dont ' + euro(horizon) + ' sur les 24 mois du projet')
+          ? somme(m, dev) + ' par mois pendant ' + d + ' mois'
+          : somme(m, dev) + ' par mois pendant ' + d + ' mois, dont ' + somme(horizon, dev) + ' sur les 24 mois du projet')
       : '';
+    const aideDevise = document.getElementById('aideDevise');
+    if(aideDevise){
+      const reg = DEVISES[dev];
+      aideDevise.textContent = forfaitChoisi() === 'libre'
+        ? 'Entre ' + reg.plancher.toLocaleString('fr-FR') + ' et ' + reg.plafond.toLocaleString('fr-FR') + ' ' + reg.court + ' par mois. Les devises sont suivies séparément, jamais additionnées.'
+        : '';
+    }
     document.getElementById('aideDuree').textContent = d === CONFIG.horizon
       ? ''
       : 'Seuls les ' + CONFIG.horizon + ' premiers mois comptent dans l’horizon du projet.';
@@ -1979,6 +2056,7 @@ function nouvelleCle(){
     try {
       const d = {
         forfait: forfaitChoisi(), montantLibre: champLibre.value,
+        devise: document.getElementById('devise').value,
         duree: document.getElementById('duree').value,
         preference: document.getElementById('preference').value,
         prenom: document.getElementById('prenom').value, nom: document.getElementById('nom').value,
@@ -2072,6 +2150,7 @@ function nouvelleCle(){
       zone: document.getElementById('zone').value,
       dahira: document.getElementById('dahira').value,
       forfait: forfaitChoisi(),
+      devise: deviseChoisie(),
       montant_mensuel_declare: montant(),
       duree_mois: duree(),
       preference_reglement: document.getElementById('preference').value,
@@ -2117,13 +2196,13 @@ function nouvelleCle(){
     const boite = document.getElementById('confirmationEngagement');
     const lignes = [
       ['Votre référence', '<span class="ref">' + echapper(rep.reference) + '</span>'],
-      ['Montant mensuel déclaré', euro2(charge.montant_mensuel_declare)],
+      ['Montant mensuel déclaré', somme(charge.montant_mensuel_declare, charge.devise)],
       ['Durée choisie', charge.duree_mois + ' mois'],
-      ['Total prévisionnel', euro(charge.montant_mensuel_declare * charge.duree_mois)],
+      ['Total prévisionnel', somme(charge.montant_mensuel_declare * charge.duree_mois, charge.devise)],
     ];
     if(charge.duree_mois !== CONFIG.horizon){
       lignes.push(['Dont sur les 24 mois du projet',
-        euro(charge.montant_mensuel_declare * Math.min(charge.duree_mois, CONFIG.horizon))]);
+        somme(charge.montant_mensuel_declare * Math.min(charge.duree_mois, CONFIG.horizon), charge.devise)]);
     }
     if(charge.email) lignes.push(['Accusé de réception envoyé à', echapper(charge.email)]);
     document.getElementById('confirmationDetails').innerHTML =

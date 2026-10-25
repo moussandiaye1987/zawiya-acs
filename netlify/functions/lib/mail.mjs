@@ -28,10 +28,15 @@ export function mailConfigure() {
 }
 
 /**
+ * @param {object}  options
+ * @param {Array<{nom: string, base64: string}>} [options.pieces]
+ *        Pièces jointes. Le contenu est déjà encodé en base64.
+ *        Elles ne sont jamais déposées sur le site : elles n'existent que
+ *        dans le message, à destination de l'association.
  * @returns {Promise<{envoye: boolean, motif?: string}>}
  * Ne lève jamais : un échec d'e-mail ne doit pas faire perdre une soumission.
  */
-export async function envoyer({ destinataire, sujet, texte, html }) {
+export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
   if (!destinataire) return { envoye: false, motif: 'destinataire absent' };
   if (!mailConfigure()) return { envoye: false, motif: 'service e-mail non configuré' };
 
@@ -52,6 +57,10 @@ export async function envoyer({ destinataire, sujet, texte, html }) {
               subject: sujet,
               textContent: texte,
               htmlContent: html || undefined,
+              // Brevo attend { name, content } avec un contenu en base64.
+              attachment: pieces && pieces.length
+                ? pieces.map((p) => ({ name: p.nom, content: p.base64 }))
+                : undefined,
             }),
           })
         : await fetch('https://api.resend.com/emails', {
@@ -66,6 +75,10 @@ export async function envoyer({ destinataire, sujet, texte, html }) {
               subject: sujet,
               text: texte,
               html: html || undefined,
+              // Resend attend { filename, content } avec un contenu en base64.
+              attachments: pieces && pieces.length
+                ? pieces.map((p) => ({ filename: p.nom, content: p.base64 }))
+                : undefined,
             }),
           });
 

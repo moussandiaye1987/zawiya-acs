@@ -1,9 +1,10 @@
 import { inserer, insererIdempotent, lire, rpc, baseConfiguree, ErreurBase } from './lib/db.mjs';
 import { envoyer, gabarit, echapper } from './lib/mail.mjs';
+import { fabriquerCSV, nomFichierCSV, totauxParDevise, montant } from './lib/csv.mjs';
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP, suspectRobot,
-  departementDepuisCP, fabriquerReference, euros, signer,
-  VERSION_CONSENTEMENT, MENTION_SANS_PAIEMENT, FORFAITS, ZONES, DUREES,
+  departementDepuisCP, fabriquerReference, signer,
+  VERSION_CONSENTEMENT, MENTION_SANS_PAIEMENT, FORFAITS, ZONES, DUREES, DEVISES,
 } from './lib/commun.mjs';
 
 export const config = { path: '/api/engagement' };
@@ -59,12 +60,21 @@ export default async (req, context) => {
   const forfait = nettoyer(d.forfait, 20);
   if (!forfait || !FORFAITS[forfait]) fautes.forfait = 'Choisissez un forfait.';
 
-  let montant = FORFAITS[forfait]?.montant;
+  let montantMensuel = FORFAITS[forfait]?.montant;
   if (forfait === 'libre') {
-    montant = Number(String(d.montant_mensuel_declare).replace(',', '.'));
-    if (!Number.isFinite(montant) || montant < 5 || montant > 100000) {
-      fautes.montant_mensuel_declare = 'Indiquez un montant mensuel entre 5 et 100 000 €.';
+    montantMensuel = Number(String(d.montant_mensuel_declare).replace(',', '.'));
+    const plancher = d.devise === 'XOF' ? 1000 : 5;
+    const plafond = d.devise === 'XOF' ? 50000000 : 100000;
+    if (!Number.isFinite(montantMensuel) || montantMensuel < plancher || montantMensuel > plafond) {
+      fautes.montant_mensuel_declare = `Indiquez un montant mensuel entre ${plancher.toLocaleString('fr-FR')} et ${plafond.toLocaleString('fr-FR')}.`;
     }
+  }
+
+  // La devise ne s'applique qu'au montant libre : les forfaits sont en euros.
+  let devise = 'EUR';
+  if (forfait === 'libre') {
+    devise = nettoyer(d.devise, 8) || 'EUR';
+    if (!DEVISES[devise]) fautes.devise = 'Choisissez une devise.';
   }
 
   const duree = Number(d.duree_mois);
@@ -93,7 +103,9 @@ export default async (req, context) => {
     ...champs,
     departement: departementDepuisCP(champs.code_postal),
     forfait,
-    montant_mensuel_declare: montant,
+    montant_mensuel_declare: montantMensuel,
+    devise,
+    periodicite: 'mensuelle',
     duree_mois: duree,
     consentement: true,
     consentement_version: VERSION_CONSENTEMENT,
@@ -140,6 +152,7 @@ export default async (req, context) => {
     reference: enregistrement.reference,
     total_previsionnel: Number(enregistrement.total_previsionnel),
     contribution_horizon_24: Number(enregistrement.montant_mensuel_declare) * Math.min(duree, 24),
+    devise: enregistrement.devise,
     mention: MENTION_SANS_PAIEMENT,
   });
 };
@@ -147,61 +160,158 @@ export default async (req, context) => {
 async function notifier(e, context) {
   const base = process.env.URL || context?.site?.url || '';
   const destAssoc = process.env.EMAIL_ASSOCIATION;
-  const tableauBord = process.env.URL_TABLEAU_BORD || '';
-
   const taches = [];
 
   if (destAssoc) {
-    const corps = `
-      <p><strong>Nouvel engagement enregistré.</strong> Aucun paiement n'a été effectué.</p>
-      <table cellpadding="4" style="font-size:14px">
-        <tr><td style="color:#6b7d71">Référence</td><td><strong>${echapper(e.reference)}</strong></td></tr>
-        <tr><td style="color:#6b7d71">Nom</td><td>${echapper(e.prenom)} ${echapper(e.nom)}</td></tr>
-        <tr><td style="color:#6b7d71">Contact</td><td>${echapper(e.email || '—')} · ${echapper(e.telephone || '—')}</td></tr>
-        <tr><td style="color:#6b7d71">Zone</td><td>${echapper(e.zone || 'non précisée')}</td></tr>
-        <tr><td style="color:#6b7d71">Dahira</td><td>${echapper(e.dahira || 'non précisée')}</td></tr>
-        <tr><td style="color:#6b7d71">Montant mensuel déclaré</td><td><strong>${euros(e.montant_mensuel_declare)}</strong> (${echapper(e.forfait)})</td></tr>
-        <tr><td style="color:#6b7d71">Durée</td><td>${e.duree_mois} mois</td></tr>
-        <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${euros(e.total_previsionnel)}</td></tr>
-        <tr><td style="color:#6b7d71">Préférence de règlement</td><td>${echapper(e.preference_reglement || 'non précisée')}</td></tr>
-      </table>
-      ${e.message ? `<p style="color:#6b7d71">Message : ${echapper(e.message)}</p>` : ''}
-      ${tableauBord ? `<p><a href="${tableauBord}" style="color:#1E7A43">Ouvrir le tableau de suivi</a></p>` : ''}`;
-    taches.push(['association', destAssoc, journaliser(e, destAssoc, 'engagement_association',
-      envoyer({
-        destinataire: destAssoc,
-        sujet: `Engagement ${e.reference} — ${e.prenom} ${e.nom} — ${euros(e.montant_mensuel_declare)}/mois`,
-        texte: `Nouvel engagement enregistré. Aucun paiement effectué.\nRéférence : ${e.reference}\n${e.prenom} ${e.nom}\n${e.email || ''} ${e.telephone || ''}\nMontant mensuel déclaré : ${euros(e.montant_mensuel_declare)}\nDurée : ${e.duree_mois} mois\nTotal prévisionnel : ${euros(e.total_previsionnel)}`,
-        html: gabarit('Nouvel engagement enregistré', corps),
-      }))]);
+    taches.push(journaliser(e, destAssoc, 'engagement_association', mailAssociation(e, destAssoc)));
   }
-
   if (e.email) {
-    const lienSuspendre = base
-      ? `${base}/api/participant?r=${encodeURIComponent(e.reference)}&t=${signer(e.jeton_prive)}&a=suspendre-rappels`
-      : null;
-    const corps = `
-      <p>Bonjour ${echapper(e.prenom)},</p>
-      <p>Nous avons bien enregistré votre engagement de contribution au projet de Zawiya Cheikh Ibrahim Niasse. Merci.</p>
-      <table cellpadding="4" style="font-size:14px">
-        <tr><td style="color:#6b7d71">Votre référence</td><td><strong>${echapper(e.reference)}</strong></td></tr>
-        <tr><td style="color:#6b7d71">Montant mensuel déclaré</td><td>${euros(e.montant_mensuel_declare)}</td></tr>
-        <tr><td style="color:#6b7d71">Durée choisie</td><td>${e.duree_mois} mois</td></tr>
-        <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${euros(e.total_previsionnel)}</td></tr>
-      </table>
-      <p style="background:#EFE8DC;border-left:3px solid #1E7A43;padding:10px 14px"><strong>${MENTION_SANS_PAIEMENT}</strong></p>
-      <p>Un membre du bureau vous recontactera pour la mise en place du versement. Indiquez votre référence sur chacun de vos virements.</p>
-      ${e.rappels_actifs && lienSuspendre ? `<p style="font-size:13px;color:#6b7d71">Vous recevrez un rappel courtois chaque fin de mois${e.rappel_whatsapp && !e.rappel_email ? ' sur WhatsApp' : e.rappel_whatsapp ? ' par e-mail et sur WhatsApp' : ''}. <a href="${lienSuspendre}" style="color:#1E7A43">Suspendre ces rappels</a> — cela n'annule pas votre engagement.</p>` : ''}`;
-    taches.push(['participant', e.email, journaliser(e, e.email, 'engagement_participant',
-      envoyer({
-        destinataire: e.email,
-        sujet: `Votre engagement est enregistré — ${e.reference}`,
-        texte: `Bonjour ${e.prenom},\n\nVotre engagement de contribution est enregistré.\nRéférence : ${e.reference}\nMontant mensuel déclaré : ${euros(e.montant_mensuel_declare)}\nDurée : ${e.duree_mois} mois\nTotal prévisionnel : ${euros(e.total_previsionnel)}\n\n${MENTION_SANS_PAIEMENT}\n\nL'association vous recontactera.`,
-        html: gabarit('Votre engagement est enregistré', corps),
-      }))]);
+    taches.push(journaliser(e, e.email, 'engagement_participant', mailParticipant(e, base)));
+  }
+  await Promise.allSettled(taches);
+}
+
+/* ---------------------------------------------------------------------
+   E-MAIL À L'ASSOCIATION
+   Le nouvel engagement, le récapitulatif de tous les engagements à
+   l'instant de l'envoi, et le fichier CSV en pièce jointe. Les montants
+   sont présentés devise par devise, jamais additionnés entre elles.
+   --------------------------------------------------------------------- */
+async function mailAssociation(e, destinataire) {
+  const dev = e.devise || 'EUR';
+
+  // Récapitulatif et export : tous les engagements retenus, tests exclus.
+  let lignes = [];
+  let lectureEnEchec = false;
+  try {
+    lignes = await lire('v_export_suivi', 'select=*');
+  } catch (err) {
+    console.error('mailAssociation:lecture', err.message);
+    lectureEnEchec = true;
   }
 
-  await Promise.allSettled(taches.map(([, , p]) => p));
+  const totaux = totauxParDevise(lignes);
+  const maintenant = new Date();
+  const horodatage = new Intl.DateTimeFormat('fr-FR', {
+    timeZone: 'Europe/Paris', dateStyle: 'long', timeStyle: 'short',
+  }).format(maintenant);
+
+  const nouvelEngagement = `
+    <h2 style="font-family:Georgia,serif;font-weight:400;font-size:17px;margin:0 0 10px">Le nouvel engagement</h2>
+    <table cellpadding="4" style="font-size:14px;border-collapse:collapse">
+      <tr><td style="color:#6b7d71">Référence</td><td><strong>${echapper(e.reference)}</strong></td></tr>
+      <tr><td style="color:#6b7d71">Nom</td><td>${echapper(e.prenom)} ${echapper(e.nom)}</td></tr>
+      <tr><td style="color:#6b7d71">Contact</td><td>${echapper(e.email || '—')} · ${echapper(e.telephone || '—')}</td></tr>
+      <tr><td style="color:#6b7d71">Zone</td><td>${echapper(e.zone || 'non précisée')}${e.departement ? ` (${echapper(e.departement)})` : ''}</td></tr>
+      <tr><td style="color:#6b7d71">Dahira</td><td>${echapper(e.dahira || 'non précisée')}</td></tr>
+      <tr><td style="color:#6b7d71">Montant déclaré</td><td><strong>${montant(e.montant_mensuel_declare, dev)}</strong> par mois (forfait ${echapper(e.forfait)})</td></tr>
+      <tr><td style="color:#6b7d71">Durée</td><td>${e.duree_mois} mois</td></tr>
+      <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${montant(e.total_previsionnel, dev)}</td></tr>
+      <tr><td style="color:#6b7d71">Préférence de règlement</td><td>${echapper(e.preference_reglement || 'non précisée')}</td></tr>
+      <tr><td style="color:#6b7d71">Rappels</td><td>${e.rappel_email ? 'e-mail' : ''}${e.rappel_email && e.rappel_whatsapp ? ' et ' : ''}${e.rappel_whatsapp ? 'WhatsApp' : ''}${!e.rappel_email && !e.rappel_whatsapp ? 'aucun' : ''}</td></tr>
+    </table>
+    ${e.message ? `<p style="color:#6b7d71;font-size:14px">Message : ${echapper(e.message)}</p>` : ''}`;
+
+  const recapitulatif = lectureEnEchec
+    ? `<p style="color:#B4342A">Le récapitulatif n'a pas pu être calculé : la base n'a pas répondu. Le nouvel engagement ci-dessus est bien enregistré.</p>`
+    : `
+    <h2 style="font-family:Georgia,serif;font-weight:400;font-size:17px;margin:22px 0 4px">Tous les engagements enregistrés</h2>
+    <p style="font-size:13px;color:#6b7d71;margin:0 0 10px">Arrêté au ${horodatage}. Les engagements de test, annulés et en doublon sont exclus.</p>
+    ${totaux.length === 0 ? '<p style="font-size:14px">Aucun engagement enregistré à ce jour.</p>' : totaux.map((t) => `
+      <table cellpadding="5" style="font-size:14px;border-collapse:collapse;border:1px solid #d9d2c4;margin-bottom:10px">
+        <tr style="background:#EFE8DC">
+          <td colspan="2"><strong>${t.nombre} engagement${t.nombre > 1 ? 's' : ''} en ${echapper(t.libelle)}</strong>
+          <span style="color:#6b7d71">· périodicité ${t.periodicites.join(', ')}</span></td>
+        </tr>
+        <tr><td style="color:#6b7d71">Montant mensuel déclaré, au total</td><td><strong>${montant(t.mensuel, t.devise)}</strong> par mois</td></tr>
+        <tr><td style="color:#6b7d71">Prévisionnel sur l'horizon de 24 mois</td><td>${montant(t.horizon24, t.devise)}</td></tr>
+        <tr><td style="color:#6b7d71">Prévisionnel, toutes durées confondues</td><td>${montant(t.toutesDurees, t.devise)}</td></tr>
+      </table>`).join('')}
+    ${totaux.length > 1 ? '<p style="font-size:13px;color:#6b7d71">Les devises sont présentées séparément et ne sont jamais additionnées.</p>' : ''}`;
+
+  const pieceJointe = lectureEnEchec ? [] : [{
+    nom: nomFichierCSV(maintenant),
+    base64: Buffer.from(fabriquerCSV(lignes), 'utf8').toString('base64'),
+  }];
+
+  const corps = `
+    <p><strong>Nouvel engagement enregistré.</strong> Aucun paiement n'a été effectué.</p>
+    ${nouvelEngagement}
+    ${recapitulatif}
+    ${pieceJointe.length
+      ? `<p style="font-size:13px;color:#6b7d71">Le fichier <strong>${echapper(pieceJointe[0].nom)}</strong> joint à ce message contient le détail des ${lignes.length} engagement${lignes.length > 1 ? 's' : ''}. Il s'ouvre directement dans Excel. Il est réservé au bureau : ne le transférez pas.</p>`
+      : ''}`;
+
+  const texte = [
+    "Nouvel engagement enregistré. Aucun paiement effectué.",
+    '',
+    `Référence : ${e.reference}`,
+    `${e.prenom} ${e.nom}`,
+    `${e.email || ''} ${e.telephone || ''}`.trim(),
+    `Zone : ${e.zone || 'non précisée'}`,
+    `Montant déclaré : ${montant(e.montant_mensuel_declare, dev)} par mois`,
+    `Durée : ${e.duree_mois} mois`,
+    `Total prévisionnel : ${montant(e.total_previsionnel, dev)}`,
+    '',
+    `Tous les engagements enregistrés, arrêté au ${horodatage} :`,
+    ...(lectureEnEchec
+      ? ['Récapitulatif indisponible : la base n\'a pas répondu.']
+      : totaux.length
+        ? totaux.map((t) =>
+            `- ${t.nombre} en ${t.libelle} (périodicité ${t.periodicites.join(', ')}) : ` +
+            `${montant(t.mensuel, t.devise)} par mois, ` +
+            `${montant(t.horizon24, t.devise)} sur 24 mois`)
+        : ['Aucun engagement enregistré à ce jour.']),
+    '',
+    ...(pieceJointe.length ? [`Fichier joint : ${pieceJointe[0].nom}`] : []),
+  ].join('\n');
+
+  return envoyer({
+    destinataire,
+    sujet: `Engagement ${e.reference} — ${e.prenom} ${e.nom} — ${montant(e.montant_mensuel_declare, dev)}/mois`,
+    texte,
+    html: gabarit('Nouvel engagement enregistré', corps),
+    pieces: pieceJointe,
+  });
+}
+
+/* ---------------------------------------------------------------------
+   ACCUSÉ AU PARTICIPANT
+   Ses informations, et rien d'autre : ni récapitulatif collectif, ni
+   pièce jointe, ni lien vers quoi que ce soit d'interne.
+   --------------------------------------------------------------------- */
+function mailParticipant(e, base) {
+  const dev = e.devise || 'EUR';
+  const lienSuspendre = base
+    ? `${base}/api/participant?r=${encodeURIComponent(e.reference)}&t=${signer(e.jeton_prive)}&a=suspendre-rappels`
+    : null;
+
+  const corps = `
+    <p>Bonjour ${echapper(e.prenom)},</p>
+    <p>Nous avons bien enregistré votre engagement de contribution au projet de Zawiya Cheikh Ibrahim Niasse. Merci.</p>
+    <table cellpadding="4" style="font-size:14px">
+      <tr><td style="color:#6b7d71">Votre référence</td><td><strong>${echapper(e.reference)}</strong></td></tr>
+      <tr><td style="color:#6b7d71">Montant déclaré</td><td>${montant(e.montant_mensuel_declare, dev)} par mois</td></tr>
+      <tr><td style="color:#6b7d71">Durée choisie</td><td>${e.duree_mois} mois</td></tr>
+      <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${montant(e.total_previsionnel, dev)}</td></tr>
+    </table>
+    <p style="background:#EFE8DC;border-left:3px solid #1E7A43;padding:10px 14px"><strong>${MENTION_SANS_PAIEMENT}</strong></p>
+    <p>Un membre du bureau vous recontactera pour la mise en place du versement. Indiquez votre référence sur chacun de vos virements.</p>
+    ${e.rappels_actifs && lienSuspendre
+      ? `<p style="font-size:13px;color:#6b7d71">Vous recevrez un rappel courtois chaque fin de mois${e.rappel_whatsapp && !e.rappel_email ? ' sur WhatsApp' : e.rappel_whatsapp ? ' par e-mail et sur WhatsApp' : ''}. <a href="${lienSuspendre}" style="color:#1E7A43">Suspendre ces rappels</a> — cela n'annule pas votre engagement.</p>`
+      : ''}`;
+
+  return envoyer({
+    destinataire: e.email,
+    sujet: `Votre engagement est enregistré — ${e.reference}`,
+    texte: `Bonjour ${e.prenom},\n\nVotre engagement de contribution est enregistré.\n` +
+      `Référence : ${e.reference}\n` +
+      `Montant déclaré : ${montant(e.montant_mensuel_declare, dev)} par mois\n` +
+      `Durée : ${e.duree_mois} mois\n` +
+      `Total prévisionnel : ${montant(e.total_previsionnel, dev)}\n\n` +
+      `${MENTION_SANS_PAIEMENT}\n\nL'association vous recontactera.`,
+    html: gabarit('Votre engagement est enregistré', corps),
+  });
 }
 
 /** Trace chaque notification pour pouvoir la rejouer. */
