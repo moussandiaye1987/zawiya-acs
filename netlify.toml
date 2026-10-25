@@ -12,12 +12,11 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# --- Les aperçus de pull request n'envoient jamais de vrais e-mails ---
-[context.deploy-preview.environment]
-  MODE_APERCU = "1"
-
-[context.branch-deploy.environment]
-  MODE_APERCU = "1"
+# Les secrets sont limités au contexte Production dans Netlify : les
+# aperçus de pull request n'ont donc ni base ni service d'e-mail, et le
+# code le gère seul — les formulaires répondent « momentanément
+# indisponible » et le tableau de bord affiche « en cours de
+# consolidation ». Un aperçu ne peut pas écrire dans la vraie base.
 
 # --- Cache : les ressources ne changent jamais, la page oui ---
 [[headers]]
