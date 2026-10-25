@@ -4,9 +4,16 @@
   "version": "2.0.0",
   "description": "Site public du projet de Zawiya Cheikh Ibrahim Niasse — Association Connaissance et Savoir",
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "netlify dev",
-    "verifier": "node outils/verifier.mjs"
+    "verifier": "node outils/verifier.mjs && node outils/verifier-page.mjs",
+    "verifier:fonctions": "node outils/verifier.mjs",
+    "verifier:page": "node outils/verifier-page.mjs"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1"
   }
 }

@@ -26,7 +26,9 @@ netlify/functions/      traitement côté serveur
   rappels-test.mjs      GET  /api/rappels-test        (déclenchement manuel, protégé)
   relance-whatsapp.mjs  GET  /api/relance-whatsapp    (page du bureau, protégée)
   lib/                  base, e-mails, validation, logique des rappels
-outils/verifier.mjs     banc d'essai hors ligne des fonctions
+outils/verifier.mjs     banc d'essai des fonctions serveur
+outils/verifier-page.mjs banc d'essai de la page publique
+.github/workflows/      vérification automatique à chaque envoi
 db/README.md            note sur le schéma
 netlify.toml            configuration Netlify
 .env.example            liste des variables, sans aucune valeur
@@ -273,13 +275,38 @@ dans le schéma mais reste à faux : le SMS n'est plus branché.
 
 ---
 
-## 9. Vérifier avant de livrer
+## 9. Chaîne automatique
 
-```bash
-node outils/verifier.mjs
+```
+Claude modifie le projet
+        │
+        ▼
+   git push origin main
+        │
+        ├──▶ GitHub Actions : 146 contrôles
+        │      échec → croix rouge sur le commit
+        │
+        └──▶ Netlify : déploiement automatique
+               publie public/, installe netlify/functions/
 ```
 
-87 contrôles hors ligne sur les fonctions serveur : validation, pièges
-anti-robot, doublons, panne du service d'e-mail, confidentialité des
-réponses, liens personnels, rappels, format des numéros et page de
-relance WhatsApp. Aucun appel réseau réel, aucun message envoyé.
+Rien à lancer à la main. Une pull request reçoit en plus son propre
+aperçu Netlify, et *Deploys → Published deploy* permet de revenir à
+n'importe quelle version antérieure.
+
+Les contrôles tournent sur GitHub sans aucun secret : la base et le
+service d'e-mail sont simulés.
+
+## 10. Vérifier avant de livrer
+
+```bash
+npm install     # la première fois seulement
+npm run verifier
+```
+
+146 contrôles hors ligne — 87 sur les fonctions serveur, 59 sur la page : validation, pièges
+publique dans un navigateur simulé : validation, pièges anti-robot,
+doublons, panne du service d'e-mail, confidentialité des réponses, liens
+personnels, rappels, format des numéros, page de relance WhatsApp,
+structure, vocabulaire, calculs et accessibilité. Aucun appel réseau
+réel, aucun message envoyé.

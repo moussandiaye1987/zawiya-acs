@@ -1,0 +1,55 @@
+# Vérification automatique à chaque envoi.
+#
+# Les 146 contrôles tournent avant que Netlify ne déploie. Si l'un
+# échoue, une croix rouge apparaît sur le commit et sur la pull request :
+# le défaut se voit avant d'arriver en ligne.
+#
+# Aucun secret n'est nécessaire — les tests simulent la base et le
+# service d'e-mail, et ne joignent aucun service réel.
+
+name: Vérifier
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verifier:
+    name: Fonctions serveur et page publique
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Installer les dépendances de test
+        run: npm install --no-audit --no-fund
+
+      - name: Vérifier les fonctions serveur
+        run: npm run verifier:fonctions
+
+      - name: Vérifier la page publique
+        run: npm run verifier:page
+
+      - name: Contrôler qu'aucun secret n'est dans le dépôt
+        run: |
+          # Une vraie clé Supabase commence par eyJhbGciOi (JWT) ou sb_secret_.
+          # Les mentions du mot « service_role » dans la documentation sont
+          # attendues : on ne cherche que des valeurs réelles.
+          if git grep -nIE '(eyJhbGciOi[A-Za-z0-9_-]{20,}|sb_secret_[A-Za-z0-9]{10,})' -- . ':!.github/workflows'; then
+            echo "::error::Une clé semble présente dans le dépôt."
+            exit 1
+          fi
+          if git ls-files | grep -E '^\.env$|^\.env\.' | grep -v '\.env\.example'; then
+            echo "::error::Un fichier .env est suivi par Git."
+            exit 1
+          fi
+          echo "Aucun secret détecté."
