@@ -3,7 +3,11 @@ import { envoyer, gabarit, echapper } from './mail.mjs';
 import { euros, signer } from './commun.mjs';
 
 /**
- * Rappel mensuel de contribution.
+ * Rappel mensuel de contribution, par e-mail.
+ *
+ * WhatsApp n'est pas traité ici : il passe par la page de relance
+ * assistée (relance-whatsapp.mjs), où un responsable clique lui-même.
+ * Le SMS a été abandonné, son coût étant prohibitif.
  *
  * La fonction tourne toutes les heures, indépendamment de toute visite du
  * site. À chaque passage elle regarde l'heure locale à Paris et n'agit que
@@ -49,7 +53,7 @@ export async function executerRappels(req) {
   const nomMois = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
     .format(new Date(`${mois}T12:00:00Z`));
 
-  const candidats = await rpc('engagements_a_rappeler', { p_mois: mois });
+  const candidats = await rpc('engagements_a_rappeler', { p_mois: mois, p_canal: 'email' });
   const resultats = { mois, examines: candidats.length, envoyes: 0, echecs: 0, ignores: 0 };
 
   for (const c of candidats) {
@@ -62,18 +66,6 @@ export async function executerRappels(req) {
         resultats.ignores++;
         continue;
       }
-    }
-
-    if (c.canal === 'sms') {
-      if (!parametres.canal_sms) {
-        await marquer(c, mois, 'sms', 'ignore', 'canal SMS désactivé');
-        resultats.ignores++;
-        continue;
-      }
-      // Aucun fournisseur SMS n'est branché : voir README, section SMS.
-      await marquer(c, mois, 'sms', 'echec', 'aucun fournisseur SMS configuré');
-      resultats.echecs++;
-      continue;
     }
 
     if (!parametres.canal_email || !c.email) {

@@ -22,8 +22,9 @@ netlify/functions/      traitement côté serveur
   dahira.mjs            POST /api/dahira
   donnees-publiques.mjs GET  /api/donnees-publiques   (agrégats + annuaire validé)
   participant.mjs       GET  /api/participant         (liens personnels des e-mails)
-  rappels-mensuels.mjs  tâche planifiée, toutes les heures
+  rappels-mensuels.mjs  tâche planifiée, toutes les heures (e-mail)
   rappels-test.mjs      GET  /api/rappels-test        (déclenchement manuel, protégé)
+  relance-whatsapp.mjs  GET  /api/relance-whatsapp    (page du bureau, protégée)
   lib/                  base, e-mails, validation, logique des rappels
 outils/verifier.mjs     banc d'essai hors ligne des fonctions
 db/README.md            note sur le schéma
@@ -52,7 +53,8 @@ vues `v_export_engagements` et `v_export_dahiras`.
 **Limites à connaître.** Un projet Supabase gratuit se met en veille après
 une semaine sans aucune requête — la tâche horaire des rappels suffit à
 l'en empêcher. Brevo plafonne à 300 e-mails par jour, large pour l'usage
-prévu sauf pic exceptionnel. Le SMS n'est pas branché : voir §7.
+prévu sauf pic exceptionnel. Les relances WhatsApp demandent un clic
+humain : voir §7.
 
 ---
 
@@ -162,7 +164,7 @@ Table `parametres_rappels`, une seule ligne :
 | `jour_du_mois` | `dernier` | `dernier`, ou un numéro de jour |
 | `heure_locale` | `18` | Heure de Paris, heure d'été comprise |
 | `canal_email` | `true` | |
-| `canal_sms` | `false` | Voir §7 |
+| `canal_whatsapp` | `true` | Alimente la page de relance assistée, §7 |
 | `instructions_reglement` | IBAN de l'ACS | Repris tel quel dans l'e-mail |
 | `contact_difficulte` | adresse de contact | Repris tel quel dans l'e-mail |
 
@@ -194,21 +196,67 @@ Récapitulatif pour le bureau : vues `v_rappels_recapitulatif` et
 
 ---
 
-## 7. SMS — non activé
+## 7. WhatsApp — relance assistée
 
-Le canal existe dans le schéma mais aucun fournisseur n'est branché, et
-`canal_sms` vaut `false`. Un SMS étant payant, le choix revient au
-bureau. Ordres de grandeur en France, à vérifier au moment de décider :
-Brevo, OVH ou Twilio facturent entre 4 et 9 centimes par SMS. Pour
-1 000 personnes rappelées chaque mois, cela représente **40 à 90 € par
-mois**, soit 1 000 à 2 200 € sur les deux ans du projet.
+Le SMS a été abandonné : 4 à 9 centimes le message, soit 40 à 90 € par
+mois pour 1 000 personnes. WhatsApp le remplace, **sans rien coûter**.
 
-Pour l'activer : choisir un fournisseur, l'inscrire dans
-`sms_fournisseur`, ajouter sa clé en variable d'environnement, compléter
-la branche `canal === 'sms'` de `lib/rappels.mjs`, et recueillir un
-consentement explicite au SMS — l'actuel ne porte que sur l'e-mail.
+### Comment ça marche
 
----
+À l'inscription, chacun choisit son canal : e-mail, WhatsApp, les deux,
+ou aucun. L'e-mail part tout seul. WhatsApp passe par une page réservée
+au bureau :
+
+```
+https://VOTRE-SITE/api/relance-whatsapp?cle=SECRET_ADMIN
+```
+
+Elle liste les personnes à relancer ce mois-ci et affiche pour chacune un
+bouton **Ouvrir WhatsApp**. Le clic ouvre WhatsApp avec le message déjà
+écrit — prénom, mois, montant, référence, instructions de règlement — il
+ne reste qu'à l'envoyer. De retour sur la page, **Marquer comme fait**
+retire la personne de la liste.
+
+Les numéros sont mis au format international automatiquement (06… → +33,
++221 reconnu). Ceux dont le format n'est pas certain, un fixe ou un
+numéro étranger inhabituel, sont affichés à part, sous l'intitulé
+« numéros à vérifier » : mieux vaut un envoi manuel qu'un message chez un
+inconnu.
+
+### Pourquoi pas un envoi automatique
+
+Deux raisons, et aucune n'est technique.
+
+**Envoyer en masse depuis un WhatsApp ordinaire fait bloquer le numéro.**
+Des centaines de messages identiques vers des gens qui n'ont pas
+enregistré votre numéro déclenchent les filtres anti-spam de Meta. Le
+numéro de l'association serait suspendu, et c'est souvent définitif.
+
+**L'API officielle coûte surtout en abonnement.** Le message utilitaire
+revient à 1 à 4 centimes en France, moins cher que le SMS. Mais il faut
+une vérification d'entreprise chez Meta, un numéro dédié, des modèles de
+message approuvés à l'avance, et un abonnement de plateforme entre 30 et
+100 € par mois — qui dépasse le coût des messages eux-mêmes à ce volume.
+
+Le clic humain reste donc la bonne réponse tant que le nombre
+d'engagements se compte en dizaines ou en centaines. Si l'association
+dépasse plusieurs centaines de relances mensuelles, l'API devient
+défendable : le code est prêt à l'accueillir, il suffira de remplacer la
+page assistée par un envoi direct.
+
+### Consentement
+
+Le choix du canal vaut consentement, et il est enregistré par personne.
+Une personne qui n'a pas coché WhatsApp n'apparaît jamais dans la liste.
+Le lien de désinscription des e-mails coupe **tous** les rappels, les
+deux canaux compris, sans annuler l'engagement.
+
+### Réglages
+
+Table `parametres_rappels` : `canal_whatsapp` active ou désactive la
+page. `instructions_reglement` et `contact_difficulte` alimentent le
+texte du message, comme pour l'e-mail. La colonne `canal_sms` subsiste
+dans le schéma mais reste à faux : le SMS n'est plus branché.
 
 ## 8. Confidentialité
 
@@ -231,7 +279,7 @@ consentement explicite au SMS — l'actuel ne porte que sur l'e-mail.
 node outils/verifier.mjs
 ```
 
-70 contrôles hors ligne sur les fonctions serveur : validation, pièges
+87 contrôles hors ligne sur les fonctions serveur : validation, pièges
 anti-robot, doublons, panne du service d'e-mail, confidentialité des
-réponses, liens personnels, rappels. Aucun appel réseau réel, aucun
-e-mail envoyé.
+réponses, liens personnels, rappels, format des numéros et page de
+relance WhatsApp. Aucun appel réseau réel, aucun message envoyé.

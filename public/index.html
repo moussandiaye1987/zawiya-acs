@@ -833,10 +833,19 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
         </label>
         <p class="erreur" data-pour="consentement" hidden></p>
 
-        <label class="case">
-          <input type="checkbox" id="consentementRappels" checked>
-          <span>J'accepte de recevoir par e-mail un rappel courtois en fin de mois. Je pourrai l'interrompre à tout moment sans annuler mon engagement.</span>
-        </label>
+        <fieldset>
+          <legend>Mon rappel mensuel</legend>
+          <p class="aide" style="margin:0 0 .7rem">Un message courtois en fin de mois, pour vous aider à honorer votre engagement. Interruptible à tout moment, sans annuler l'engagement.</p>
+          <label class="case">
+            <input type="checkbox" id="rappelEmail" checked>
+            <span>Par <b>e-mail</b></span>
+          </label>
+          <label class="case" style="margin-top:.5rem">
+            <input type="checkbox" id="rappelWhatsapp">
+            <span>Par <b>WhatsApp</b>, au numéro indiqué plus haut</span>
+          </label>
+          <p class="aide" id="aideRappel" style="margin:.6rem 0 0"></p>
+        </fieldset>
 
         <div class="piege" aria-hidden="true">
           <label for="site_web">Ne pas remplir</label>
@@ -1932,6 +1941,26 @@ function nouvelleCle(){
   };
   const duree = () => parseInt(document.getElementById('duree').value, 10) || CONFIG.horizon;
 
+  function majRappel(){
+    const email = document.getElementById('email').value.trim();
+    const tel = document.getElementById('telephone').value.trim();
+    const parMail = document.getElementById('rappelEmail').checked;
+    const parWa = document.getElementById('rappelWhatsapp').checked;
+    const manques = [];
+    if(parMail && !email) manques.push('une adresse e-mail');
+    if(parWa && !tel) manques.push('un numéro de téléphone');
+    const aide = document.getElementById('aideRappel');
+    if(manques.length){
+      aide.textContent = 'Renseignez ' + manques.join(' et ') + ' plus haut, sinon ce rappel ne pourra pas vous parvenir.';
+      aide.style.color = 'var(--alerte)';
+    } else if(!parMail && !parWa){
+      aide.textContent = 'Vous ne recevrez aucun rappel.';
+      aide.style.color = '';
+    } else {
+      aide.textContent = '';
+    }
+  }
+
   function majTotal(){
     const m = montant(), d = duree();
     document.getElementById('totalAffiche').textContent = m > 0 ? euro(m * d) : '—';
@@ -1982,9 +2011,9 @@ function nouvelleCle(){
       blocLibre.hidden = e.target.value !== 'libre';
       if(e.target.value === 'libre') champLibre.focus();
     }
-    majTotal(); sauver();
+    majTotal(); majRappel(); sauver();
   });
-  form.addEventListener('input', () => { majTotal(); sauver(); });
+  form.addEventListener('input', () => { majTotal(); majRappel(); sauver(); });
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -2048,7 +2077,8 @@ function nouvelleCle(){
       preference_reglement: document.getElementById('preference').value,
       message: document.getElementById('message').value,
       consentement: true,
-      consentement_rappels: document.getElementById('consentementRappels').checked,
+      rappel_email: document.getElementById('rappelEmail').checked && Boolean(email),
+      rappel_whatsapp: document.getElementById('rappelWhatsapp').checked && Boolean(tel),
     };
 
     try {
@@ -2116,6 +2146,7 @@ function nouvelleCle(){
 
   charger();
   majTotal();
+  majRappel();
 })();
 
 /* =====================================================================

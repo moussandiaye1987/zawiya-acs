@@ -52,12 +52,16 @@ globalThis.fetch = async (url, options = {}) => {
       APPELS.rpc.push(nom);
       if(nom === 'compte_soumissions_recentes') return repJSON(0);
       if(nom === 'engagements_a_rappeler'){
-        // on reproduit le filtre de la fonction SQL : pas deux fois le même mois
-        const { p_mois } = JSON.parse(options.body || '{}');
+        // on reproduit le filtre de la fonction SQL : un seul rappel par
+        // personne et par mois, tous canaux confondus
+        const { p_mois, p_canal } = JSON.parse(options.body || '{}');
         const deja = new Set(BASE.rappels
           .filter(r => r.mois === p_mois && ['envoye','ignore'].includes(r.statut))
           .map(r => r.engagement_id));
-        return repJSON((BASE.engagements_a_rappeler || []).filter(c => !deja.has(c.engagement_id)));
+        return repJSON((BASE.engagements_a_rappeler || [])
+          .filter(c => !deja.has(c.engagement_id))
+          .filter(c => !c.canal_voulu || c.canal_voulu === p_canal)
+          .map(c => ({ ...c, canal: p_canal })));
       }
       return repJSON(null);
     }
@@ -403,15 +407,63 @@ serie('RAPPELS MENSUELS');
   r = await executerRappels(req('?forcer=1'));
   verifier('aucun second envoi le même mois', APPELS.mails.length === 1);
 
-  // canal SMS désactivé
+  // une personne qui n'a choisi que WhatsApp ne doit rien recevoir par e-mail
   reinitialiser();
   BASE.parametres_rappels = [{ id:1, actifs:true, jour_du_mois:'dernier', heure_locale:18,
-    fuseau:'Europe/Paris', canal_email:true, canal_sms:false, mode_test:false,
+    fuseau:'Europe/Paris', canal_email:true, canal_whatsapp:true, canal_sms:false, mode_test:false,
     destinataires_test:[], instructions_reglement:'x', contact_difficulte:'y' }];
-  BASE.engagements_a_rappeler = [{ engagement_id:'id-s', reference:'R', prenom:'P', nom:'N',
-    email:null, telephone:'0600000000', canal:'sms', montant_mensuel_declare:25, jeton_prive:'j' }];
+  BASE.engagements_a_rappeler = [{ engagement_id:'id-w', reference:'R', prenom:'P', nom:'N',
+    email:null, telephone:'0600000000', canal_voulu:'whatsapp',
+    montant_mensuel_declare:25, jeton_prive:'j' }];
   r = await executerRappels(req('?forcer=1')); c = await r.json();
-  verifier('SMS désactivé par défaut : rien n\'est envoyé', c.ignores === 1 && APPELS.mails.length === 0);
+  verifier('un abonné WhatsApp ne reçoit aucun e-mail', c.envoyes === 0 && APPELS.mails.length === 0);
+}
+
+/* ------------------------------------------------------------------ */
+serie('RELANCE WHATSAPP');
+{
+  const { versInternational, lienWhatsApp } = await import('../netlify/functions/lib/telephone.mjs');
+  verifier('numéro français converti', versInternational('06 76 55 10 98').e164 === '33676551098');
+  verifier('numéro sénégalais converti', versInternational('+221 71 012 49 30').e164 === '221710124930');
+  verifier('numéro fixe signalé comme douteux', versInternational('01 42 00 00 00').certain === false);
+  verifier('format inconnu signalé', versInternational('12345').certain === false);
+  verifier('numéro vide refusé', versInternational('').e164 === null);
+  const l = lienWhatsApp('0676551098', 'Bonjour Aminata, référence ZAWIYA-2026-ABCDEF');
+  verifier('lien wa.me bien formé', l.url.startsWith('https://wa.me/33676551098?text='));
+  verifier('message encodé dans le lien', decodeURIComponent(l.url.split('text=')[1]).includes('ZAWIYA-2026-ABCDEF'));
+
+  process.env.SECRET_ADMIN = 'admin-de-test';
+  const { default: relance } = await import('../netlify/functions/relance-whatsapp.mjs');
+  reinitialiser();
+  BASE.parametres_rappels = [{ id:1, actifs:true, canal_whatsapp:true,
+    instructions_reglement:'Virement IBAN FR76...', contact_difficulte:'contact@exemple.test' }];
+  BASE.engagements_a_rappeler = [];
+  BASE.rappels = [];
+
+  let r = await relance(new Request('https://site.test/api/relance-whatsapp'));
+  verifier('page refusée sans la clé', r.status === 403);
+
+  BASE.engagements_a_rappeler = [{ engagement_id:'id-1', reference:'ZAWIYA-2026-QQQQQQ',
+    prenom:'Fatou', nom:'DIOP', email:null, telephone:'06 11 22 33 44',
+    montant_mensuel_declare:50, jeton_prive:'jeton-x' }];
+  r = await relance(new Request('https://site.test/api/relance-whatsapp?cle=admin-de-test'));
+  const html = await r.text();
+  verifier('page servie avec la clé', r.status === 200);
+  verifier('la personne est listée', html.includes('Fatou') && html.includes('ZAWIYA-2026-QQQQQQ'));
+  verifier('un lien WhatsApp est proposé', html.includes('https://wa.me/33611223344'));
+  verifier('aucun message n\'a été envoyé automatiquement', APPELS.mails.length === 0);
+  verifier('la page ne parle ni de retard ni d\'impayé', !/retard|impay/i.test(html));
+  verifier('la page est exclue des moteurs de recherche', /noindex/.test(html));
+
+  // marquage : la personne doit sortir de la liste
+  r = await relance(new Request('https://site.test/api/relance-whatsapp?cle=admin-de-test&marquer=id-1'));
+  verifier('le marquage redirige', r.status === 303);
+  verifier('le rappel est journalisé',
+    BASE.rappels.length === 1 && BASE.rappels[0].canal === 'whatsapp' && BASE.rappels[0].statut === 'envoye');
+
+  r = await relance(new Request('https://site.test/api/relance-whatsapp?cle=admin-de-test'));
+  const html2 = await r.text();
+  verifier('la personne a disparu de la liste', !html2.includes('ZAWIYA-2026-QQQQQQ'));
 }
 
 /* ------------------------------------------------------------------ */

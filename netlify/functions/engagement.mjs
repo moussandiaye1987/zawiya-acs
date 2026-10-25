@@ -98,9 +98,14 @@ export default async (req, context) => {
     consentement: true,
     consentement_version: VERSION_CONSENTEMENT,
     consentement_le: new Date().toISOString(),
-    consentement_rappels: d.consentement_rappels === true,
-    canal_rappel: d.consentement_rappels === true && champs.email ? 'email' : 'aucun',
-    rappels_actifs: d.consentement_rappels === true,
+    // canaux de rappel : chacun doit être possible ET consenti
+    rappel_email: d.rappel_email === true && Boolean(champs.email),
+    rappel_whatsapp: d.rappel_whatsapp === true && Boolean(champs.telephone),
+    consentement_rappels: d.rappel_email === true || d.rappel_whatsapp === true,
+    rappels_actifs: (d.rappel_email === true && Boolean(champs.email))
+                 || (d.rappel_whatsapp === true && Boolean(champs.telephone)),
+    canal_rappel: d.rappel_email === true && champs.email ? 'email'
+                : d.rappel_whatsapp === true && champs.telephone ? 'whatsapp' : 'aucun',
     est_test: d.est_test === true,
     ip_hash,
   };
@@ -186,7 +191,7 @@ async function notifier(e, context) {
       </table>
       <p style="background:#EFE8DC;border-left:3px solid #1E7A43;padding:10px 14px"><strong>${MENTION_SANS_PAIEMENT}</strong></p>
       <p>Un membre du bureau vous recontactera pour la mise en place du versement. Indiquez votre référence sur chacun de vos virements.</p>
-      ${lienSuspendre ? `<p style="font-size:13px;color:#6b7d71">Vous recevrez un rappel courtois chaque fin de mois. <a href="${lienSuspendre}" style="color:#1E7A43">Suspendre ces rappels</a> — cela n'annule pas votre engagement.</p>` : ''}`;
+      ${e.rappels_actifs && lienSuspendre ? `<p style="font-size:13px;color:#6b7d71">Vous recevrez un rappel courtois chaque fin de mois${e.rappel_whatsapp && !e.rappel_email ? ' sur WhatsApp' : e.rappel_whatsapp ? ' par e-mail et sur WhatsApp' : ''}. <a href="${lienSuspendre}" style="color:#1E7A43">Suspendre ces rappels</a> — cela n'annule pas votre engagement.</p>` : ''}`;
     taches.push(['participant', e.email, journaliser(e, e.email, 'engagement_participant',
       envoyer({
         destinataire: e.email,
