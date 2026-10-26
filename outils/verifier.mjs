@@ -21,11 +21,12 @@ process.env.URL = 'https://site.test';
 /* Base de données simulée                                             */
 /* ------------------------------------------------------------------ */
 const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [] };
-const APPELS = { mails: [], echecMail: false, rpc: [] };
+const APPELS = { mails: [], echecMail: false, rpc: [], geocodages: [], geocodageEnPanne: false };
 
 function reinitialiser(){
   Object.keys(BASE).forEach(k => { BASE[k].length = 0; });
   APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false;
+  APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false;
 }
 
 function repJSON(corps, status = 200){
@@ -35,6 +36,14 @@ function repJSON(corps, status = 200){
 globalThis.fetch = async (url, options = {}) => {
   const u = new URL(String(url));
   const methode = (options.method || 'GET').toUpperCase();
+
+  // --- API Adresse de data.gouv.fr ---
+  if(u.hostname === 'api-adresse.data.gouv.fr'){
+    APPELS.geocodages.push(u.searchParams.get('q'));
+    if(APPELS.geocodageEnPanne) throw new Error('réseau coupé');
+    return repJSON({ features: [{ geometry:{ coordinates:[2.441, 48.861] },
+                                  properties:{ score: 0.92 } }] });
+  }
 
   // --- fournisseur d'e-mails ---
   if(u.hostname === 'api.brevo.com'){
@@ -112,15 +121,35 @@ globalThis.fetch = async (url, options = {}) => {
       return repJSON(cible ? [cible] : []);
     }
 
-    // GET
+    // GET — on reproduit les opérateurs PostgREST réellement utilisés
     const q = u.searchParams;
     let resultat = lignes.slice();
     for(const [k, v] of q){
       if(k === 'select' || k === 'limit' || k === 'order') continue;
-      const val = String(v).replace(/^eq\./, '');
-      resultat = resultat.filter(l => String(l[k]) === val);
+      const brut = String(v);
+      if(brut.startsWith('eq.')){
+        const val = brut.slice(3);
+        resultat = resultat.filter(l => String(l[k]) === val);
+      } else if(brut.startsWith('ilike.')){
+        const val = brut.slice(6).toLowerCase();
+        resultat = resultat.filter(l => String(l[k] ?? '').toLowerCase() === val);
+      } else if(brut.startsWith('is.')){
+        const val = brut.slice(3);
+        const attendu = val === 'true' ? true : val === 'false' ? false : null;
+        resultat = resultat.filter(l => (l[k] ?? null) === attendu
+          || (attendu === false && !l[k]) || (attendu === true && Boolean(l[k])));
+      } else if(brut.startsWith('gte.')){
+        const val = brut.slice(4);
+        resultat = resultat.filter(l => String(l[k] ?? '') >= val);
+      } else if(brut.startsWith('lt.')){
+        const val = brut.slice(3);
+        resultat = resultat.filter(l => Number(l[k]) < Number(val));
+      } else {
+        resultat = resultat.filter(l => String(l[k]) === brut);
+      }
     }
-    return repJSON(resultat);
+    const limite = Number(q.get('limit'));
+    return repJSON(Number.isFinite(limite) && limite > 0 ? resultat.slice(0, limite) : resultat);
   }
 
   throw new Error('appel réseau inattendu : ' + url);
@@ -591,6 +620,175 @@ serie('E-MAIL À L\'ASSOCIATION — pièce jointe et cloisonnement');
   verifier('les engagements de test sont exclus du CSV', !csv2.includes('TEST-X'));
   verifier('les engagements de test sont exclus du récapitulatif',
     !assoc2.htmlContent.includes('23 976') && !assoc2.htmlContent.includes('999'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('GÉOCODAGE');
+{
+  reinitialiser();
+  const { geocoder } = await import('../netlify/functions/lib/geocodage.mjs');
+  const p1 = await geocoder({ adresse:'12 rue de Paris', code_postal:'93100', ville:'Montreuil' });
+  verifier('adresse géocodée', p1 && p1.latitude === 48.861 && p1.longitude === 2.441);
+  verifier('la requête contient rue et ville', APPELS.geocodages[0].includes('Montreuil'));
+
+  APPELS.geocodageEnPanne = true;
+  const p2 = await geocoder({ adresse:'x', code_postal:'75001', ville:'Paris' });
+  verifier('une panne du service ne lève pas d\'erreur', p2 === null);
+  APPELS.geocodageEnPanne = false;
+
+  const p3 = await geocoder({});
+  verifier('une adresse vide ne déclenche aucun appel', p3 === null);
+
+  // à la création d'une fiche
+  reinitialiser();
+  await dahira(requete({
+    nom:'Dahira Geo', ville:'Montreuil', code_postal:'93100', lieu_activites:'12 rue de Paris',
+    responsable_nom:'R', responsable_email:'r@exemple.test',
+    consentement_publication:true, cle_idempotence:'g1', duree_saisie_ms:9000,
+  }, 'https://site.test/api/dahira'));
+  verifier('une nouvelle fiche est positionnée sur la carte',
+    BASE.dahiras[0].latitude === 48.861 && BASE.dahiras[0].longitude === 2.441);
+}
+
+/* ------------------------------------------------------------------ */
+serie('MODIFICATION D\'UNE FICHE DAHIRA');
+{
+  const { createHash } = await import('node:crypto');
+  const { default: modif } = await import('../netlify/functions/dahira-modification.mjs');
+  const condenser = (j) => createHash('sha256').update(String(j)).digest('hex');
+  const poster = (corps) => new Request('https://site.test/api/dahira-modification', {
+    method:'POST', headers:{ 'Content-Type':'application/json', 'x-nf-client-connection-ip':'203.0.113.9' },
+    body: JSON.stringify(corps),
+  });
+
+  function ficheDeBase(){
+    reinitialiser();
+    BASE.dahiras.push({
+      id:'d-1', reference:'DAHIRA-2026-AAA111', nom:'Dahira Nasrul Ilm', ville:'Montreuil',
+      code_postal:'93100', lieu_activites:'12 rue de Paris', responsable_nom:'Moussa',
+      responsable_email:'resp@exemple.test', responsable_telephone:'0600000000',
+      contact_public_telephone:'0611111111', contact_public_autorise:true,
+      statut:'Publiée', est_test:false, latitude:48.86, longitude:2.44,
+    });
+  }
+
+  // --- une adresse qui ne correspond pas ne déclenche aucun envoi ---
+  ficheDeBase();
+  let r = await modif(poster({ action:'demander', voie:'par_email',
+    nom:'Dahira Nasrul Ilm', ville:'Montreuil', email:'pirate@exemple.test', duree_saisie_ms:9000 }));
+  let c = await r.json();
+  verifier('mauvaise adresse : aucun lien envoyé', APPELS.mails.length === 0);
+  verifier('mauvaise adresse : aucune demande créée', (BASE.dahiras_modifications || []).length === 0);
+  verifier('la réponse ne révèle rien', c.ok === true && /Si cette Dahira est référencée/.test(c.message));
+
+  // --- la bonne adresse reçoit le lien ---
+  ficheDeBase();
+  r = await modif(poster({ action:'demander', voie:'par_email',
+    nom:'Dahira Nasrul Ilm', ville:'Montreuil', email:'resp@exemple.test', duree_saisie_ms:9000 }));
+  c = await r.json();
+  verifier('bonne adresse : un lien part', APPELS.mails.length === 1);
+  verifier('le lien va à l\'adresse enregistrée', APPELS.mails[0].to[0].email === 'resp@exemple.test');
+  verifier('la réponse reste identique', /Si cette Dahira est référencée/.test(c.message));
+
+  const lien = APPELS.mails[0].textContent.match(/\?t=([a-f0-9]+)/);
+  verifier('le message contient un jeton', Boolean(lien), lien ? lien[1].slice(0,12) + '…' : '');
+  const jeton = lien[1];
+  const demande = BASE.dahiras_modifications[0];
+  verifier('le jeton n\'est pas stocké en clair',
+    !JSON.stringify(demande).includes(jeton) && demande.jeton_hash === condenser(jeton));
+  verifier('le jeton a une date d\'expiration', Boolean(demande.jeton_expire_le));
+  verifier('la fiche publiée n\'a pas bougé',
+    BASE.dahiras[0].ville === 'Montreuil' && BASE.dahiras[0].responsable_email === 'resp@exemple.test');
+
+  // --- le formulaire s'ouvre avec le bon jeton, pas avec un faux ---
+  r = await modif(new Request('https://site.test/api/dahira-modification?t=' + jeton));
+  const page = await r.text();
+  verifier('le formulaire s\'ouvre avec le jeton', r.status === 200 && page.includes('Dahira Nasrul Ilm'));
+  verifier('le formulaire est pré-rempli', page.includes('value="12 rue de Paris"'));
+  verifier('la page est exclue des moteurs', /noindex/.test(page));
+  r = await modif(new Request('https://site.test/api/dahira-modification?t=' + 'f'.repeat(48)));
+  verifier('un faux jeton est rejeté', r.status === 400);
+
+  // --- soumission sans changement d'adresse e-mail ---
+  r = await modif(poster({ action:'soumettre', jeton,
+    lieu_activites:'45 avenue de la République', code_postal:'93170', ville:'Bagnolet',
+    responsable_telephone:'0600000000', contact_public_telephone:'0622222222',
+    contact_public_autorise:true, nouvel_email:'' }));
+  c = await r.json();
+  verifier('la demande est acceptée', r.status === 200 && c.ok);
+  const d2 = BASE.dahiras_modifications[0];
+  verifier('seuls les champs modifiés sont enregistrés',
+    d2.n_ville === 'Bagnolet' && d2.n_code_postal === '93170' && d2.n_responsable_telephone === null);
+  verifier('la nouvelle position est calculée', d2.n_latitude === 48.861);
+  verifier('le statut passe à « à valider »', d2.statut === 'a_valider');
+  verifier('le jeton est neutralisé', d2.jeton_hash === null && d2.jeton_utilise === true);
+  verifier('la fiche publiée reste inchangée',
+    BASE.dahiras[0].ville === 'Montreuil' && BASE.dahiras[0].code_postal === '93100');
+  verifier('le bureau est prévenu',
+    APPELS.mails.some(m => m.to[0].email === 'bureau@exemple.test' && /valider/i.test(m.subject)));
+
+  // --- le lien ne resert pas ---
+  r = await modif(poster({ action:'soumettre', jeton, ville:'Pantin' }));
+  verifier('le lien ne peut pas resservir', r.status === 410);
+
+  // --- changement d'adresse e-mail ---
+  ficheDeBase();
+  await modif(poster({ action:'demander', voie:'par_email',
+    nom:'Dahira Nasrul Ilm', ville:'Montreuil', email:'resp@exemple.test', duree_saisie_ms:9000 }));
+  const jeton2 = APPELS.mails[0].textContent.match(/\?t=([a-f0-9]+)/)[1];
+  APPELS.mails.length = 0;
+  r = await modif(poster({ action:'soumettre', jeton: jeton2,
+    ville:'Montreuil', nouvel_email:'nouveau@exemple.test' }));
+  c = await r.json();
+  verifier('un changement d\'adresse est accepté', r.status === 200 && c.ok);
+  const d3 = BASE.dahiras_modifications[0];
+  verifier('le statut attend la confirmation', d3.statut === 'email_a_verifier');
+  verifier('l\'adresse n\'est pas encore confirmée', d3.email_verifie === false);
+  verifier('un message part vers la NOUVELLE adresse',
+    APPELS.mails.some(m => m.to[0].email === 'nouveau@exemple.test'));
+  verifier('le jeton de confirmation n\'est pas stocké en clair', (() => {
+    const m = APPELS.mails.find(x => x.to[0].email === 'nouveau@exemple.test');
+    const j = m.textContent.match(/\?v=([a-f0-9]+)/)[1];
+    return d3.jeton_email_hash === condenser(j) && !JSON.stringify(d3).includes(j);
+  })());
+
+  const jetonMail = APPELS.mails.find(m => m.to[0].email === 'nouveau@exemple.test')
+    .textContent.match(/\?v=([a-f0-9]+)/)[1];
+  r = await modif(new Request('https://site.test/api/dahira-modification?v=' + jetonMail));
+  const pageConf = await r.text();
+  verifier('la confirmation aboutit', r.status === 200 && /confirmée/i.test(pageConf));
+  verifier('l\'adresse est marquée confirmée', BASE.dahiras_modifications[0].email_verifie === true);
+  verifier('le statut passe à « à valider »', BASE.dahiras_modifications[0].statut === 'a_valider');
+  verifier('la fiche publiée garde encore l\'ancienne adresse',
+    BASE.dahiras[0].responsable_email === 'resp@exemple.test');
+  r = await modif(new Request('https://site.test/api/dahira-modification?v=' + jetonMail));
+  verifier('le lien de confirmation ne resert pas', r.status === 400);
+
+  // --- voie « sans accès à l'e-mail » ---
+  ficheDeBase();
+  r = await modif(poster({ action:'demander', voie:'sans_acces_email',
+    nom:'Dahira Nasrul Ilm', ville:'Montreuil',
+    email_contact:'autre@exemple.test', telephone_contact:'0700000000',
+    explication:'Je suis le nouveau responsable', duree_saisie_ms:9000 }));
+  c = await r.json();
+  verifier('la demande manuelle est acceptée', r.status === 200 && c.ok);
+  verifier('aucun lien automatique n\'est envoyé',
+    !APPELS.mails.some(m => /\?t=[a-f0-9]+/.test(m.textContent || '')));
+  verifier('le bureau est alerté de vérifier l\'identité',
+    APPELS.mails.some(m => m.to[0].email === 'bureau@exemple.test'
+      && /Vérifiez son identité/i.test(m.htmlContent)));
+  verifier('la demande est tracée pour l\'historique',
+    BASE.dahiras_modifications[0].origine === 'validation_manuelle');
+
+  // --- robots et champs manquants ---
+  ficheDeBase();
+  r = await modif(poster({ action:'demander', voie:'par_email', nom:'x', ville:'y',
+    email:'resp@exemple.test', site_web:'http://spam.test', duree_saisie_ms:9000 }));
+  verifier('le piège anti-robot répond sans rien faire',
+    (await r.json()).ignore === true && APPELS.mails.length === 0);
+  r = await modif(poster({ action:'demander', voie:'par_email', duree_saisie_ms:9000 }));
+  c = await r.json();
+  verifier('les champs obligatoires sont exigés', r.status === 422 && c.fautes.nom && c.fautes.ville);
 }
 
 /* ------------------------------------------------------------------ */

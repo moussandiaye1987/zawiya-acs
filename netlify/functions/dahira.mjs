@@ -1,5 +1,6 @@
 import { inserer, insererIdempotent, rpc, baseConfiguree, ErreurBase } from './lib/db.mjs';
 import { envoyer, gabarit, echapper } from './lib/mail.mjs';
+import { geocoder } from './lib/geocodage.mjs';
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP, suspectRobot,
   departementDepuisCP, fabriquerReference, VERSION_CONSENTEMENT, ZONES,
@@ -70,9 +71,19 @@ export default async (req) => {
     }
   } catch { /* ne bloque jamais un envoi légitime */ }
 
+  // Position sur la carte, calculée à l'enregistrement. Un échec n'est
+  // pas bloquant : la fiche entre dans l'annuaire, simplement sans point.
+  const point = await geocoder({
+    adresse: champs.lieu_activites,
+    code_postal: champs.code_postal,
+    ville: champs.ville,
+  });
+
   const ligne = {
     reference: fabriquerReference('DAHIRA'),
     ...champs,
+    latitude: point ? point.latitude : null,
+    longitude: point ? point.longitude : null,
     departement: departementDepuisCP(champs.code_postal),
     contact_public_autorise: d.contact_public_autorise === true,
     khadara_vendredi: d.khadara_vendredi === true,

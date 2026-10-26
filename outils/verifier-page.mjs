@@ -69,7 +69,8 @@ setTimeout(() => {
   const ancres = [...d.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href').slice(1)).filter(Boolean);
   const cassees = [...new Set(ancres)].filter(a => a !== 'haut' && !d.getElementById(a));
   v('aucune ancre cassée', cassees.length === 0, cassees.join(', '));
-  v('menu mobile complet', d.querySelectorAll('#menuMobile a').length === 7);
+  v('menu mobile complet', d.querySelectorAll('#menuMobile a').length === 8,
+    [...d.querySelectorAll('#menuMobile a')].map(a => a.textContent).join(' · '));
 
   console.log('\nVOCABULAIRE SANS ENCAISSEMENT');
   const texte = d.body.textContent;
@@ -173,7 +174,7 @@ setTimeout(() => {
 
   console.log('\nACCORDÉONS');
   const accordeons = [...d.querySelectorAll('details.replier')];
-  v('accordéons présents', accordeons.length >= 8, accordeons.length + ' sections repliables');
+  v('accordéons présents', accordeons.length >= 10, accordeons.length + ' sections repliables');
   v('tous ont un titre explicite',
     accordeons.every(a => (a.querySelector('summary')?.textContent || '').trim().length > 12),
     accordeons.map(a => a.querySelector('summary').textContent.trim().split('—')[0].trim()).join(' · '));
@@ -192,7 +193,7 @@ setTimeout(() => {
   v('le film et la galerie sont conservés',
     Boolean(d.querySelector('video')) && d.querySelectorAll('.galerie figure').length === 4);
   v('aucune image ni vidéo perdue',
-    d.querySelectorAll('img').length >= 9 && d.querySelectorAll('video source').length === 1,
+    d.querySelectorAll('img').length >= 10 && d.querySelectorAll('video source').length === 1,
     d.querySelectorAll('img').length + ' images');
   v('l\'historique est conservé en entier', d.querySelectorAll('.frise li').length === 10);
   v('la FAQ garde ses 7 questions', d.querySelectorAll('.faq details').length === 7);
@@ -225,6 +226,91 @@ setTimeout(() => {
   })());
   v('le total revient en euros avec un forfait fixe',
     d.getElementById('totalAffiche').textContent.includes('€'));
+
+  console.log('\nNOUVEAUTÉS');
+  const maquette = accordeons.find(a => /Maquette/.test(a.querySelector('summary').textContent));
+  v('avertissement sur les visuels présent',
+    /représentation souhaitée du projet/.test(maquette.textContent));
+  v('il est le premier élément de la rubrique',
+    maquette.querySelector('.contenu > *').classList.contains('avis'));
+  v('le détail du bâtiment est dans la même rubrique',
+    /Ce que nous recherchons dans le bâtiment/.test(maquette.textContent)
+    && maquette.querySelectorAll('.niveau').length === 2);
+  v('le programme est présenté comme un besoin',
+    /besoins à satisfaire, non un bâtiment acquis/.test(maquette.textContent));
+  v('plus de rubrique « Le bâtiment en détail » séparée',
+    !accordeons.some(a => a.querySelector('summary').textContent.trim() === 'Le bâtiment en détail'));
+
+  const liens = [...d.querySelectorAll('.acces a')];
+  v('deux boutons d\'action en haut', liens.filter(a => a.classList.contains('primaire')
+    || a.classList.contains('action')).length === 2);
+  v('« Adhérer » et « Référencer ma dahira » côte à côte',
+    liens.some(a => a.classList.contains('primaire') && a.getAttribute('href') === '#adherer')
+    && liens.some(a => a.classList.contains('action') && a.getAttribute('href') === '#referencer'));
+  v('le second bouton ouvre bien le formulaire existant',
+    Boolean(d.getElementById('referencer')) && d.getElementById('referencer').querySelector('#formDahira'));
+  v('libellé court prévu pour le téléphone',
+    Boolean(d.querySelector('.acces .court')) && Boolean(d.querySelector('.acces .long')));
+
+  v('bloc RIB sous le formulaire d\'adhésion', (() => {
+    const rib = d.getElementById('rib');
+    const form = d.getElementById('formEngagement');
+    return rib && form && form.compareDocumentPosition(rib) & 4;   // rib après le formulaire
+  })());
+  v('le RIB est dans la section Adhérer',
+    d.getElementById('rib').parentElement.closest('section').id === 'adherer');
+  v('bénéficiaire indiqué',
+    /ASS CONNAISSANCE ET SAVOIR/.test(d.getElementById('rib').textContent));
+  v('IBAN et BIC officiels', (() => {
+    const t = d.getElementById('rib').textContent;
+    return t.includes('FR76 1010 7003 1900 9210 2803 703') && t.includes('BREDFRPPXXX');
+  })());
+  v('bouton de téléchargement du RIB', (() => {
+    const a = d.querySelector('#rib a[download]');
+    return a && a.getAttribute('href') === 'rib-acs.pdf';
+  })());
+  v('bouton de copie de l\'IBAN', Boolean(d.querySelector('#rib #copierIban')));
+  v('le RIB n\'est pas replié', !d.getElementById('rib').closest('details'));
+  v('mention du virement permanent dans le bloc RIB',
+    /vous devez mettre en place vous-même un virement permanent/.test(d.getElementById('rib').textContent));
+  v('mention du virement permanent près du choix mensuel',
+    /vous devez mettre en place vous-même un virement permanent/
+      .test(d.getElementById('formEngagement').textContent));
+  v('l\'IBAN n\'apparaît qu\'à un seul endroit',
+    (d.body.textContent.match(/FR76 1010 7003 1900 9210 2803 703/g) || []).length === 1);
+
+  v('recherche de dahiras repliée',
+    d.getElementById('annuaire').tagName === 'DETAILS');
+  v('son titre reste visible fermée',
+    /Trouver une dahira près de chez soi/.test(d.getElementById('annuaire').querySelector('summary').textContent));
+  v('filtres et résultats conservés',
+    Boolean(d.getElementById('fRecherche')) && Boolean(d.getElementById('listeDahiras'))
+    && Boolean(d.getElementById('carteDahiras')));
+
+  v('parcours de modification présent', Boolean(d.getElementById('modifier-dahira')));
+  v('action clairement identifiable',
+    /Modifier les informations de ma dahira/
+      .test(d.getElementById('modifier-dahira').querySelector('summary').textContent));
+  v('les trois coordonnées modifiables sont annoncées', (() => {
+    const t = d.getElementById('modifier-dahira').textContent;
+    return /adresse/i.test(t) && /e-mail/i.test(t) && /téléphone/i.test(t);
+  })());
+  v('le choix « plus accès à l\'e-mail » existe',
+    Boolean(d.querySelector('input[name="mVoie"][value="sans_acces_email"]')));
+  v('le bloc « sans accès » est masqué par défaut',
+    d.getElementById('mBlocSansAcces').hidden === true);
+  v('il apparaît quand on le choisit', (() => {
+    const r = d.querySelector('input[name="mVoie"][value="sans_acces_email"]');
+    r.checked = true;
+    r.dispatchEvent(new w.Event('change', { bubbles:true }));
+    const visible = d.getElementById('mBlocSansAcces').hidden === false
+                 && d.getElementById('mBlocEmail').hidden === true;
+    const r2 = d.querySelector('input[name="mVoie"][value="par_email"]');
+    r2.checked = true; r2.dispatchEvent(new w.Event('change', { bubbles:true }));
+    return visible;
+  })());
+  v('aucune modification directe depuis la page',
+    !d.querySelector('#modifier-dahira input[id^="dNom"]'));
 
   console.log('\nACCESSIBILITÉ ET MOBILE');
   v('langue déclarée', d.documentElement.lang === 'fr');

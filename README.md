@@ -22,6 +22,7 @@ netlify/functions/      traitement côté serveur
   dahira.mjs            POST /api/dahira
   donnees-publiques.mjs GET  /api/donnees-publiques   (agrégats + annuaire validé)
   participant.mjs       GET  /api/participant         (liens personnels des e-mails)
+  dahira-modification.mjs  /api/dahira-modification (modifier une fiche existante)
   rappels-mensuels.mjs  tâche planifiée, toutes les heures (e-mail)
   rappels-test.mjs      GET  /api/rappels-test        (déclenchement manuel, protégé)
   relance-whatsapp.mjs  GET  /api/relance-whatsapp    (page du bureau, protégée)
@@ -287,7 +288,45 @@ du récapitulatif comme du fichier.
 récapitulatif collectif, ni pièce jointe. Le fichier n'est jamais déposé
 sur le site ; il n'existe que dans le message adressé au bureau.
 
-## 9. Confidentialité
+## 9. Modifier une fiche de Dahira
+
+Un responsable dont l'adresse, le téléphone ou l'e-mail a changé n'a pas
+à créer une seconde fiche. Depuis la section « Les Dahiras de Baye en
+France » : **Modifier les informations de ma dahira**.
+
+Le parcours tient en trois verrous :
+
+1. **Aucune modification depuis le site.** Le demandeur donne le nom et
+   la ville de la Dahira, puis l'adresse e-mail enregistrée. Le lien ne
+   part que si elle correspond — et la réponse affichée est la même dans
+   tous les cas, pour ne pas révéler qui est référencé.
+2. **Une nouvelle adresse e-mail se confirme elle-même.** Tant que le
+   lien envoyé à la nouvelle adresse n'est pas suivi, l'ancienne reste
+   en place, même si l'association valide entre-temps.
+3. **Rien n'est publié sans validation.** Les valeurs souhaitées
+   attendent dans `dahiras_modifications` ; la fiche en ligne garde les
+   anciennes. Le bureau valide en passant `statut` à `validee`, et un
+   déclencheur de la base reporte alors les seuls champs renseignés.
+
+Les liens expirent au bout de 48 heures et ne servent qu'une fois. Les
+jetons ne sont stockés qu'en condensat SHA-256 : la base ne permet pas
+de reconstituer un lien.
+
+Si le responsable n'a plus accès à l'adresse enregistrée, un second
+chemin transmet sa demande au bureau **sans aucun lien automatique** :
+l'e-mail reçu rappelle alors de vérifier son identité autrement.
+
+Pour le bureau : la vue `v_modifications_a_valider` montre l'ancien et
+le nouveau côte à côte. La table conserve l'historique des demandes et
+de leur traitement.
+
+**Position sur la carte.** À la création d'une fiche comme à chaque
+changement d'adresse, les coordonnées sont calculées automatiquement via
+l'API Adresse de data.gouv.fr — gratuite, sans clé, hébergée en France.
+Un échec n'est jamais bloquant : la fiche entre dans l'annuaire, sans
+point sur la carte.
+
+## 10. Confidentialité
 
 - Les tables ont la sécurité au niveau des lignes activée **sans aucune
   politique** : sans la clé de service, personne ne lit ni n'écrit rien.
@@ -302,7 +341,7 @@ sur le site ; il n'existe que dans le message adressé au bureau.
 
 ---
 
-## 10. Chaîne automatique
+## 11. Chaîne automatique
 
 ```
 Claude modifie le projet
@@ -310,7 +349,7 @@ Claude modifie le projet
         ▼
    git push origin main
         │
-        ├──▶ GitHub Actions : 204 contrôles
+        ├──▶ GitHub Actions : 276 contrôles
         │      échec → croix rouge sur le commit
         │
         └──▶ Netlify : déploiement automatique
@@ -324,14 +363,14 @@ n'importe quelle version antérieure.
 Les contrôles tournent sur GitHub sans aucun secret : la base et le
 service d'e-mail sont simulés.
 
-## 11. Vérifier avant de livrer
+## 12. Vérifier avant de livrer
 
 ```bash
 npm install     # la première fois seulement
 npm run verifier
 ```
 
-204 contrôles hors ligne — 125 sur les fonctions serveur, 79 sur la page : validation, pièges
+276 contrôles hors ligne — 168 sur les fonctions serveur, 108 sur la page : validation, pièges
 publique dans un navigateur simulé : validation, pièges anti-robot,
 doublons, panne du service d'e-mail, confidentialité des réponses, liens
 personnels, rappels, format des numéros, page de relance WhatsApp,

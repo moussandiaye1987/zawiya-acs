@@ -11,6 +11,14 @@ export const VERSION_CONSENTEMENT = '2026-10-25';
 export const MENTION_SANS_PAIEMENT =
   "Ce formulaire enregistre votre engagement de contribution. Aucun paiement ni prélèvement n'est effectué sur ce site. L'association vous communiquera les modalités de règlement.";
 
+/**
+ * Rappel destiné aux contributions par virement. Même phrase sur la page
+ * et dans l'e-mail, pour que personne ne croie qu'un prélèvement a été
+ * mis en place.
+ */
+export const MENTION_VIREMENT_PERMANENT =
+  "Pour une contribution régulière par virement, vous devez mettre en place vous-même un virement permanent depuis votre compte bancaire. Votre adhésion sur ce site ne déclenche aucun prélèvement ni virement automatique.";
+
 export const FORFAITS = {
   bronze: { nom: 'Bronze', montant: 25 },
   argent: { nom: 'Argent', montant: 50 },

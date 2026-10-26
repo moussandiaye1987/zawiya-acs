@@ -92,6 +92,9 @@ p{margin:0 0 1em}
 .acces a:hover{color:var(--encre); border-color:var(--trait-fort)}
 .acces a.primaire{background:var(--vert); border-color:var(--vert); color:var(--craie); font-weight:500}
 .acces a.primaire:hover{background:var(--encre); border-color:var(--encre); color:var(--pierre)}
+.acces a.action{border-color:var(--vert); color:var(--vert); font-weight:500}
+.acces a.action:hover{background:var(--vert); color:var(--craie)}
+.acces .court{display:none}
 .menu-btn{display:none; align-items:center; justify-content:center; width:44px; height:44px; flex:0 0 auto;
   background:transparent; border:1px solid var(--trait-fort); border-radius:var(--rayon); color:var(--encre); cursor:pointer}
 .menu-btn svg{width:20px; height:20px}
@@ -109,15 +112,24 @@ p{margin:0 0 1em}
   .acces a.secondaire{display:none}
   .menu-btn{display:inline-flex}
 }
+/* Les deux actions restent visibles sur téléphone : on raccourcit les
+   libellés et la marque plutôt que d'en masquer une. */
 @media (max-width:620px){
   [id]{scroll-margin-top:68px}
-  .topbar-in{gap:.45rem; min-height:56px}
+  .topbar-in{gap:.4rem; min-height:56px}
   .brand img{width:32px; height:32px}
-  .brand b{font-size:.9rem}
+  .brand b{font-size:.88rem}
   .brand b span{display:none}
   .brand-long{display:none}
   .brand-court{display:inline}
-  .acces a{padding:.55rem .8rem; font-size:.88rem; min-height:42px; display:flex; align-items:center}
+  .acces{gap:.35rem}
+  .acces a{padding:.5rem .7rem; font-size:.85rem; min-height:44px; display:flex; align-items:center; white-space:nowrap}
+  .acces .long{display:none}
+  .acces .court{display:inline}
+}
+@media (max-width:430px){
+  .brand b{display:none}
+  .acces a{padding:.5rem .6rem; font-size:.82rem}
 }
 
 /* ---------- boutons ---------- */
@@ -497,6 +509,24 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 .frise strong{color:var(--encre); font-weight:500}
 
 /* ---------- contact, RIB, pied ---------- */
+.rib-bloc{border:2px solid var(--vert); border-radius:var(--rayon);
+  background:color-mix(in srgb,var(--vert) 5%, var(--craie)); padding:1.5rem 1.4rem;
+  margin-top:clamp(2rem,4vw,3rem)}
+.rib-bloc h3{font-size:1.3rem; margin-bottom:.2rem}
+.rib-bloc .beneficiaire{font-size:.95rem; color:var(--encre-2); margin-bottom:1.1rem}
+.rib-liste{display:grid; grid-template-columns:auto 1fr; gap:.5rem 1.2rem; margin:0; font-size:.98rem}
+.rib-liste dt{color:var(--encre-2); font-size:.87rem}
+.rib-liste dd{margin:0; font-variant-numeric:tabular-nums; word-break:break-word}
+.rib-liste .iban{font-size:1.1rem; letter-spacing:.03em; font-weight:500}
+.rib-actions{display:flex; gap:.6rem; margin-top:1.3rem; flex-wrap:wrap}
+@media (max-width:620px){
+  .rib-bloc{padding:1.2rem 1rem}
+  .rib-liste{grid-template-columns:1fr; gap:.1rem}
+  .rib-liste dt{margin-top:.65rem}
+  .rib-liste dt:first-child{margin-top:0}
+  .rib-liste .iban{font-size:1.02rem}
+  .rib-actions .btn{width:100%}
+}
 .rib{border:1px solid var(--trait-fort); border-radius:var(--rayon); background:var(--craie); padding:1.4rem}
 .sect-craie .rib{background:var(--pierre)}
 .rib h3{font-size:1.2rem; margin-bottom:.15rem}
@@ -547,7 +577,7 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     <nav class="acces" aria-label="Accès principaux">
       <a class="secondaire" href="#projet">Le projet</a>
       <a class="primaire" href="#adherer">Adhérer</a>
-      <a class="secondaire" href="#dahiras">Référencer ma Dahira</a>
+      <a class="action" href="#referencer"><span class="long">Référencer ma dahira</span><span class="court">Ma dahira</span></a>
     </nav>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menuMobile" aria-label="Ouvrir le menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -555,8 +585,9 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     <nav class="menu-mobile" id="menuMobile" aria-label="Sections du site">
       <a href="#projet">Le projet</a>
       <a href="#adherer">Adhérer au projet</a>
-      <a href="#dahiras">Référencer ma Dahira</a>
-      <a href="#annuaire">Annuaire des Dahiras</a>
+      <a href="#referencer">Référencer ma dahira</a>
+      <a href="#annuaire">Trouver une dahira</a>
+      <a href="#modifier-dahira">Modifier ma fiche</a>
       <a href="#transparence">Transparence et suivi</a>
       <a href="#historique">Historique</a>
       <a href="#contact">Contact</a>
@@ -619,8 +650,12 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
     </div>
 
     <details class="replier">
-      <summary>Maquette, photos et vidéos — voir le bâtiment en images</summary>
+      <summary>Maquette, photos et vidéos — le projet en images</summary>
       <div class="contenu">
+    <div class="avis fort" style="margin-top:1.1rem">
+      <b>Ces visuels présentent une représentation souhaitée du projet.</b>
+      Ils sont fournis à titre illustratif. L'aménagement et le résultat final dépendront du bien immobilier trouvé, de ses caractéristiques et des possibilités de réalisation.
+    </div>
     <div class="film">
       <video controls preload="none" playsinline poster="img/poster.jpg">
         <source src="maquette-zawiya.mp4" type="video/mp4">
@@ -635,18 +670,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <figure class="g-mid"><img loading="lazy" decoding="async" src="img/hall2.jpg" alt="Hall d'accueil lumineux, sol en terrazzo, hautes ouvertures en ogive."><figcaption>Hall d'accueil</figcaption></figure>
       <figure class="g-mid"><img loading="lazy" decoding="async" src="img/conf.jpg" alt="Salle de conférence avec estrade et sièges verts."><figcaption>Salle de conférence, 500 places</figcaption></figure>
     </div>
-      </div>
-    </details>
 
-    <p style="margin-top:2rem"><a class="btn" href="#adherer">Adhérer au projet</a></p>
+    <h4 style="font-family:Marcellus,serif;font-weight:400;font-size:1.25rem;margin:2rem 0 .4rem">Ce que nous recherchons dans le bâtiment</h4>
+    <p style="color:var(--encre-2);font-size:.95rem">Le programme ci-dessous décrit des <strong>besoins à satisfaire</strong>, non un bâtiment acquis. Aucun bien n'est signé à ce jour : ces surfaces et ce nombre de salles sont les objectifs qui guident la recherche, et ils s'ajusteront au bien retenu.</p>
 
-    <details class="replier">
-      <summary>Le bâtiment en détail</summary>
-      <div class="contenu">
-        <p style="color:var(--encre-2);font-size:.95rem">Les perspectives d'architecte décrivent ce que le bâtiment deviendra une fois acquis et aménagé. Elles ne sont pas contractuelles.</p>
         <div class="niveaux">
           <div class="niveau">
-            <h4>Rez-de-chaussée</h4>
+            <h4>Rez-de-chaussée — besoins</h4>
             <ul>
               <li><span>Salle de conférence</span><b>514 m² · 500 pers.</b></li>
               <li><span>Salle Hadra 1</span><b>50 pers.</b></li>
@@ -659,7 +689,7 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
             </ul>
           </div>
           <div class="niveau">
-            <h4>Premier étage</h4>
+            <h4>Premier étage — besoins</h4>
             <ul>
               <li><span>Salle polyvalente</span><b>—</b></li>
               <li><span>Salles de cours</span><b>7 salles</b></li>
@@ -673,10 +703,12 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
         </div>
         <figure style="margin:1.8rem 0 0">
           <img loading="lazy" decoding="async" src="img/plan.jpg" alt="Plan axonométrique du rez-de-chaussée : parking arboré, hall d'accueil, salle de conférence, salles Hadra, cuisine et sanitaires." style="border:1px solid var(--trait); border-radius:var(--rayon)">
-          <figcaption style="font-size:.85rem;color:var(--encre-2);margin-top:.6rem">Plan du rez-de-chaussée</figcaption>
+          <figcaption style="font-size:.85rem;color:var(--encre-2);margin-top:.6rem">Plan d'étude du rez-de-chaussée — organisation souhaitée, non contractuelle</figcaption>
         </figure>
       </div>
     </details>
+
+    <p style="margin-top:2rem"><a class="btn" href="#adherer">Adhérer au projet</a></p>
 
     <details class="replier">
       <summary>Où nous cherchons, et selon quels critères</summary>
@@ -847,6 +879,11 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
           <textarea id="message" name="message" rows="2" placeholder="Facultatif"></textarea>
         </div>
 
+        <div class="avis" style="grid-column:1/-1;margin:.2rem 0 0">
+          <b>Le virement reste à mettre en place par vous.</b>
+          Pour une contribution régulière par virement, vous devez mettre en place vous-même un virement permanent depuis votre compte bancaire. Votre adhésion sur ce site ne déclenche aucun prélèvement ni virement automatique.
+        </div>
+
         <div class="total">
           <span>Total prévisionnel de mon engagement
             <span class="sous" id="sousTotal"></span>
@@ -897,6 +934,41 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       </div>
     </div>
 
+    <div class="rib-bloc" id="rib">
+      <h3>Coordonnées bancaires de l'association</h3>
+      <p class="beneficiaire">Bénéficiaire : <strong>ASS CONNAISSANCE ET SAVOIR</strong><br>
+        35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes</p>
+
+      <dl class="rib-liste">
+        <dt>IBAN</dt><dd class="iban" id="ibanTexte">FR76 1010 7003 1900 9210 2803 703</dd>
+        <dt>BIC</dt><dd>BREDFRPPXXX</dd>
+        <dt>Banque</dt><dd>BRED Banque Populaire — agence de Torcy</dd>
+        <dt>Code banque</dt><dd>10107</dd>
+        <dt>Code guichet</dt><dd>00319</dd>
+        <dt>Numéro de compte</dt><dd>00921028037 — clé 03</dd>
+      </dl>
+
+      <div class="rib-actions">
+        <a class="btn" href="rib-acs.pdf" download="RIB-Association-Connaissance-et-Savoir.pdf">Télécharger le RIB</a>
+        <button type="button" class="btn btn-ghost" id="copierIban">Copier l'IBAN</button>
+      </div>
+      <p class="statut" id="statutRib" role="status" aria-live="polite"></p>
+
+      <div class="avis" style="margin-bottom:0">
+        <b>Le virement reste à mettre en place par vous.</b>
+        Pour une contribution régulière par virement, vous devez mettre en place vous-même un virement permanent depuis votre compte bancaire. Votre adhésion sur ce site ne déclenche aucun prélèvement ni virement automatique.
+      </div>
+
+      <details class="replier" style="margin-top:1.1rem">
+        <summary>Voir le relevé d'identité bancaire</summary>
+        <div class="contenu">
+          <img loading="lazy" decoding="async" src="img/rib-acs.jpg"
+               alt="Relevé d'identité bancaire de l'Association Connaissance et Savoir, BRED Banque Populaire, agence de Torcy."
+               style="border:1px solid var(--trait); border-radius:var(--rayon); margin-top:1rem">
+        </div>
+      </details>
+    </div>
+
     <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.3rem;margin-top:clamp(2rem,4vw,3rem)">Ce qui se passe ensuite</h3>
     <ol class="suite">
       <li><b>Vous recevez un accusé de réception</b> par e-mail, avec votre référence et le récapitulatif de votre engagement. Il rappelle qu'aucun paiement n'a été effectué.</li>
@@ -917,7 +989,7 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <p>Chaque responsable renseigne lui-même sa section : le guide qui la dirige, le lieu, un contact et les pratiques hebdomadaires. Une fiche n'apparaît dans l'annuaire qu'après vérification par l'association.</p>
     </div>
 
-    <details class="replier" id="blocAjoutDahira">
+    <details class="replier" id="referencer">
       <summary>Référencer ma Dahira</summary>
       <div class="contenu">
         <p style="color:var(--encre-2);font-size:.95rem">Seul le nom, la ville, le code postal et vos coordonnées de responsable sont obligatoires. Vos coordonnées restent privées : vous choisissez plus bas si un numéro peut être affiché publiquement.</p>
@@ -1041,8 +1113,78 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       </div>
     </details>
 
-    <h3 id="annuaire" style="font-family:Marcellus,serif;font-weight:400;font-size:1.5rem;margin-top:clamp(2.2rem,4vw,3.2rem)">Annuaire des Dahiras validées</h3>
+    <details class="replier" id="modifier-dahira">
+      <summary>Modifier les informations de ma dahira</summary>
+      <div class="contenu">
+        <p style="color:var(--encre-2);font-size:.95rem">Vous êtes responsable d'une dahira déjà référencée et son adresse, son téléphone ou son e-mail ont changé ? Pas besoin de créer une nouvelle fiche.</p>
 
+        <div class="avis">
+          <b>Personne ne peut modifier une fiche depuis cette page.</b>
+          Nous envoyons un lien de modification à l'adresse e-mail déjà enregistrée sur la fiche. L'association vérifie ensuite les changements avant leur mise en ligne : votre fiche actuelle reste visible jusque-là.
+        </div>
+
+        <form id="formModifDemande" novalidate>
+          <div class="form-grid">
+            <div class="champ">
+              <label for="mNom">Nom de la dahira <span class="req" aria-hidden="true">*</span></label>
+              <input id="mNom" type="text" required placeholder="Tel qu'il apparaît dans l'annuaire">
+              <p class="erreur" data-pour="nom" hidden></p>
+            </div>
+            <div class="champ">
+              <label for="mVille">Ville <span class="req" aria-hidden="true">*</span></label>
+              <input id="mVille" type="text" required>
+              <p class="erreur" data-pour="ville" hidden></p>
+            </div>
+
+            <fieldset>
+              <legend>Avez-vous accès à l'adresse e-mail enregistrée ?</legend>
+              <div class="radios-ligne">
+                <label><input type="radio" name="mVoie" value="par_email" checked> Oui</label>
+                <label><input type="radio" name="mVoie" value="sans_acces_email"> Non, je n'y ai plus accès</label>
+              </div>
+
+              <div class="champ" id="mBlocEmail" style="margin-top:1rem">
+                <label for="mEmail">Adresse e-mail enregistrée sur la fiche <span class="req" aria-hidden="true">*</span></label>
+                <input id="mEmail" type="email" inputmode="email">
+                <p class="aide">Le lien n'est envoyé qu'à cette adresse, et seulement si elle correspond.</p>
+                <p class="erreur" data-pour="email" hidden></p>
+              </div>
+
+              <div id="mBlocSansAcces" style="margin-top:1rem" hidden>
+                <div class="champ">
+                  <label for="mEmailContact">Adresse où vous joindre <span class="req" aria-hidden="true">*</span></label>
+                  <input id="mEmailContact" type="email" inputmode="email">
+                  <p class="erreur" data-pour="email_contact" hidden></p>
+                </div>
+                <div class="champ" style="margin-top:.8rem">
+                  <label for="mTelContact">Téléphone</label>
+                  <input id="mTelContact" type="tel" inputmode="tel">
+                </div>
+                <div class="champ" style="margin-top:.8rem">
+                  <label for="mExplication">Votre rôle dans la dahira</label>
+                  <textarea id="mExplication" rows="2" placeholder="Pour nous aider à vérifier votre qualité de responsable"></textarea>
+                </div>
+                <p class="aide" style="margin-top:.6rem">Aucun lien automatique ne sera envoyé : un membre du bureau vous recontactera pour vérifier votre identité.</p>
+              </div>
+            </fieldset>
+
+            <div class="piege" aria-hidden="true">
+              <label for="m_site_web">Ne pas remplir</label>
+              <input id="m_site_web" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn" id="btnModifDemande">Recevoir le lien de modification</button>
+            </div>
+            <p class="statut" id="statutModifDemande" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+    </details>
+
+    <details class="replier" id="annuaire">
+      <summary>Trouver une dahira près de chez soi — carte, recherche et annuaire</summary>
+      <div class="contenu">
     <div class="carte-enveloppe" style="margin-bottom:1.8rem">
       <div class="carte-cadre">
         <div class="carte-outils">
@@ -1087,6 +1229,8 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 
     <p class="resultats-info" id="infoResultats">Chargement de l'annuaire…</p>
     <div class="cartes-dahira" id="listeDahiras"></div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -1331,18 +1475,10 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <p>Indiquez la référence reçue lors de votre engagement sur chacun de vos virements : c'est ce qui permet de rattacher votre versement à votre engagement.</p>
     </div>
     <div class="duo">
-      <div class="rib">
-        <h3>Coordonnées bancaires de l'association</h3>
-        <p class="titulaire">ASS CONNAISSANCE ET SAVOIR<br>35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes</p>
-        <dl>
-          <dt>IBAN</dt><dd class="iban">FR76 1010 7003 1900 9210 2803 703</dd>
-          <dt>BIC</dt><dd>BREDFRPPXXX</dd>
-          <dt>Banque</dt><dd>BRED Banque Populaire — agence de Torcy</dd>
-        </dl>
-        <div class="actions">
-          <button type="button" class="btn btn-ghost btn-sm" id="copierIban">Copier l'IBAN</button>
-        </div>
-        <p class="statut" id="statutRib" role="status"></p>
+      <div>
+        <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.2rem">Verser votre contribution</h3>
+        <p style="color:var(--encre-2);font-size:.95rem">Les coordonnées bancaires de l'association, le RIB à télécharger et le rappel sur le virement permanent se trouvent <a href="#rib" style="color:var(--vert)">juste sous le formulaire d'adhésion</a>.</p>
+        <p style="color:var(--encre-2);font-size:.95rem">Indiquez la référence reçue lors de votre engagement sur chacun de vos virements.</p>
       </div>
       <div>
         <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.2rem">Joindre l'association</h3>
@@ -2341,6 +2477,102 @@ function nouvelleCle(){
 })();
 
 /* =====================================================================
+   DEMANDE DE MODIFICATION D'UNE FICHE DAHIRA
+   ===================================================================== */
+(function modifDahira(){
+  const form = document.getElementById('formModifDemande');
+  if(!form) return;
+  const btn = document.getElementById('btnModifDemande');
+  const ouvertLe = Date.now();
+  let envoiEnCours = false;
+
+  form.addEventListener('change', e => {
+    if(e.target.name === 'mVoie'){
+      const parEmail = e.target.value === 'par_email';
+      document.getElementById('mBlocEmail').hidden = !parEmail;
+      document.getElementById('mBlocSansAcces').hidden = parEmail;
+      btn.textContent = parEmail ? 'Recevoir le lien de modification' : 'Envoyer ma demande à l\u2019association';
+    }
+  });
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if(envoiEnCours) return;
+    viderErreurs(form);
+    annoncer('statutModifDemande', '');
+
+    const voie = (form.querySelector('input[name="mVoie"]:checked') || {}).value;
+    let premier = null;
+    const exiger = (id, champ, message) => {
+      if(!document.getElementById(id).value.trim()){
+        erreurChamp(form, champ, message);
+        premier = premier || marquerInvalide(id);
+      }
+    };
+    exiger('mNom', 'nom', 'Indiquez le nom de la dahira.');
+    exiger('mVille', 'ville', 'Indiquez sa ville.');
+    if(voie === 'par_email'){
+      const v = document.getElementById('mEmail').value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+        erreurChamp(form, 'email', "Indiquez l'adresse e-mail enregistrée sur la fiche.");
+        premier = premier || marquerInvalide('mEmail');
+      }
+    } else {
+      const v = document.getElementById('mEmailContact').value.trim();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){
+        erreurChamp(form, 'email_contact', 'Indiquez une adresse où nous pouvons vous joindre.');
+        premier = premier || marquerInvalide('mEmailContact');
+      }
+    }
+    if(premier){
+      premier.focus();
+      premier.scrollIntoView({ block:'center', behavior:'smooth' });
+      return;
+    }
+
+    envoiEnCours = true;
+    btn.disabled = true;
+    const libelle = btn.textContent;
+    btn.textContent = 'Envoi…';
+
+    try {
+      const r = await fetch('/api/dahira-modification', {
+        method:'POST', headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          action:'demander', voie,
+          duree_saisie_ms: Date.now() - ouvertLe,
+          site_web: document.getElementById('m_site_web').value,
+          nom: document.getElementById('mNom').value,
+          ville: document.getElementById('mVille').value,
+          email: document.getElementById('mEmail').value,
+          email_contact: document.getElementById('mEmailContact').value,
+          telephone_contact: document.getElementById('mTelContact').value,
+          explication: document.getElementById('mExplication').value,
+        }),
+      });
+      const rep = await r.json().catch(() => ({}));
+      if(r.ok && rep.ok){
+        form.innerHTML = '<div class="avis" style="margin:0"><b>C\u2019est envoyé.</b> '
+          + echapper(rep.message || '') + '</div>';
+        return;
+      }
+      if(r.status === 422 && rep.fautes){
+        Object.entries(rep.fautes).forEach(([champ, msg]) => erreurChamp(form, champ, msg));
+        annoncer('statutModifDemande', rep.message || 'Certains champs sont à corriger.', true);
+      } else {
+        annoncer('statutModifDemande', rep.message || "L'envoi a échoué. Réessayez dans un instant.", true);
+      }
+    } catch(err){
+      annoncer('statutModifDemande', 'Connexion impossible. Vos informations sont conservées.', true);
+    } finally {
+      envoiEnCours = false;
+      btn.disabled = false;
+      btn.textContent = libelle;
+    }
+  });
+})();
+
+/* =====================================================================
    COPIE DE L'IBAN
    ===================================================================== */
 (function iban(){
@@ -2348,7 +2580,8 @@ function nouvelleCle(){
   if(!b) return;
   b.addEventListener('click', async () => {
     try {
-      await navigator.clipboard.writeText('FR76 1010 7003 1900 9210 2803 703');
+      const iban = (document.getElementById('ibanTexte')?.textContent || '').trim();
+      await navigator.clipboard.writeText(iban);
       annoncer('statutRib', 'IBAN copié.');
     } catch {
       annoncer('statutRib', 'La copie est bloquée par votre navigateur. Sélectionnez le texte à la main.', true);

@@ -4,7 +4,8 @@ import { fabriquerCSV, nomFichierCSV, totauxParDevise, montant } from './lib/csv
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP, suspectRobot,
   departementDepuisCP, fabriquerReference, signer,
-  VERSION_CONSENTEMENT, MENTION_SANS_PAIEMENT, FORFAITS, ZONES, DUREES, DEVISES,
+  VERSION_CONSENTEMENT, MENTION_SANS_PAIEMENT, MENTION_VIREMENT_PERMANENT,
+  FORFAITS, ZONES, DUREES, DEVISES,
 } from './lib/commun.mjs';
 
 export const config = { path: '/api/engagement' };
@@ -282,6 +283,10 @@ async function mailAssociation(e, destinataire) {
    --------------------------------------------------------------------- */
 function mailParticipant(e, base) {
   const dev = e.devise || 'EUR';
+  // La précision ne vaut que pour un règlement par virement : inutile de
+  // l'imposer à qui remet son versement à sa Dahira.
+  const pref = e.preference_reglement || '';
+  const parVirement = !pref || /virement/i.test(pref);
   const lienSuspendre = base
     ? `${base}/api/participant?r=${encodeURIComponent(e.reference)}&t=${signer(e.jeton_prive)}&a=suspendre-rappels`
     : null;
@@ -296,6 +301,9 @@ function mailParticipant(e, base) {
       <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${montant(e.total_previsionnel, dev)}</td></tr>
     </table>
     <p style="background:#EFE8DC;border-left:3px solid #1E7A43;padding:10px 14px"><strong>${MENTION_SANS_PAIEMENT}</strong></p>
+    ${parVirement
+      ? `<p style="background:#EFE8DC;border-left:3px solid #1E7A43;padding:10px 14px">${MENTION_VIREMENT_PERMANENT}</p>`
+      : ''}
     <p>Un membre du bureau vous recontactera pour la mise en place du versement. Indiquez votre référence sur chacun de vos virements.</p>
     ${e.rappels_actifs && lienSuspendre
       ? `<p style="font-size:13px;color:#6b7d71">Vous recevrez un rappel courtois chaque fin de mois${e.rappel_whatsapp && !e.rappel_email ? ' sur WhatsApp' : e.rappel_whatsapp ? ' par e-mail et sur WhatsApp' : ''}. <a href="${lienSuspendre}" style="color:#1E7A43">Suspendre ces rappels</a> — cela n'annule pas votre engagement.</p>`
@@ -309,7 +317,9 @@ function mailParticipant(e, base) {
       `Montant déclaré : ${montant(e.montant_mensuel_declare, dev)} par mois\n` +
       `Durée : ${e.duree_mois} mois\n` +
       `Total prévisionnel : ${montant(e.total_previsionnel, dev)}\n\n` +
-      `${MENTION_SANS_PAIEMENT}\n\nL'association vous recontactera.`,
+      `${MENTION_SANS_PAIEMENT}\n\n` +
+      (parVirement ? `${MENTION_VIREMENT_PERMANENT}\n\n` : '') +
+      `L'association vous recontactera.`,
     html: gabarit('Votre engagement est enregistré', corps),
   });
 }
