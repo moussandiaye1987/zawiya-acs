@@ -30,6 +30,14 @@ const dom = new JSDOM(html, { runScripts:'dangerously', pretendToBeVisual:true,
   } });
 const w = dom.window;
 
+// La même page chargée avec ?test=1 : le mode test doit s'y déclarer.
+const domTest = new JSDOM(html, { runScripts:'dangerously', pretendToBeVisual:true,
+  url:'https://site.test/?test=1', virtualConsole: new VirtualConsole(),
+  beforeParse(win){
+    win.fetch = async () => ({ ok:true, status:200, json: async () => DONNEES,
+      headers:{ get: () => 'application/json' } });
+  } });
+
 // réponse simulée de /api/donnees-publiques
 DONNEES = {
   statut_donnees:'disponible', objectif_euros:2000000, horizon_mois:24,
@@ -331,6 +339,27 @@ setTimeout(() => {
   })());
   v('aucune modification directe depuis la page',
     !d.querySelector('#modifier-dahira input[id^="dNom"]'));
+
+  console.log('\nMODE TEST');
+  v('aucun bandeau de test par défaut',
+    d.getElementById('bandeauTest').hidden === true);
+  v('le bandeau apparaît avec ?test=1',
+    domTest.window.document.getElementById('bandeauTest').hidden === false);
+  v('il dit que l\'essai ne comptera pas', (() => {
+    const t = domTest.window.document.getElementById('bandeauTest').textContent;
+    return /totaux publics/.test(t) && /suivi/.test(t) && /\?test=1/.test(t);
+  })());
+  v('il se voit avant le formulaire',
+    d.getElementById('bandeauTest').compareDocumentPosition(d.getElementById('prenom'))
+      & 4);
+  v('le drapeau est transmis au serveur',
+    /est_test:\s*MODE_TEST/.test(html));
+  v('le mode test se lit dans l\'adresse, pas ailleurs',
+    /get\('test'\)\s*===\s*'1'/.test(html));
+  v('le bouton d\'envoi annonce l\'essai',
+    /MODE_TEST \? 'Enregistrement \(test\)…'/.test(html));
+  v('le formulaire de dahira n\'est pas touché',
+    !/d_site_web[\s\S]{0,200}est_test/.test(html));
 
   console.log('\nLOGOS DES DEUX STRUCTURES');
   const logosHaut = [...d.querySelectorAll('.topbar img')].map((i) => i.getAttribute('src'));

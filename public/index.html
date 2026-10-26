@@ -255,6 +255,12 @@ p{margin:0 0 1em}
   padding:1rem 1.2rem; margin:1.4rem 0; font-size:.96rem; color:var(--encre-2); border-radius:0 var(--rayon) var(--rayon) 0}
 .avis b{color:var(--encre); font-weight:500}
 .avis.fort{border-left-color:var(--alerte); background:color-mix(in srgb,var(--alerte) 8%, transparent)}
+.bandeau-test{border:2px dashed #b4641e; border-radius:var(--rayon);
+  background:rgba(180,100,30,.09); padding:.9rem 1.1rem; margin-bottom:1.2rem; font-size:.92rem}
+.bandeau-test[hidden]{display:none}
+.bandeau-test b{display:block; color:#b4641e; letter-spacing:.06em; text-transform:uppercase;
+  font-size:.78rem; margin-bottom:.25rem}
+.bandeau-test code{background:rgba(180,100,30,.15); padding:.08em .35em; border-radius:2px}
 .mention-paiement{border:1px solid var(--vert); background:color-mix(in srgb,var(--vert) 8%, transparent);
   border-radius:var(--rayon); padding:1rem 1.2rem; margin:1.5rem 0; font-size:.97rem}
 .mention-paiement b{display:block; font-weight:500; color:var(--encre); margin-bottom:.2rem}
@@ -768,6 +774,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <span class="etape">Étape 1</span>
       <h2>Enregistrer mon engagement de contribution</h2>
       <p>Choisissez un montant mensuel et une durée. Vous recevrez une référence personnelle, puis l'association vous contactera pour la mise en place du versement.</p>
+    </div>
+
+    <div class="bandeau-test" id="bandeauTest" hidden role="status">
+      <b>Mode test</b>
+      <span>Cet engagement sera marqué comme un essai : il ne comptera ni dans
+      les totaux publics, ni dans le fichier de suivi de l'association. Retirez
+      <code>?test=1</code> de l'adresse pour revenir au mode normal.</span>
     </div>
 
     <div class="mention-paiement">
@@ -2147,6 +2160,16 @@ function nouvelleCle(){
   const ouvertLe = Date.now();
   let envoiEnCours = false;
 
+  // Mode test : ?test=1 dans l'adresse. L'engagement part alors marqué
+  // comme un essai — exclu des totaux publics et du fichier de suivi —
+  // et la page le signale franchement, pour qu'on n'y soit jamais par
+  // mégarde. Sans ce paramètre, rien ne change.
+  const MODE_TEST = new URLSearchParams(location.search).get('test') === '1';
+  if (MODE_TEST) {
+    const bandeau = document.getElementById('bandeauTest');
+    if (bandeau) bandeau.hidden = false;
+  }
+
   const forfaitChoisi = () => (form.querySelector('input[name="forfait"]:checked') || {}).value;
   const deviseChoisie = () =>
     forfaitChoisi() === 'libre' ? (document.getElementById('devise').value || 'EUR') : 'EUR';
@@ -2294,12 +2317,13 @@ function nouvelleCle(){
     envoiEnCours = true;
     btn.disabled = true;
     const libelle = btn.textContent;
-    btn.textContent = 'Enregistrement…';
+    btn.textContent = MODE_TEST ? 'Enregistrement (test)…' : 'Enregistrement…';
     annoncer('statutEngagement', 'Enregistrement en cours…');
 
     const charge = {
       cle_idempotence: cleIdempotence,
       duree_saisie_ms: Date.now() - ouvertLe,
+      est_test: MODE_TEST,
       site_web: document.getElementById('site_web').value,
       prenom: document.getElementById('prenom').value,
       nom: document.getElementById('nom').value,
