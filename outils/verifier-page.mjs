@@ -332,6 +332,30 @@ setTimeout(() => {
   v('aucune modification directe depuis la page',
     !d.querySelector('#modifier-dahira input[id^="dNom"]'));
 
+  console.log('\nLOGOS DES DEUX STRUCTURES');
+  const logosHaut = [...d.querySelectorAll('.topbar img')].map((i) => i.getAttribute('src'));
+  const logosBas  = [...d.querySelectorAll('footer .logos img')].map((i) => i.getAttribute('src'));
+  v('le logo ACS est en haut de page', logosHaut.some((s) => /logoacs/.test(s)));
+  v('le logo FAF est en haut de page', logosHaut.some((s) => /logofaf/.test(s)));
+  v('les deux logos sont côte à côte', (() => {
+    const m = d.querySelector('.topbar .marques');
+    return Boolean(m) && m.querySelectorAll('img').length === 2;
+  })());
+  v('le logo ACS est en bas de page', logosBas.some((s) => /logoacs/.test(s)));
+  v('le logo FAF est en bas de page', logosBas.some((s) => /logofaf/.test(s)));
+  v('les deux structures sont nommées en bas de page', (() => {
+    const t = d.querySelector('footer .logos').textContent;
+    return /Connaissance et Savoir/.test(t) && /Ansaruddîne/.test(t);
+  })());
+  v('la Fédération est nommée dans la signature du haut',
+    /Ansaruddîne/.test(d.querySelector('.topbar .brand b').textContent));
+  v('chaque logo porte un texte alternatif',
+    [...d.querySelectorAll('.topbar img, footer .logos img')]
+      .every((i) => (i.getAttribute('alt') || '').trim().length > 0));
+  v('les fichiers de logo existent',
+    [...new Set([...logosHaut, ...logosBas])]
+      .every((chemin) => fs.existsSync(racine + 'public/' + chemin)));
+
   console.log('\nACCESSIBILITÉ ET MOBILE');
   v('langue déclarée', d.documentElement.lang === 'fr');
   v('viewport présent', Boolean(d.querySelector('meta[name=viewport]')));

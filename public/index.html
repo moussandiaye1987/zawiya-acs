@@ -83,7 +83,8 @@ p{margin:0 0 1em}
   backdrop-filter:blur(10px); border-bottom:1px solid var(--trait)}
 .topbar-in{display:flex; align-items:center; gap:.9rem; padding:.5rem 0; min-height:62px; position:relative}
 .brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; flex:0 0 auto}
-.brand img{width:38px; height:38px; border-radius:50%; background:#fff}
+.marques{display:flex; align-items:center; gap:.35rem; flex:0 0 auto}
+.brand img{width:38px; height:38px; border-radius:50%; background:#fff; flex:0 0 auto}
 .brand b{font-family:"Marcellus",serif; font-size:1rem; font-weight:400; letter-spacing:.02em; line-height:1.15}
 .brand b span{display:block; font-size:.73rem; color:var(--encre-2); letter-spacing:.04em}
 .acces{display:flex; gap:.5rem; margin-left:auto; align-items:center}
@@ -106,7 +107,7 @@ p{margin:0 0 1em}
 .menu-mobile a{display:block; padding:.95rem .2rem; text-decoration:none; color:var(--encre);
   border-bottom:1px solid var(--trait); font-size:1.02rem}
 .menu-mobile a:last-child{border-bottom:none}
-.brand-court{display:none}
+.brand b .brand-court{display:none}
 
 @media (max-width:1000px){
   .acces a.secondaire{display:none}
@@ -117,11 +118,12 @@ p{margin:0 0 1em}
 @media (max-width:620px){
   [id]{scroll-margin-top:68px}
   .topbar-in{gap:.4rem; min-height:56px}
-  .brand img{width:32px; height:32px}
+  .marques{gap:.25rem}
+  .brand img{width:30px; height:30px}
   .brand b{font-size:.88rem}
   .brand b span{display:none}
-  .brand-long{display:none}
-  .brand-court{display:inline}
+  .brand b .brand-long{display:none}
+  .brand b .brand-court{display:block}
   .acces{gap:.35rem}
   .acces a{padding:.5rem .7rem; font-size:.85rem; min-height:44px; display:flex; align-items:center; white-space:nowrap}
   .acces .long{display:none}
@@ -129,6 +131,7 @@ p{margin:0 0 1em}
 }
 @media (max-width:430px){
   .brand b{display:none}
+  .brand img{width:28px; height:28px}
   .acces a{padding:.5rem .6rem; font-size:.82rem}
 }
 
@@ -556,8 +559,10 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 .pied{border-top:1px solid var(--trait); padding:2.6rem 0 2.2rem; font-size:.92rem; color:var(--encre-2)}
 .pied-grid{display:grid; grid-template-columns:auto 1fr auto; gap:1.8rem; align-items:center}
 @media (max-width:760px){ .pied-grid{grid-template-columns:1fr} .pied-grid .btn{width:100%} }
-.logos{display:flex; gap:1rem; align-items:center}
-.logos img{width:54px; height:54px; border-radius:50%; background:#fff}
+.logos{display:flex; gap:1.4rem; align-items:flex-start}
+.logos figure{margin:0; text-align:center; width:84px}
+.logos img{width:58px; height:58px; border-radius:50%; background:#fff; margin-inline:auto}
+.logos figcaption{font-size:.72rem; line-height:1.3; color:var(--encre-2); margin-top:.4rem}
 .pied a{color:var(--vert)}
 .pied-bas{margin-top:1.8rem; padding-top:1.1rem; border-top:1px solid var(--trait); font-size:.84rem;
   display:flex; flex-wrap:wrap; gap:.4rem 1.3rem; justify-content:space-between}
@@ -576,8 +581,11 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 <header class="topbar">
   <div class="wrap topbar-in">
     <a class="brand" href="#haut">
-      <img src="img/logoacs.jpg" alt="">
-      <b><span class="brand-long">Zawiya Cheikh Ibrahim Niasse</span><span class="brand-court">Zawiya</span><span>Association Connaissance et Savoir</span></b>
+      <span class="marques">
+        <img src="img/logoacs.jpg" alt="Association Connaissance et Savoir">
+        <img src="img/logofaf.jpg" alt="Fédération Ansaruddîne France">
+      </span>
+      <b><span class="brand-long">Zawiya Cheikh Ibrahim Niasse</span><span class="brand-court">Zawiya</span><span>ACS · Fédération Ansaruddîne France</span></b>
     </a>
     <nav class="acces" aria-label="Accès principaux">
       <a class="secondaire" href="#projet">Le projet</a>
@@ -1507,8 +1515,14 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
   <div class="wrap">
     <div class="pied-grid">
       <div class="logos">
-        <img loading="lazy" src="img/logoacs.jpg" alt="Logo de l'Association Connaissance et Savoir">
-        <img loading="lazy" src="img/logofaf.jpg" alt="Logo de la Fédération Ansaruddîne France">
+        <figure>
+          <img loading="lazy" src="img/logoacs.jpg" alt="Logo de l'Association Connaissance et Savoir">
+          <figcaption>Association<br>Connaissance et Savoir</figcaption>
+        </figure>
+        <figure>
+          <img loading="lazy" src="img/logofaf.jpg" alt="Logo de la Fédération Ansaruddîne France">
+          <figcaption>Fédération<br>Ansaruddîne France</figcaption>
+        </figure>
       </div>
       <div>
         <p style="margin:0 0 .3rem"><b style="color:var(--encre);font-weight:500">Association Connaissance et Savoir</b> — association loi 1901</p>
