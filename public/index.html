@@ -489,14 +489,19 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 .acteur .role{font-size:.8rem; color:var(--vert); letter-spacing:.05em; margin:.2rem 0 .8rem}
 .acteur ul{margin:0; padding-left:1.1rem; font-size:.93rem; color:var(--encre-2)}
 .acteur li{margin-bottom:.3rem}
-.faq{margin-top:1.4rem}
-.faq details{border-bottom:1px solid var(--trait)}
-.faq summary{cursor:pointer; padding:1rem 2rem 1rem 0; font-size:1.02rem; position:relative; list-style:none}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+"; position:absolute; right:.3rem; top:.9rem; color:var(--vert); font-size:1.3rem}
-.faq details[open] summary::after{content:"–"}
-.faq summary:focus-visible{outline:2px solid var(--vert); outline-offset:2px}
-.faq .reponse{padding:0 0 1.1rem; color:var(--encre-2); font-size:.96rem; max-width:46em}
+.faq{margin-top:1.2rem}
+.faq-item{border-bottom:1px solid var(--trait)}
+.faq-item h4{margin:0; font-family:inherit; font-weight:400}
+.faq-q{display:block; width:100%; text-align:left; cursor:pointer; background:none; border:0;
+  font-family:inherit; font-size:1.02rem; color:var(--encre); line-height:1.4;
+  padding:1rem 2.2rem 1rem 0; position:relative; min-height:52px}
+.faq-q::after{content:"+"; position:absolute; right:.3rem; top:50%; transform:translateY(-50%);
+  color:var(--vert); font-size:1.4rem; line-height:1}
+.faq-q[aria-expanded="true"]::after{content:"–"}
+.faq-q:hover{color:var(--vert)}
+.faq-q:focus-visible{outline:2px solid var(--vert); outline-offset:2px; border-radius:2px}
+.faq-r{padding:0 0 1.1rem; color:var(--encre-2); font-size:.96rem; max-width:46em}
+.faq-r[hidden]{display:none}
 .frise{list-style:none; padding:0; margin:0; border-left:2px solid var(--trait-fort)}
 .frise li{position:relative; padding:0 0 1.5rem 1.8rem}
 .frise li:last-child{padding-bottom:0}
@@ -1392,39 +1397,42 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       </div>
     </details>
 
-    <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.4rem;margin-top:clamp(2.2rem,4vw,3rem)">Questions fréquentes</h3>
-    <p style="color:var(--encre-2);font-size:.95rem;margin-top:.4rem">Cliquez sur une question pour voir la réponse.</p>
-
-    <div class="faq">
-      <details>
-        <summary>Est-ce que je paie quelque chose sur ce site ?</summary>
-        <div class="reponse">Non. Le site n'encaisse aucun paiement, ne demande aucune coordonnée bancaire et ne met en place aucun prélèvement. Le formulaire enregistre une intention de contribution. L'association vous contacte ensuite pour convenir des modalités de versement.</div>
-      </details>
-      <details>
-        <summary>Est-ce la même chose qu'adhérer à l'association ?</summary>
-        <div class="reponse">Ce formulaire enregistre un <b>engagement de contribution au projet de Zawiya</b>. Si vous souhaitez par ailleurs devenir membre de l'Association Connaissance et Savoir, écrivez-nous : ce sont deux démarches distinctes, avec des conditions différentes.</div>
-      </details>
-      <details>
-        <summary>Puis-je modifier ou arrêter mon engagement ?</summary>
-        <div class="reponse">Oui, à tout moment et sans justification. Écrivez à l'association avec votre référence. Vous pouvez aussi interrompre seulement les rappels mensuels, grâce au lien figurant en bas de chaque e-mail : votre engagement reste alors inchangé.</div>
-      </details>
-      <details>
-        <summary>Pourquoi 1 000 engagements ne suffisent-ils pas à réunir 2 millions ?</summary>
-        <div class="reponse">Parce que 2 000 000 € sur 24 mois représentent environ 83 333 € par mois, soit 83 € en moyenne par engagement. Les forfaits Bronze, Argent et Or se situent en dessous de cette moyenne. C'est pourquoi une partie des places — la bordure du puzzle — est réservée à des engagements libres d'un montant plus élevé. Le tableau de l'équation détaille le calcul.</div>
-      </details>
-      <details>
-        <summary>Que deviennent mes données ?</summary>
-        <div class="reponse">Elles sont enregistrées dans une base privée hébergée en France, accessible au seul bureau de l'association. Elles ne sont jamais publiées, ni transmises à un tiers, ni envoyées au navigateur des autres visiteurs. Voir la <a href="confidentialite.html">page de confidentialité</a>.</div>
-      </details>
-      <details>
-        <summary>Le bien a-t-il déjà été trouvé ?</summary>
-        <div class="reponse">Non. La recherche est en cours sur les départements et selon les critères détaillés plus haut. Aucune acquisition n'est signée à ce jour.</div>
-      </details>
-      <details>
-        <summary>Comment saurai-je où va mon argent ?</summary>
-        <div class="reponse">Les chiffres de cette page sont mis à jour à partir des engagements enregistrés. Les versements réellement encaissés sont publiés séparément, avec leur date d'arrêté, une fois consolidés par le trésorier. Le rapport financier est présenté chaque année en assemblée générale.</div>
-      </details>
-    </div>
+    <details class="replier">
+      <summary>Questions fréquentes — paiement, adhésion, données, calendrier</summary>
+      <div class="contenu">
+        <p style="color:var(--encre-2);font-size:.95rem">Sept réponses aux questions qui reviennent le plus souvent.</p>
+      <div class="faq">
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r1" id="faq-q1">Est-ce que je paie quelque chose sur ce site ?</button></h4>
+          <div class="faq-r" id="faq-r1" role="region" aria-labelledby="faq-q1" hidden>Non. Le site n'encaisse aucun paiement, ne demande aucune coordonnée bancaire et ne met en place aucun prélèvement. Le formulaire enregistre une intention de contribution. L'association vous contacte ensuite pour convenir des modalités de versement.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r2" id="faq-q2">Est-ce la même chose qu'adhérer à l'association ?</button></h4>
+          <div class="faq-r" id="faq-r2" role="region" aria-labelledby="faq-q2" hidden>Ce formulaire enregistre un <b>engagement de contribution au projet de Zawiya</b>. Si vous souhaitez par ailleurs devenir membre de l'Association Connaissance et Savoir, écrivez-nous : ce sont deux démarches distinctes, avec des conditions différentes.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r3" id="faq-q3">Puis-je modifier ou arrêter mon engagement ?</button></h4>
+          <div class="faq-r" id="faq-r3" role="region" aria-labelledby="faq-q3" hidden>Oui, à tout moment et sans justification. Écrivez à l'association avec votre référence. Vous pouvez aussi interrompre seulement les rappels mensuels, grâce au lien figurant en bas de chaque e-mail : votre engagement reste alors inchangé.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r4" id="faq-q4">Pourquoi 1 000 engagements ne suffisent-ils pas à réunir 2 millions ?</button></h4>
+          <div class="faq-r" id="faq-r4" role="region" aria-labelledby="faq-q4" hidden>Parce que 2 000 000 € sur 24 mois représentent environ 83 333 € par mois, soit 83 € en moyenne par engagement. Les forfaits Bronze, Argent et Or se situent en dessous de cette moyenne. C'est pourquoi une partie des places — la bordure du puzzle — est réservée à des engagements libres d'un montant plus élevé. Le tableau de l'équation détaille le calcul.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r5" id="faq-q5">Que deviennent mes données ?</button></h4>
+          <div class="faq-r" id="faq-r5" role="region" aria-labelledby="faq-q5" hidden>Elles sont enregistrées dans une base privée hébergée en France, accessible au seul bureau de l'association. Elles ne sont jamais publiées, ni transmises à un tiers, ni envoyées au navigateur des autres visiteurs. Voir la <a href="confidentialite.html">page de confidentialité</a>.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r6" id="faq-q6">Le bien a-t-il déjà été trouvé ?</button></h4>
+          <div class="faq-r" id="faq-r6" role="region" aria-labelledby="faq-q6" hidden>Non. La recherche est en cours sur les départements et selon les critères détaillés plus haut. Aucune acquisition n'est signée à ce jour.</div>
+        </div>
+        <div class="faq-item">
+          <h4><button type="button" class="faq-q" aria-expanded="false" aria-controls="faq-r7" id="faq-q7">Comment saurai-je où va mon argent ?</button></h4>
+          <div class="faq-r" id="faq-r7" role="region" aria-labelledby="faq-q7" hidden>Les chiffres de cette page sont mis à jour à partir des engagements enregistrés. Les versements réellement encaissés sont publiés séparément, avec leur date d'arrêté, une fois consolidés par le trésorier. Le rapport financier est présenté chaque année en assemblée générale.</div>
+        </div>
+      </div>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -2473,6 +2481,22 @@ function nouvelleCle(){
       btn.disabled = false;
       btn.textContent = libelle;
     }
+  });
+})();
+
+/* =====================================================================
+   QUESTIONS FRÉQUENTES
+   Des boutons plutôt que des balises « details » : la rubrique entière
+   est déjà un accordéon, et on évite ainsi de les imbriquer.
+   ===================================================================== */
+(function faq(){
+  document.querySelectorAll('.faq-q').forEach(bouton => {
+    bouton.addEventListener('click', () => {
+      const ouvert = bouton.getAttribute('aria-expanded') === 'true';
+      bouton.setAttribute('aria-expanded', ouvert ? 'false' : 'true');
+      const reponse = document.getElementById(bouton.getAttribute('aria-controls'));
+      if(reponse) reponse.hidden = ouvert;
+    });
   });
 })();
 

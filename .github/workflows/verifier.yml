@@ -1,6 +1,6 @@
 # Vérification automatique à chaque envoi.
 #
-# Les 276 contrôles tournent avant que Netlify ne déploie. Si l'un
+# Les 282 contrôles tournent avant que Netlify ne déploie. Si l'un
 # échoue, une croix rouge apparaît sur le commit et sur la pull request :
 # le défaut se voit avant d'arriver en ligne.
 #

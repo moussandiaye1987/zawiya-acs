@@ -196,7 +196,27 @@ setTimeout(() => {
     d.querySelectorAll('img').length >= 10 && d.querySelectorAll('video source').length === 1,
     d.querySelectorAll('img').length + ' images');
   v('l\'historique est conservé en entier', d.querySelectorAll('.frise li').length === 10);
-  v('la FAQ garde ses 7 questions', d.querySelectorAll('.faq details').length === 7);
+  v('la FAQ est regroupée sous un seul bouton',
+    accordeons.some(a => /Questions fréquentes/.test(a.querySelector('summary').textContent)));
+  v('la FAQ garde ses 7 questions', d.querySelectorAll('.faq-q').length === 7);
+  v('les questions sont des boutons, pas des accordéons imbriqués',
+    d.querySelectorAll('.faq details').length === 0
+    && [...d.querySelectorAll('.faq-q')].every(b => b.tagName === 'BUTTON'));
+  v('réponses masquées au départ',
+    [...d.querySelectorAll('.faq-r')].every(r => r.hidden === true));
+  v('chaque question annonce son état',
+    [...d.querySelectorAll('.faq-q')].every(b => b.getAttribute('aria-expanded') === 'false'
+      && d.getElementById(b.getAttribute('aria-controls'))));
+  v('un clic ouvre puis referme la réponse', (() => {
+    const b = d.querySelector('.faq-q');
+    const r = d.getElementById(b.getAttribute('aria-controls'));
+    b.dispatchEvent(new w.MouseEvent('click', { bubbles:true }));
+    const ouvert = r.hidden === false && b.getAttribute('aria-expanded') === 'true';
+    b.dispatchEvent(new w.MouseEvent('click', { bubbles:true }));
+    return ouvert && r.hidden === true && b.getAttribute('aria-expanded') === 'false';
+  })());
+  v('aucun texte de réponse perdu',
+    [...d.querySelectorAll('.faq-r')].every(r => r.textContent.trim().length > 40));
   v('les boutons de participation restent visibles',
     [...d.querySelectorAll('a[href="#adherer"]')].some(a => !a.closest('details')));
   v('le formulaire d\'engagement n\'est pas replié',

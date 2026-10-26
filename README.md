@@ -349,7 +349,7 @@ Claude modifie le projet
         ▼
    git push origin main
         │
-        ├──▶ GitHub Actions : 276 contrôles
+        ├──▶ GitHub Actions : 282 contrôles
         │      échec → croix rouge sur le commit
         │
         └──▶ Netlify : déploiement automatique
@@ -370,7 +370,7 @@ npm install     # la première fois seulement
 npm run verifier
 ```
 
-276 contrôles hors ligne — 168 sur les fonctions serveur, 108 sur la page : validation, pièges
+282 contrôles hors ligne — 168 sur les fonctions serveur, 114 sur la page : validation, pièges
 publique dans un navigateur simulé : validation, pièges anti-robot,
 doublons, panne du service d'e-mail, confidentialité des réponses, liens
 personnels, rappels, format des numéros, page de relance WhatsApp,
