@@ -21,11 +21,11 @@ process.env.URL = 'https://site.test';
 /* Base de données simulée                                             */
 /* ------------------------------------------------------------------ */
 const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [] };
-const APPELS = { mails: [], echecMail: false, rpc: [], geocodages: [], geocodageEnPanne: false };
+const APPELS = { mails: [], echecMail: false, echecPour: null, rpc: [], geocodages: [], geocodageEnPanne: false };
 
 function reinitialiser(){
   Object.keys(BASE).forEach(k => { BASE[k].length = 0; });
-  APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false;
+  APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false; APPELS.echecPour = null;
   APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false;
 }
 
@@ -48,8 +48,14 @@ globalThis.fetch = async (url, options = {}) => {
   // --- fournisseur d'e-mails ---
   if(u.hostname === 'api.brevo.com'){
     if(APPELS.echecMail) return new Response('service indisponible', { status: 500 });
-    APPELS.mails.push(JSON.parse(options.body));
-    return repJSON({ messageId: 'faux' }, 201);
+    const charge = JSON.parse(options.body);
+    // Panne visant une adresse précise : sert à vérifier qu'un
+    // destinataire en échec n'empêche pas les autres de recevoir.
+    if(APPELS.echecPour && charge.to.some(d => d.email === APPELS.echecPour)){
+      return new Response('{"message":"unrecognised email address"}', { status: 400 });
+    }
+    APPELS.mails.push(charge);
+    return repJSON({ messageId: `faux-${APPELS.mails.length}` }, 201);
   }
 
   // --- PostgREST simulé ---
@@ -242,14 +248,17 @@ serie('ENGAGEMENT — enregistrement et notifications');
     BASE.engagements[0].consentement_version === '2026-10-25');
   verifier('adresse IP non stockée en clair',
     !JSON.stringify(BASE.engagements[0]).includes('203.0.113.7') && BASE.engagements[0].ip_hash.length === 32);
-  verifier('deux e-mails partis', APPELS.mails.length === 2, APPELS.mails.map(m => m.to[0].email).join(', '));
+  // Deux adresses internes configurées, plus l'adhérent : trois envois.
+  verifier('un envoi par destinataire interne, plus l’adhérent',
+    APPELS.mails.length === 3, APPELS.mails.map(m => m.to[0].email).join(', '));
   verifier('accusé au participant sans mention de paiement effectué',
     APPELS.mails.some(m => m.to[0].email === 'aminata@exemple.test' &&
       /Aucun paiement ni prélèvement/.test(m.textContent)));
   verifier('notification à l’association avec référence et montant',
     APPELS.mails.some(m => m.to[0].email === 'bureau@exemple.test' &&
       m.subject.includes(c.reference) && m.subject.includes('50')));
-  verifier('les deux envois sont journalisés', BASE.journal_notifications.length === 2);
+  verifier('chaque envoi est journalisé', BASE.journal_notifications.length === 3,
+    BASE.journal_notifications.length + ' ligne(s)');
   verifier('journal marqué « envoyé »',
     BASE.journal_notifications.every(j => j.statut === 'envoye'));
 }
@@ -263,7 +272,8 @@ serie('ENGAGEMENT — doublons et renvois');
   verifier('le renvoi ne crée pas de doublon', BASE.engagements.length === 1);
   verifier('le renvoi retourne la même référence', c1.reference === c2.reference);
   verifier('le renvoi est signalé', c2.deja === true);
-  verifier('pas de second e-mail au renvoi', APPELS.mails.length === 2);
+  verifier('aucun e-mail supplémentaire au renvoi', APPELS.mails.length === 3,
+    APPELS.mails.length + ' message(s)');
 
   const r3 = await engagement(requete(engagementValide({ email:'aminata@exemple.test' })));
   const c3 = await r3.json();
@@ -278,9 +288,10 @@ serie('ENGAGEMENT — panne du service d’e-mail');
   const r = await engagement(requete(engagementValide({ email:'panne@exemple.test' })));
   const c = await r.json();
   verifier('la soumission est conservée malgré la panne', r.status === 200 && BASE.engagements.length === 1);
-  verifier('l’échec est journalisé pour rejeu',
-    BASE.journal_notifications.length === 2 &&
-    BASE.journal_notifications.every(j => j.statut === 'echec'));
+  verifier('l’échec est journalisé pour rejeu, destinataire par destinataire',
+    BASE.journal_notifications.length === 3 &&
+    BASE.journal_notifications.every(j => j.statut === 'echec'),
+    BASE.journal_notifications.length + ' ligne(s)');
   verifier('le motif technique est conservé',
     BASE.journal_notifications.every(j => (j.derniere_erreur || '').includes('brevo')));
 }
@@ -576,7 +587,7 @@ serie('CSV — format et sécurité');
 }
 
 /* ------------------------------------------------------------------ */
-serie('DESTINATAIRES INTERNES — plusieurs adresses, un seul envoi');
+serie('DESTINATAIRES INTERNES — un envoi par adresse, sans doublon');
 {
   const { destinatairesAssociation } = await import('../netlify/functions/lib/commun.mjs');
   const lire = (v) => { process.env.EMAIL_ASSOCIATION = v; return destinatairesAssociation(); };
@@ -605,30 +616,76 @@ serie('DESTINATAIRES INTERNES — plusieurs adresses, un seul envoi');
   const r = await engagement(requete(engagementValide({ email:'duo@exemple.test' })));
   verifier('engagement enregistré', r.status === 200);
 
-  const assoc = APPELS.mails.filter(
-    (m) => m.to.some((d) => d.email === 'bureau@exemple.test'));
-  verifier('le bureau ne reçoit qu\'UN message', assoc.length === 1,
-    `${assoc.length} message(s)`);
-  verifier('ce message porte les deux adresses',
-    assoc[0].to.length === 2
-    && assoc[0].to.map((d) => d.email).join('|') === 'bureau@exemple.test|second@exemple.test',
-    assoc[0].to.map((d) => d.email).join(', '));
-  verifier('la seconde adresse reçoit la notification du nouvel adhérent',
-    /Ndiaye|Aminata/.test(assoc[0].htmlContent));
-  verifier('elle reçoit le récapitulatif à date',
-    /Tous les engagements enregistrés/.test(assoc[0].htmlContent)
-    && /Arrêté au /.test(assoc[0].htmlContent));
-  verifier('elle reçoit le CSV, joint une seule fois',
-    Array.isArray(assoc[0].attachment) && assoc[0].attachment.length === 1);
-  verifier('au total, deux messages seulement : le bureau et l\'adhérent',
-    APPELS.mails.length === 2, APPELS.mails.length + ' message(s)');
-  verifier('l\'e-mail de l\'adhérent ne part qu\'à lui',
-    APPELS.mails.find((m) => m.to[0].email === 'duo@exemple.test').to.length === 1);
-  verifier('le journal garde la trace des deux destinataires',
-    BASE.journal_notifications.some(
-      (j) => j.destinataire === 'bureau@exemple.test, second@exemple.test'));
+  const pour = (a) => APPELS.mails.filter((m) => m.to.some((d) => d.email === a));
+  const premier = pour('bureau@exemple.test');
+  const second  = pour('second@exemple.test');
+
+  verifier('la première adresse reçoit exactement un message', premier.length === 1,
+    `${premier.length} message(s)`);
+  verifier('la seconde adresse reçoit exactement un message', second.length === 1,
+    `${second.length} message(s)`);
+  verifier('chaque message ne part qu\'à son destinataire',
+    premier[0].to.length === 1 && second[0].to.length === 1);
+
+  for (const [nom, m] of [['la première', premier[0]], ['la seconde', second[0]]]) {
+    verifier(`${nom} reçoit le détail du nouvel engagement`, /Ndiaye|Aminata/.test(m.htmlContent));
+    verifier(`${nom} reçoit le récapitulatif à date`,
+      /Tous les engagements enregistrés/.test(m.htmlContent) && /Arrêté au /.test(m.htmlContent));
+    verifier(`${nom} reçoit le CSV, joint une seule fois`,
+      Array.isArray(m.attachment) && m.attachment.length === 1
+      && /^engagements-zawiya-\d{4}-\d{2}-\d{2}\.csv$/.test(m.attachment[0].name));
+  }
+  verifier('les deux reçoivent exactement le même contenu',
+    premier[0].htmlContent === second[0].htmlContent
+    && premier[0].subject === second[0].subject
+    && premier[0].attachment[0].content === second[0].attachment[0].content);
+
+  verifier('au total, trois messages : les deux du bureau et celui de l\'adhérent',
+    APPELS.mails.length === 3, APPELS.mails.length + ' message(s)');
+  verifier('l\'adhérent reçoit toujours son accusé, à lui seul', (() => {
+    const sien = pour('duo@exemple.test');
+    return sien.length === 1 && sien[0].to.length === 1
+      && (!sien[0].attachment || sien[0].attachment.length === 0)
+      && !/Tous les engagements/.test(sien[0].htmlContent);
+  })());
+
+  const jAssoc = BASE.journal_notifications.filter((j) => j.modele === 'engagement_association');
+  verifier('le journal porte une ligne par destinataire', jAssoc.length === 2,
+    jAssoc.map((j) => j.destinataire).join(', '));
+  verifier('chaque ligne nomme une seule adresse',
+    jAssoc.every((j) => !j.destinataire.includes(',')));
+  verifier('les deux adresses sont journalisées',
+    jAssoc.map((j) => j.destinataire).sort().join('|')
+      === 'bureau@exemple.test|second@exemple.test');
+  verifier('chaque ligne garde la référence du fournisseur',
+    jAssoc.every((j) => Boolean(j.reference_fournisseur)),
+    jAssoc.map((j) => j.reference_fournisseur).join(', '));
+  verifier('les références diffèrent d\'un destinataire à l\'autre',
+    jAssoc[0].reference_fournisseur !== jAssoc[1].reference_fournisseur);
   verifier('l\'expéditeur est inchangé',
-    assoc[0].sender.email === process.env.MAIL_EXPEDITEUR);
+    premier[0].sender.email === process.env.MAIL_EXPEDITEUR
+    && second[0].sender.email === process.env.MAIL_EXPEDITEUR);
+
+  // Une adresse refusée par le fournisseur ne doit pas priver l'autre.
+  reinitialiser();
+  APPELS.echecPour = 'bureau@exemple.test';
+  await engagement(requete(engagementValide({ email:'solo@exemple.test' })));
+  APPELS.echecPour = null;
+
+  verifier('une adresse refusée n\'empêche pas l\'autre de recevoir',
+    APPELS.mails.some((m) => m.to[0].email === 'second@exemple.test'));
+  verifier('l\'adhérent reçoit son accusé malgré ce refus',
+    APPELS.mails.some((m) => m.to[0].email === 'solo@exemple.test'));
+  verifier('le journal distingue l\'adresse en échec de celle qui a abouti', (() => {
+    const j = BASE.journal_notifications.filter((x) => x.modele === 'engagement_association');
+    const ko = j.find((x) => x.destinataire === 'bureau@exemple.test');
+    const ok = j.find((x) => x.destinataire === 'second@exemple.test');
+    return j.length === 2 && ko?.statut === 'echec' && ok?.statut === 'envoye';
+  })());
+  verifier('le motif du refus est conservé, sans secret',
+    BASE.journal_notifications.some(
+      (x) => x.statut === 'echec' && /brevo 400/.test(x.derniere_erreur || '')
+             && !/api-key|BREVO_API_KEY/i.test(x.derniere_erreur || '')));
 }
 
 /* ------------------------------------------------------------------ */

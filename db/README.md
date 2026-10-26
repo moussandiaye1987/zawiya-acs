@@ -13,6 +13,11 @@ conservées dans la table `supabase_migrations.schema_migrations`.
 | `anti_spam_empreinte_ip` | Empreinte d'IP et limiteur de débit |
 | `ajout_colonnes_canaux` | `rappel_email`, `rappel_whatsapp`, `canal_whatsapp` |
 | `fonction_rappel_par_canal` | `engagements_a_rappeler(mois, canal)`, vue `v_canaux_rappel` |
+| `devise_et_periodicite` | Colonnes `devise` (EUR/XOF) et `periodicite` — les devises ne sont jamais additionnées |
+| `vues_devise_et_export_suivi` | Vues par devise et `v_export_suivi`, qui alimente le CSV joint |
+| `demandes_modification_dahira` | Table des demandes, jetons en condensat, expiration 48 h |
+| `application_modification_validee` | Déclencheur appliquant une modification une fois validée |
+| `reference_fournisseur_journal` | Colonne `reference_fournisseur` sur `journal_notifications` : la référence rendue par Brevo ou Resend, pour retrouver un envoi dans leurs journaux et y lire la remise réelle |
 
 ## Récupérer le SQL
 

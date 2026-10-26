@@ -164,11 +164,20 @@ async function notifier(e, context) {
   const destAssoc = destinatairesAssociation();
   const taches = [];
 
-  // Un seul message pour tout le bureau : la notification, le
-  // récapitulatif et le CSV partent en un envoi, jamais en double.
+  // Le message du bureau — notification, récapitulatif et CSV — est
+  // bâti une seule fois, puis adressé séparément à chaque destinataire.
+  //
+  // Un envoi par destinataire, et non un seul message à plusieurs
+  // adresses : chacun laisse sa propre ligne dans le journal, avec la
+  // référence rendue par le fournisseur. Une adresse en échec n'empêche
+  // donc pas les autres de recevoir, et l'on sait laquelle a échoué.
+  // La liste étant dédoublonnée, personne ne reçoit deux fois.
   if (destAssoc.length) {
-    taches.push(journaliser(e, destAssoc.join(', '), 'engagement_association',
-      mailAssociation(e, destAssoc)));
+    const message = await composerMailAssociation(e);
+    for (const adresse of destAssoc) {
+      taches.push(journaliser(e, adresse, 'engagement_association',
+        envoyer({ ...message, destinataire: adresse })));
+    }
   }
   if (e.email) {
     taches.push(journaliser(e, e.email, 'engagement_participant', mailParticipant(e, base)));
@@ -182,7 +191,7 @@ async function notifier(e, context) {
    l'instant de l'envoi, et le fichier CSV en pièce jointe. Les montants
    sont présentés devise par devise, jamais additionnés entre elles.
    --------------------------------------------------------------------- */
-async function mailAssociation(e, destinataire) {
+async function composerMailAssociation(e) {
   const dev = e.devise || 'EUR';
 
   // Récapitulatif et export : tous les engagements retenus, tests exclus.
@@ -271,13 +280,13 @@ async function mailAssociation(e, destinataire) {
     ...(pieceJointe.length ? [`Fichier joint : ${pieceJointe[0].nom}`] : []),
   ].join('\n');
 
-  return envoyer({
-    destinataire,
+  // Le message, prêt à partir — le destinataire est ajouté à l'envoi.
+  return {
     sujet: `Engagement ${e.reference} — ${e.prenom} ${e.nom} — ${montant(e.montant_mensuel_declare, dev)}/mois`,
     texte,
     html: gabarit('Nouvel engagement enregistré', corps),
     pieces: pieceJointe,
-  });
+  };
 }
 
 /* ---------------------------------------------------------------------
@@ -337,7 +346,11 @@ async function journaliser(objet, destinataire, modele, promesse) {
       objet_id: objet.id,
       destinataire,
       modele,
+      // « envoye » veut dire accepté par le fournisseur, pas remis au
+      // destinataire. La remise effective se lit dans les journaux du
+      // fournisseur, que reference_fournisseur permet de retrouver.
       statut: resultat.envoye ? 'envoye' : 'echec',
+      reference_fournisseur: resultat.id || null,
       tentatives: 1,
       derniere_erreur: resultat.envoye ? null : String(resultat.motif).slice(0, 300),
       envoye_le: resultat.envoye ? new Date().toISOString() : null,

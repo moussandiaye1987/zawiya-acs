@@ -52,7 +52,11 @@ function listeDestinataires(destinataire) {
  *        Pièces jointes. Le contenu est déjà encodé en base64.
  *        Elles ne sont jamais déposées sur le site : elles n'existent que
  *        dans le message, à destination de l'association.
- * @returns {Promise<{envoye: boolean, motif?: string}>}
+ * @returns {Promise<{envoye: boolean, id?: string, motif?: string}>}
+ *   `envoye` signifie « accepté par le fournisseur », et non « remis au
+ *   destinataire » : la remise, le rejet ou le classement en indésirable
+ *   se lisent dans les journaux du fournisseur. `id` est la référence
+ *   qu'il rend, qui permet d'y retrouver cet envoi précis.
  * Ne lève jamais : un échec d'e-mail ne doit pas faire perdre une soumission.
  */
 export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
@@ -106,7 +110,16 @@ export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
       const detail = (await reponse.text()).slice(0, 200);
       return { envoye: false, motif: `${fournisseur} ${reponse.status} ${detail}` };
     }
-    return { envoye: true };
+
+    // Référence du fournisseur : Brevo rend « messageId », Resend « id ».
+    // Son absence n'est pas une erreur — elle prive seulement du suivi.
+    let id = null;
+    try {
+      const corps = await reponse.json();
+      id = corps?.messageId || corps?.id || null;
+      if (Array.isArray(id)) id = id[0] || null;
+    } catch { /* réponse sans corps JSON : l'envoi reste accepté */ }
+    return { envoye: true, id: id ? String(id).slice(0, 200) : null };
   } catch (e) {
     return { envoye: false, motif: `${fournisseur} injoignable : ${e.message}` };
   }
