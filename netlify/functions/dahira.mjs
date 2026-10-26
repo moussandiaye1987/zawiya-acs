@@ -4,6 +4,7 @@ import { geocoder } from './lib/geocodage.mjs';
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP, suspectRobot,
   departementDepuisCP, fabriquerReference, VERSION_CONSENTEMENT, ZONES,
+  destinatairesAssociation,
 } from './lib/commun.mjs';
 
 export const config = { path: '/api/dahira' };
@@ -127,10 +128,10 @@ export default async (req) => {
 };
 
 async function notifier(f) {
-  const destAssoc = process.env.EMAIL_ASSOCIATION;
+  const destAssoc = destinatairesAssociation();
   const taches = [];
 
-  if (destAssoc) {
+  if (destAssoc.length) {
     const corps = `
       <p><strong>Nouvelle demande de référencement.</strong> La fiche est en attente et n'apparaît pas encore sur le site.</p>
       <table cellpadding="4" style="font-size:14px">
@@ -145,7 +146,7 @@ async function notifier(f) {
         <tr><td style="color:#6b7d71">Disciples affiliés</td><td>${f.effectif ?? '—'}</td></tr>
       </table>
       <p>Pour publier : passer le statut de « En attente » à « Publiée » dans la table <code>dahiras</code>, depuis votre tableau de bord Supabase.</p>`;
-    taches.push(journaliser(f, destAssoc, 'dahira_association', envoyer({
+    taches.push(journaliser(f, destAssoc.join(', '), 'dahira_association', envoyer({
       destinataire: destAssoc,
       sujet: `Dahira à valider — ${f.nom} (${f.ville})`,
       texte: `Nouvelle demande de référencement en attente de validation.\nRéférence : ${f.reference}\n${f.nom} — ${f.ville} ${f.code_postal}\nResponsable : ${f.responsable_nom} ${f.responsable_email}`,

@@ -11,7 +11,7 @@ process.env.SUPABASE_URL = 'https://faux.supabase.test';
 process.env.SUPABASE_SERVICE_ROLE_KEY = 'cle-de-test';
 process.env.BREVO_API_KEY = 'cle-brevo-de-test';
 process.env.MAIL_EXPEDITEUR = 'test@exemple.test';
-process.env.EMAIL_ASSOCIATION = 'bureau@exemple.test';
+process.env.EMAIL_ASSOCIATION = 'bureau@exemple.test, second@exemple.test';
 process.env.SEL_EMPREINTE = 'sel-de-test';
 process.env.SECRET_LIENS = 'secret-de-test';
 process.env.SECRET_ADMIN = 'admin-de-test';
@@ -573,6 +573,62 @@ serie('CSV — format et sécurité');
     t.every(x => x.periodicites.includes('mensuelle')));
   verifier('le formatage respecte la devise',
     montant(50, 'EUR').includes('€') && montant(25000, 'XOF').includes('FCFA'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('DESTINATAIRES INTERNES — plusieurs adresses, un seul envoi');
+{
+  const { destinatairesAssociation } = await import('../netlify/functions/lib/commun.mjs');
+  const lire = (v) => { process.env.EMAIL_ASSOCIATION = v; return destinatairesAssociation(); };
+  const garde = process.env.EMAIL_ASSOCIATION;
+
+  verifier('une seule adresse reste acceptée',
+    lire('bureau@exemple.test').join('|') === 'bureau@exemple.test');
+  verifier('la virgule sépare les adresses',
+    lire('a@x.test,b@x.test').join('|') === 'a@x.test|b@x.test');
+  verifier('le point-virgule, l\'espace et le retour à la ligne aussi',
+    lire('a@x.test; b@x.test\nc@x.test d@x.test').join('|') === 'a@x.test|b@x.test|c@x.test|d@x.test');
+  verifier('l\'ordre de la variable est conservé',
+    lire('second@x.test,premier@x.test')[0] === 'second@x.test');
+  verifier('un doublon exact est retiré',
+    lire('a@x.test, a@x.test').length === 1);
+  verifier('un doublon de casse est retiré',
+    lire('Bureau@X.test, bureau@x.TEST').length === 1);
+  verifier('une adresse mal formée est ignorée',
+    lire('a@x.test, pas-une-adresse, b@x.test').join('|') === 'a@x.test|b@x.test');
+  verifier('une variable vide ne donne aucun destinataire', lire('').length === 0);
+  verifier('les espaces superflus sont retirés',
+    lire('  a@x.test ,  b@x.test  ').join('|') === 'a@x.test|b@x.test');
+
+  process.env.EMAIL_ASSOCIATION = garde;
+  reinitialiser();
+  const r = await engagement(requete(engagementValide({ email:'duo@exemple.test' })));
+  verifier('engagement enregistré', r.status === 200);
+
+  const assoc = APPELS.mails.filter(
+    (m) => m.to.some((d) => d.email === 'bureau@exemple.test'));
+  verifier('le bureau ne reçoit qu\'UN message', assoc.length === 1,
+    `${assoc.length} message(s)`);
+  verifier('ce message porte les deux adresses',
+    assoc[0].to.length === 2
+    && assoc[0].to.map((d) => d.email).join('|') === 'bureau@exemple.test|second@exemple.test',
+    assoc[0].to.map((d) => d.email).join(', '));
+  verifier('la seconde adresse reçoit la notification du nouvel adhérent',
+    /Ndiaye|Aminata/.test(assoc[0].htmlContent));
+  verifier('elle reçoit le récapitulatif à date',
+    /Tous les engagements enregistrés/.test(assoc[0].htmlContent)
+    && /Arrêté au /.test(assoc[0].htmlContent));
+  verifier('elle reçoit le CSV, joint une seule fois',
+    Array.isArray(assoc[0].attachment) && assoc[0].attachment.length === 1);
+  verifier('au total, deux messages seulement : le bureau et l\'adhérent',
+    APPELS.mails.length === 2, APPELS.mails.length + ' message(s)');
+  verifier('l\'e-mail de l\'adhérent ne part qu\'à lui',
+    APPELS.mails.find((m) => m.to[0].email === 'duo@exemple.test').to.length === 1);
+  verifier('le journal garde la trace des deux destinataires',
+    BASE.journal_notifications.some(
+      (j) => j.destinataire === 'bureau@exemple.test, second@exemple.test'));
+  verifier('l\'expéditeur est inchangé',
+    assoc[0].sender.email === process.env.MAIL_EXPEDITEUR);
 }
 
 /* ------------------------------------------------------------------ */

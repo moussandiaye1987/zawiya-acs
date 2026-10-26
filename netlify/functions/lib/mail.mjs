@@ -27,8 +27,27 @@ export function mailConfigure() {
   return Boolean(fournisseurMail() && EXPEDITEUR_EMAIL);
 }
 
+/** Normalise le destinataire : une chaîne, une liste, ou rien. */
+function listeDestinataires(destinataire) {
+  const brut = Array.isArray(destinataire) ? destinataire : [destinataire];
+  const vues = new Set();
+  return brut
+    .map((a) => String(a ?? '').trim())
+    .filter((a) => {
+      if (!a) return false;
+      const cle = a.toLowerCase();
+      if (vues.has(cle)) return false;
+      vues.add(cle);
+      return true;
+    });
+}
+
 /**
  * @param {object}  options
+ * @param {string|string[]} options.destinataire
+ *        Une adresse, ou plusieurs. Plusieurs adresses partent dans un
+ *        seul message : une seule pièce jointe, un seul appel, aucun
+ *        risque d'envoi en double.
  * @param {Array<{nom: string, base64: string}>} [options.pieces]
  *        Pièces jointes. Le contenu est déjà encodé en base64.
  *        Elles ne sont jamais déposées sur le site : elles n'existent que
@@ -37,7 +56,8 @@ export function mailConfigure() {
  * Ne lève jamais : un échec d'e-mail ne doit pas faire perdre une soumission.
  */
 export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
-  if (!destinataire) return { envoye: false, motif: 'destinataire absent' };
+  const destinataires = listeDestinataires(destinataire);
+  if (!destinataires.length) return { envoye: false, motif: 'destinataire absent' };
   if (!mailConfigure()) return { envoye: false, motif: 'service e-mail non configuré' };
 
   const fournisseur = fournisseurMail();
@@ -53,7 +73,7 @@ export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
             },
             body: JSON.stringify({
               sender: { email: EXPEDITEUR_EMAIL, name: EXPEDITEUR_NOM },
-              to: [{ email: destinataire }],
+              to: destinataires.map((email) => ({ email })),
               subject: sujet,
               textContent: texte,
               htmlContent: html || undefined,
@@ -71,7 +91,7 @@ export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
             },
             body: JSON.stringify({
               from: `${EXPEDITEUR_NOM} <${EXPEDITEUR_EMAIL}>`,
-              to: [destinataire],
+              to: destinataires,
               subject: sujet,
               text: texte,
               html: html || undefined,

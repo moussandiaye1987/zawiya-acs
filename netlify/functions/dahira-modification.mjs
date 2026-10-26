@@ -5,6 +5,7 @@ import { geocoder } from './lib/geocodage.mjs';
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP,
   suspectRobot, fabriquerReference,
+  destinatairesAssociation,
 } from './lib/commun.mjs';
 
 /**
@@ -472,8 +473,8 @@ async function confirmerNouvelEmail(jeton) {
    NOTIFICATION DU BUREAU
    ===================================================================== */
 async function prevenirAssociation(fiche, demande, motif) {
-  const destinataire = process.env.EMAIL_ASSOCIATION;
-  if (!destinataire) return { envoye: false, motif: 'destinataire absent' };
+  const destinataire = destinatairesAssociation();
+  if (!destinataire.length) return { envoye: false, motif: 'destinataire absent' };
 
   const titres = {
     manuelle: 'Demande de modification sans accès à l’e-mail',

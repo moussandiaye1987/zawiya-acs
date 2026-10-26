@@ -6,6 +6,7 @@ import {
   departementDepuisCP, fabriquerReference, signer,
   VERSION_CONSENTEMENT, MENTION_SANS_PAIEMENT, MENTION_VIREMENT_PERMANENT,
   FORFAITS, ZONES, DUREES, DEVISES,
+  destinatairesAssociation,
 } from './lib/commun.mjs';
 
 export const config = { path: '/api/engagement' };
@@ -160,11 +161,14 @@ export default async (req, context) => {
 
 async function notifier(e, context) {
   const base = process.env.URL || context?.site?.url || '';
-  const destAssoc = process.env.EMAIL_ASSOCIATION;
+  const destAssoc = destinatairesAssociation();
   const taches = [];
 
-  if (destAssoc) {
-    taches.push(journaliser(e, destAssoc, 'engagement_association', mailAssociation(e, destAssoc)));
+  // Un seul message pour tout le bureau : la notification, le
+  // récapitulatif et le CSV partent en un envoi, jamais en double.
+  if (destAssoc.length) {
+    taches.push(journaliser(e, destAssoc.join(', '), 'engagement_association',
+      mailAssociation(e, destAssoc)));
   }
   if (e.email) {
     taches.push(journaliser(e, e.email, 'engagement_participant', mailParticipant(e, base)));

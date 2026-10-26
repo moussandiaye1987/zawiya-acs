@@ -73,7 +73,7 @@ Jamais dans le dépôt. `.env.example` en donne la liste commentée.
 | `BREVO_API_KEY` *ou* `RESEND_API_KEY` | pour les e-mails | tableau de bord du fournisseur |
 | `MAIL_EXPEDITEUR` | pour les e-mails | adresse vérifiée chez le fournisseur |
 | `MAIL_EXPEDITEUR_NOM` | non | défaut : « Association Connaissance et Savoir » |
-| `EMAIL_ASSOCIATION` | oui | adresse qui reçoit les notifications |
+| `EMAIL_ASSOCIATION` | oui | adresses internes qui reçoivent les notifications — plusieurs séparées par une virgule, envoyées en un seul message |
 | `SEL_EMPREINTE` | oui | chaîne aléatoire, pour hacher les adresses IP |
 | `SECRET_LIENS` | oui | chaîne aléatoire, pour signer les liens personnels |
 | `SECRET_ADMIN` | oui | chaîne aléatoire, pour `/api/rappels-test` |

@@ -80,6 +80,34 @@ export function estEmail(v) {
   return typeof v === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
 }
 
+/**
+ * Destinataires internes de l'association.
+ *
+ * EMAIL_ASSOCIATION accepte une ou plusieurs adresses, séparées par une
+ * virgule, un point-virgule, un espace ou un retour à la ligne. Les
+ * adresses mal formées sont ignorées, et les doublons — y compris ceux
+ * qui ne diffèrent que par la casse — sont retirés : un même bureau ne
+ * reçoit jamais deux fois le même message.
+ *
+ * L'ordre de la variable est conservé : la première adresse reste la
+ * principale.
+ *
+ * @returns {string[]} liste éventuellement vide
+ */
+export function destinatairesAssociation() {
+  const vues = new Set();
+  return String(process.env.EMAIL_ASSOCIATION || '')
+    .split(/[,;\s]+/)
+    .map((a) => a.trim())
+    .filter((a) => {
+      if (!estEmail(a)) return false;
+      const cle = a.toLowerCase();
+      if (vues.has(cle)) return false;
+      vues.add(cle);
+      return true;
+    });
+}
+
 export function departementDepuisCP(cp) {
   const chiffres = String(cp || '').replace(/\D/g, '');
   if (chiffres.length < 2) return null;
