@@ -79,6 +79,36 @@ export function majParId(table, id, champs) {
   }).then((r) => (Array.isArray(r) ? r[0] : r));
 }
 
+/**
+ * Insère ou met à jour un lot de lignes en un seul appel.
+ * `conflit` nomme la ou les colonnes qui identifient une ligne existante.
+ */
+export function remplacerLot(table, lignes, conflit) {
+  if (!lignes.length) return Promise.resolve([]);
+  return appeler(`${table}?on_conflict=${encodeURIComponent(conflit)}`, {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify(lignes),
+  });
+}
+
+/** Supprime des lignes. `requete` est une chaîne PostgREST. */
+export function supprimer(table, requete) {
+  return appeler(`${table}?${requete}`, {
+    method: 'DELETE',
+    headers: { Prefer: 'return=minimal' },
+  });
+}
+
+/** Met à jour des lignes désignées par une requête PostgREST. */
+export function majOu(table, requete, champs) {
+  return appeler(`${table}?${requete}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify(champs),
+  }).then((r) => (Array.isArray(r) ? r[0] : r));
+}
+
 /** Appelle une fonction SQL. */
 export function rpc(nom, arguments_ = {}) {
   return appeler(`rpc/${nom}`, { method: 'POST', body: JSON.stringify(arguments_) });

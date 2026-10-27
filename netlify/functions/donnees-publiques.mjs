@@ -1,4 +1,5 @@
 import { lire, baseConfiguree } from './lib/db.mjs';
+import { etatAdhesions } from './lib/sync-adhesions.mjs';
 
 export const config = { path: '/api/donnees-publiques' };
 
@@ -75,6 +76,20 @@ export default async () => {
       versements_arretes_au: s.versements_arretes_au || null,
 
       dahiras,
+
+      // Adhésions HelloAsso : des chiffres agrégés, rien d'autre. Null
+      // si rien n'a encore été synchronisé — jamais un zéro trompeur.
+      adhesions: await etatAdhesions().catch(() => null),
+
+      // Lien officiel vers la campagne d'adhésion. Vide tant que
+      // l'association ne l'a pas renseigné : la page retombe alors sur
+      // la page publique de l'association, qui est vérifiée.
+      helloasso_adhesion: process.env.HELLOASSO_URL_ADHESION || null,
+
+      // Information fiscale : affichée seulement si l'association a
+      // confirmé son éligibilité et activé l'interrupteur.
+      fiscal_actif: /^(oui|true|1)$/i.test(process.env.AFFICHER_INFO_FISCALE || ''),
+
       genere_le: new Date().toISOString(),
     }), { status: 200, headers: entetes });
   } catch (e) {

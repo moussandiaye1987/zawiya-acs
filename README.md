@@ -20,6 +20,8 @@ public/                 le site, publié tel quel par Netlify
 netlify/functions/      traitement côté serveur
   engagement.mjs        POST /api/engagement
   contact.mjs           POST /api/contact
+  admin-adhesions.mjs   GET/POST /api/admin-adhesions (SECRET_ADMIN)
+  sync-helloasso.mjs    tâche planifiée, toutes les 6 heures
   dahira.mjs            POST /api/dahira
   donnees-publiques.mjs GET  /api/donnees-publiques   (agrégats + annuaire validé)
   participant.mjs       GET  /api/participant         (liens personnels des e-mails)
@@ -77,7 +79,14 @@ Jamais dans le dépôt. `.env.example` en donne la liste commentée.
 | `EMAIL_ASSOCIATION` | oui | adresses internes qui reçoivent les notifications — plusieurs séparées par une virgule, envoyées en un seul message |
 | `SEL_EMPREINTE` | oui | chaîne aléatoire, pour hacher les adresses IP |
 | `SECRET_LIENS` | oui | chaîne aléatoire, pour signer les liens personnels |
-| `SECRET_ADMIN` | oui | chaîne aléatoire, pour `/api/rappels-test` |
+| `SECRET_ADMIN` | oui | chaîne aléatoire, pour `/api/rappels-test` et `/api/admin-adhesions` |
+| `HELLOASSO_CLIENT_ID` | pour le compteur d'adhérents | HelloAsso → Mon association → Intégrations → API |
+| `HELLOASSO_CLIENT_SECRET` | pour le compteur d'adhérents | idem, affiché une seule fois à la création |
+| `HELLOASSO_ORGANISATION` | pour le compteur d'adhérents | l'identifiant dans l'adresse HelloAsso de l'association |
+| `HELLOASSO_URL_ADHESION` | non | adresse exacte de la campagne d'adhésion ; sans elle, le bouton mène à la page publique de l'association |
+| `HELLOASSO_DUREE_MOIS` | non | durée de validité d'une adhésion, 12 par défaut |
+| `HELLOASSO_BAC_A_SABLE` | non | `oui` pour viser l'environnement d'essai HelloAsso |
+| `AFFICHER_INFO_FISCALE` | non | `oui` pour afficher l'information de réduction d'impôt — **à n'activer qu'une fois l'éligibilité établie** |
 
 Générer un secret :
 ```bash

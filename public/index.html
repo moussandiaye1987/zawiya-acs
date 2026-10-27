@@ -364,6 +364,36 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
   .aide-tete{padding:1rem 1.1rem .9rem}
   .aide-corps{padding:0 1.1rem 1.6rem}
 }
+/* --- Adhésion à l'association --- */
+.distinguo{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1rem; margin-top:1.6rem}
+.distinguo-carte{border:1px solid var(--trait); border-radius:var(--rayon); padding:1rem 1.1rem; background:var(--pierre)}
+.sect-craie .distinguo-carte{background:var(--craie)}
+.distinguo-carte.en-avant{border-color:var(--vert); border-width:2px}
+.distinguo-carte b{display:block; font-family:"Marcellus",serif; font-weight:400; font-size:1.05rem; margin-bottom:.4rem}
+.distinguo-carte p{margin:0 0 .6rem; font-size:.9rem; color:var(--encre-2); line-height:1.5}
+.distinguo-carte span{font-size:.82rem; color:var(--vert)}
+.distinguo-carte a{color:var(--vert)}
+
+.jauge-bloc{margin-top:2.2rem; border:1px solid var(--trait); border-radius:var(--rayon);
+  padding:1.3rem 1.4rem; background:var(--pierre)}
+.sect-craie .jauge-bloc{background:var(--craie)}
+.jauge-bloc[hidden]{display:none}
+.jauge-bloc h3{font-family:"Marcellus",serif; font-weight:400; font-size:1.15rem; margin:0 0 .9rem}
+.jauge{height:14px; border-radius:999px; background:rgba(20,48,31,.11); overflow:hidden}
+.jauge-barre{height:100%; background:var(--vert); border-radius:999px; transition:width .6s ease}
+.jauge-chiffres{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:.9rem; margin-top:1rem}
+.jauge-chiffres b{display:block; font-size:1.5rem; font-weight:400; color:var(--vert); line-height:1.15;
+  font-family:"Marcellus",serif}
+.jauge-chiffres span{font-size:.8rem; color:var(--encre-2)}
+.jauge-note{font-size:.82rem; color:var(--encre-2); line-height:1.5; margin:.9rem 0 0}
+.jauge-note.discrete{font-size:.78rem; opacity:.85}
+
+.fiscal{margin-top:1.4rem; border-left:3px solid var(--vert);
+  background:color-mix(in srgb, var(--vert) 7%, transparent);
+  padding:.9rem 1.1rem; border-radius:0 var(--rayon) var(--rayon) 0}
+.fiscal[hidden]{display:none}
+.fiscal p{margin:0; font-size:.88rem; color:var(--encre-2); line-height:1.55}
+
 .mention-donnees{grid-column:1 / -1; font-size:.85rem; color:var(--encre-2); margin:.2rem 0 0; line-height:1.5}
 .mention-donnees a{color:var(--vert)}
 .aide{font-size:.78rem; color:var(--encre-2); margin:.3rem 0 0; text-align:right}
@@ -634,6 +664,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
     </a>
     <nav class="acces" aria-label="Accès principaux">
       <a class="secondaire" href="#projet">Le projet</a>
+      <a class="secondaire" href="#adhesion-association">Adhérer à l'association</a>
       <a class="secondaire" href="#nous-ecrire">Nous contacter</a>
       <a class="primaire" href="#adherer">Adhérer</a>
       <a class="action" href="#referencer"><span class="long">Référencer ma dahira</span><span class="court">Ma dahira</span></a>
@@ -644,6 +675,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
     <nav class="menu-mobile" id="menuMobile" aria-label="Sections du site">
       <a href="#projet">Le projet</a>
       <a href="#adherer">Adhérer au projet</a>
+      <a href="#adhesion-association">Adhérer à l'association</a>
       <a href="#referencer">Référencer ma dahira</a>
       <a href="#annuaire">Trouver une dahira</a>
       <a href="#modifier-dahira">Modifier ma fiche</a>
@@ -1041,6 +1073,85 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       <li><b>Un membre du bureau vous contacte</b> pour convenir des modalités de versement : virement, remise à votre Dahira ou autre moyen validé par l'association.</li>
       <li><b>Vous versez directement à l'association</b>, en indiquant votre référence. Un rappel courtois vous parvient en fin de mois si vous l'avez accepté.</li>
     </ol>
+  </div>
+</section>
+
+<!-- ================================================================
+     B bis. ADHÉSION À L'ASSOCIATION (HelloAsso)
+     Démarche distincte de l'engagement de contribution : l'adhésion
+     fait de vous un membre de l'association, l'engagement finance la
+     Zawiya. Le paiement se fait chez HelloAsso, jamais sur ce site.
+     ================================================================ -->
+<section class="sect sect-craie" id="adhesion-association">
+  <div class="wrap">
+    <div class="sect-lead">
+      <span class="etape">Autre démarche</span>
+      <h2>Adhérer à l'association</h2>
+      <p>En adhérant à l'Association Connaissance et Savoir, vous soutenez nos projets
+      et nos actions et contribuez à faire vivre notre association. Rejoignez une
+      communauté engagée et participez à son développement.</p>
+    </div>
+
+    <div class="distinguo">
+      <div class="distinguo-carte en-avant">
+        <b>Adhésion à l'association</b>
+        <p>Vous devenez membre de l'association. Le règlement se fait sur
+        <strong>HelloAsso</strong>, qui délivre votre reçu d'adhésion.</p>
+        <span>Démarche décrite ici</span>
+      </div>
+      <div class="distinguo-carte">
+        <b>Engagement de contribution</b>
+        <p>Vous déclarez un montant mensuel pour financer l'acquisition de la Zawiya.
+        Aucun paiement n'est effectué sur ce site.</p>
+        <span><a href="#adherer">Voir le formulaire d'engagement</a></span>
+      </div>
+      <div class="distinguo-carte">
+        <b>Don ponctuel</b>
+        <p>Un versement libre, sans adhésion ni engagement dans la durée.</p>
+        <span><a href="#rib">Coordonnées bancaires</a></span>
+      </div>
+    </div>
+
+    <p class="actions" style="margin-top:1.8rem">
+      <a class="btn" id="lienAdhesion" target="_blank" rel="noopener"
+         href="https://www.helloasso.com/associations/association-connaissance-et-savoir">
+        Adhérer sur HelloAsso
+      </a>
+    </p>
+    <p class="aide" style="text-align:left;margin-top:.6rem">
+      Vous quittez ce site pour HelloAsso, la plateforme de paiement des associations.
+      Aucune coordonnée bancaire n'est saisie ici.
+    </p>
+
+    <!-- Compteur d'adhérents. Masqué tant que la synchronisation
+         HelloAsso n'a rien renvoyé : mieux vaut rien qu'un zéro. -->
+    <div class="jauge-bloc" id="blocAdhesions" hidden>
+      <h3>Notre objectif : 200 adhérents actifs</h3>
+      <div class="jauge" role="img" id="jaugeAdhesion" aria-label="Progression vers 200 adhérents">
+        <div class="jauge-barre" id="jaugeBarre" style="width:0%"></div>
+      </div>
+      <div class="jauge-chiffres">
+        <div><b id="adhActifs">—</b><span>adhérents à jour</span></div>
+        <div><b id="adhRestants">—</b><span>restants sur 200</span></div>
+        <div><b id="adhPeriode">—</b><span>période d'adhésion</span></div>
+      </div>
+      <p class="jauge-note" id="adhSource"></p>
+      <p class="jauge-note">
+        Le seuil de 200 adhérents est l'un des critères examinés pour une éventuelle
+        reconnaissance d'utilité publique. L'atteindre ne garantit pas cette
+        reconnaissance, qui dépend d'autres conditions et d'une décision administrative.
+      </p>
+      <p class="jauge-note discrete" id="adhMaj"></p>
+    </div>
+
+    <!-- Information fiscale : rien n'est affiché tant que l'association
+         n'a pas établi son éligibilité et activé l'interrupteur côté
+         serveur. Par défaut, ce bloc reste vide. -->
+    <div class="fiscal" id="blocFiscal" hidden>
+      <p>Les cotisations éligibles peuvent ouvrir droit à une réduction d'impôt de 66 %,
+      dans la limite de 20 % du revenu imposable, selon votre situation et les règles
+      applicables. Un reçu fiscal est délivré pour les versements éligibles.</p>
+    </div>
   </div>
 </section>
 
@@ -2238,6 +2349,81 @@ function dateFR(iso){
 /* =====================================================================
    CHARGEMENT DES DONNÉES PUBLIQUES
    ===================================================================== */
+/* =====================================================================
+   ADHÉSIONS À L'ASSOCIATION (HelloAsso)
+   Le compteur ne s'affiche que si le serveur a renvoyé un chiffre. En
+   cas de panne de synchronisation, le dernier chiffre connu reste
+   affiché avec sa date : jamais un zéro qui ferait croire à un recul.
+   ===================================================================== */
+function rendreAdhesions(d){
+  const a = d && d.adhesions;
+
+  // Lien officiel : remplacé par la campagne précise si le serveur en
+  // connaît une. Sans cela, le bouton pointe vers la page publique de
+  // l'association, qui reste valable.
+  const lien = document.getElementById('lienAdhesion');
+  if(lien && d && d.helloasso_adhesion){
+    lien.href = d.helloasso_adhesion;
+  }
+
+  // Information fiscale : seulement sur décision de l'association.
+  const fiscal = document.getElementById('blocFiscal');
+  if(fiscal) fiscal.hidden = !(d && d.fiscal_actif === true);
+
+  const bloc = document.getElementById('blocAdhesions');
+  if(!bloc) return;
+
+  const actifs = a && Number.isInteger(a.adherents_actifs) ? a.adherents_actifs : null;
+  if(actifs === null){ bloc.hidden = true; return; }
+  bloc.hidden = false;
+
+  const objectif = (a && a.objectif) || 200;
+  const restants = Math.max(0, objectif - actifs);
+  const part = Math.max(0, Math.min(100, Math.round(actifs / objectif * 100)));
+
+  document.getElementById('adhActifs').textContent = actifs.toLocaleString('fr-FR');
+  document.getElementById('adhRestants').textContent = restants.toLocaleString('fr-FR');
+  document.getElementById('adhPeriode').textContent =
+    a.duree_adhesion_mois ? a.duree_adhesion_mois + ' mois' : '—';
+
+  const barre = document.getElementById('jaugeBarre');
+  if(barre) barre.style.width = part + '%';
+  const jauge = document.getElementById('jaugeAdhesion');
+  if(jauge){
+    jauge.setAttribute('aria-label',
+      actifs + ' adhérents à jour sur un objectif de ' + objectif + ', soit ' + part + ' %');
+  }
+
+  const dateFr = (v) => {
+    if(!v) return null;
+    const dt = new Date(v);
+    return isNaN(dt) ? null : dt.toLocaleDateString('fr-FR',
+      { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  };
+
+  // Le chiffre ne couvre que HelloAsso : on le dit, plutôt que de le
+  // présenter comme le total de l'association.
+  const source = document.getElementById('adhSource');
+  if(source){
+    const periode = dateFr(a.periode_debut);
+    source.textContent =
+      'Ce chiffre et cette progression ne portent que sur les adhésions enregistrées '
+      + 'sur HelloAsso ; les adhésions prises par d\'autres moyens n\'y figurent pas. '
+      + 'Sont comptées les personnes dont l\'adhésion a moins de '
+      + (a.duree_adhesion_mois || 12) + ' mois'
+      + (periode ? ', soit depuis le ' + periode.split(' ').slice(0,3).join(' ') : '') + '.';
+  }
+
+  const maj = document.getElementById('adhMaj');
+  if(maj){
+    const quand = dateFr(a.derniere_synchronisation);
+    maj.textContent = quand
+      ? 'Dernière synchronisation avec HelloAsso : ' + quand
+        + (a.statut === 'echec' ? ' — la dernière tentative a échoué, ce chiffre est le dernier connu.' : '')
+      : 'Synchronisation avec HelloAsso en attente.';
+  }
+}
+
 async function chargerDonnees(){
   let d = null;
   try {
@@ -2249,6 +2435,7 @@ async function chargerDonnees(){
   ETAT.dahiras = (d && Array.isArray(d.dahiras)) ? d.dahiras : [];
 
   try { rendreTableauDeBord(d); } catch(e){ console.error('tableau de bord', e); }
+  try { rendreAdhesions(d); } catch(e){ console.error('adhésions', e); }
   try { rendreCarteManipulable(document.getElementById('carteZones')); } catch(e){ console.error('carte zones', e); }
   try {
     rendreDahiras();

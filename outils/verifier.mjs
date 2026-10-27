@@ -20,11 +20,22 @@ process.env.URL = 'https://site.test';
 /* ------------------------------------------------------------------ */
 /* Base de données simulée                                             */
 /* ------------------------------------------------------------------ */
-const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [], messages_contact: [] };
+const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [], messages_contact: [],
+  adhesions_helloasso: [], synchronisation_helloasso: [], criteres_rup: [] };
+const HA = { articles: [], appels: [], jetons: 0, panne: 0, authRefusee: false, jetonCourt: false };
 const APPELS = { mails: [], echecMail: false, echecPour: null, soumissionsRecentes: 0, rpc: [], geocodages: [], geocodageEnPanne: false };
+
+const CRITERES_RUP = [
+  ['adherents','Nombre d\'adhérents'], ['interet','Intérêt général'],
+  ['rayonnement','Rayonnement'], ['vie','Vie associative'],
+  ['gouvernance','Gouvernance'], ['anciennete','Ancienneté'], ['finances','Finances'],
+].map(([code, libelle], i) => ({ code, libelle, ordre: i + 1, etat: 'À vérifier',
+  commentaire: null, maj_le: '2026-10-27T10:00:00Z' }));
 
 function reinitialiser(){
   Object.keys(BASE).forEach(k => { BASE[k].length = 0; });
+  BASE.criteres_rup.push(...CRITERES_RUP.map(c => ({ ...c })));
+  BASE.synchronisation_helloasso.push({ id: 1, statut: 'jamais' });
   APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false; APPELS.echecPour = null;
   APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false; APPELS.soumissionsRecentes = 0;
 }
@@ -43,6 +54,31 @@ globalThis.fetch = async (url, options = {}) => {
     if(APPELS.geocodageEnPanne) throw new Error('réseau coupé');
     return repJSON({ features: [{ geometry:{ coordinates:[2.441, 48.861] },
                                   properties:{ score: 0.92 } }] });
+  }
+
+  // --- API HelloAsso simulée ---
+  if(u.hostname === 'api.helloasso.com' || u.hostname === 'api.helloasso-sandbox.com'){
+    if(u.pathname === '/oauth2/token'){
+      HA.jetons += 1;
+      if(HA.authRefusee) return new Response('{"error":"invalid_client"}', { status: 401 });
+      return repJSON({ access_token:'faux-jeton-' + HA.jetons, token_type:'bearer',
+                       expires_in: HA.jetonCourt ? 1 : 1799, refresh_token:'faux-refresh' });
+    }
+    if(/\/v5\/organizations\/[^/]+\/items$/.test(u.pathname)){
+      HA.appels.push({ ...Object.fromEntries(u.searchParams),
+                       itemStates: u.searchParams.getAll('itemStates') });
+      if(HA.panne) return new Response('{"message":"oops"}', { status: HA.panne });
+      const taille = Number(u.searchParams.get('pageSize')) || 20;
+      const depuis = Number(u.searchParams.get('continuationToken') || 0);
+      const page = HA.articles.slice(depuis, depuis + taille);
+      return repJSON({ data: page,
+        pagination:{ pageSize: taille, pageIndex: Math.floor(depuis/taille)+1,
+                     totalCount:-1, totalPages:-1,
+                     // Le jeton reste fourni même après la dernière page :
+                     // c'est la page vide qui doit arrêter la boucle.
+                     continuationToken: String(depuis + taille) } });
+    }
+    return new Response('{"message":"route inconnue"}', { status: 404 });
   }
 
   // --- fournisseur d'e-mails ---
@@ -89,6 +125,20 @@ globalThis.fetch = async (url, options = {}) => {
 
     if(methode === 'POST'){
       const corps = JSON.parse(options.body);
+
+      // Lot : PostgREST accepte un tableau, avec on_conflict pour
+      // fusionner les lignes déjà présentes.
+      if(Array.isArray(corps)){
+        const conflit = u.searchParams.get('on_conflict');
+        for(const c of corps){
+          const existante = conflit
+            ? lignes.find(l => String(l[conflit]) === String(c[conflit]))
+            : null;
+          if(existante) Object.assign(existante, c);
+          else lignes.push({ id: 'id-' + (lignes.length + 1), ...c });
+        }
+        return new Response(null, { status: 201 });
+      }
       // contraintes d'unicité reproduites
       if(corps.cle_idempotence && lignes.some(l => l.cle_idempotence === corps.cle_idempotence)){
         return repJSON({ code:'23505', message:'duplicate key' }, 409);
@@ -112,6 +162,21 @@ globalThis.fetch = async (url, options = {}) => {
       };
       lignes.push(ligne);
       return repJSON([ligne], 201);
+    }
+
+    if(methode === 'DELETE'){
+      const q = u.searchParams;
+      const garder = lignes.filter(l => {
+        for(const [k, v] of q){
+          if(k === 'select') continue;
+          const brut = String(v);
+          if(brut.startsWith('lt.') && !(String(l[k]) < brut.slice(3))) return true;
+          if(brut.startsWith('eq.') && String(l[k]) !== brut.slice(3)) return true;
+        }
+        return false;   // la ligne correspond : on la retire
+      });
+      lignes.length = 0; lignes.push(...garder);
+      return new Response(null, { status: 204 });
     }
 
     if(methode === 'PATCH'){
@@ -585,6 +650,263 @@ serie('CSV — format et sécurité');
     t.every(x => x.periodicites.includes('mensuelle')));
   verifier('le formatage respecte la devise',
     montant(50, 'EUR').includes('€') && montant(25000, 'XOF').includes('FCFA'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('ADHÉSIONS HELLOASSO — règle de comptage');
+{
+  process.env.SEL_EMPREINTE = 'sel-de-test';
+  process.env.HELLOASSO_DUREE_MOIS = '12';
+  const { compterAdherents, identifierPersonne, dureeAdhesionMois } =
+    await import('../netlify/functions/lib/helloasso.mjs');
+
+  const MAINTENANT = new Date('2026-10-27T12:00:00Z');
+  const ilYA = (mois) => {
+    const d = new Date(MAINTENANT); d.setMonth(d.getMonth() - mois); return d.toISOString();
+  };
+  const art = (sur = {}) => ({
+    id: Math.floor(Math.random() * 1e9),
+    type: 'Membership', state: 'Processed',
+    order: { date: ilYA(1) },
+    user: { firstName: 'Awa', lastName: 'Diallo' },
+    payer: { email: 'payeur@exemple.test' },
+    ...sur,
+  });
+
+  verifier('la durée par défaut est de 12 mois', dureeAdhesionMois() === 12);
+
+  // --- une commande, plusieurs adhérents ---
+  const famille = [
+    art({ user:{ firstName:'Awa',    lastName:'Diallo' }, order:{ date: ilYA(2) } }),
+    art({ user:{ firstName:'Moussa', lastName:'Diallo' }, order:{ date: ilYA(2) } }),
+    art({ user:{ firstName:'Fatou',  lastName:'Diallo' }, order:{ date: ilYA(2) } }),
+  ];
+  const b1 = compterAdherents(famille, MAINTENANT);
+  verifier('une commande portant trois adhérents compte pour trois personnes',
+    b1.personnes === 3 && b1.actifs === 3, `${b1.personnes} personne(s)`);
+
+  // --- renouvellement : la même personne ne compte qu'une fois ---
+  const renouvelle = [
+    art({ user:{ firstName:'Awa', lastName:'Sow' }, order:{ date: ilYA(20) } }),
+    art({ user:{ firstName:'Awa', lastName:'Sow' }, order:{ date: ilYA(8)  } }),
+    art({ user:{ firstName:'Awa', lastName:'Sow' }, order:{ date: ilYA(2)  } }),
+  ];
+  const b2 = compterAdherents(renouvelle, MAINTENANT);
+  verifier('trois renouvellements d’une même personne comptent pour une',
+    b2.personnes === 1 && b2.actifs === 1, `${b2.personnes} personne(s)`);
+  verifier('le nombre d’adhésions est tout de même conservé',
+    b2.lignes[0].nombre_adhesions === 3 && b2.adhesions === 3);
+  verifier('la première et la dernière adhésion sont retenues',
+    b2.lignes[0].premiere_adhesion.toISOString() === ilYA(20)
+    && b2.lignes[0].derniere_adhesion.toISOString() === ilYA(2));
+
+  // --- accents, casse et espaces ne créent pas de doublon ---
+  const graphies = [
+    art({ user:{ firstName:'Aïssatou', lastName:'NDIAYE' }, order:{ date: ilYA(3) } }),
+    art({ user:{ firstName:'aissatou', lastName:'ndiaye' }, order:{ date: ilYA(1) } }),
+    art({ user:{ firstName:' Aissatou ', lastName:'  Ndiaye ' }, order:{ date: ilYA(1) } }),
+  ];
+  verifier('accents, casse et espaces ne créent pas de doublon',
+    compterAdherents(graphies, MAINTENANT).personnes === 1);
+
+  // --- adhésion échue ---
+  const b3 = compterAdherents([
+    art({ user:{ firstName:'Vieux', lastName:'Membre' }, order:{ date: ilYA(18) } }),
+    art({ user:{ firstName:'Jeune', lastName:'Membre' }, order:{ date: ilYA(3)  } }),
+  ], MAINTENANT);
+  verifier('une adhésion de plus de 12 mois n’est plus comptée comme à jour',
+    b3.personnes === 2 && b3.actifs === 1, `${b3.actifs} actif(s) sur ${b3.personnes}`);
+
+  // --- la limite se calcule bien à 12 mois ---
+  const b4 = compterAdherents([art({ user:{ firstName:'Pile', lastName:'Douze' }, order:{ date: ilYA(11) } })], MAINTENANT);
+  verifier('onze mois : encore à jour', b4.actifs === 1);
+  const b5 = compterAdherents([art({ user:{ firstName:'Pile', lastName:'Treize' }, order:{ date: ilYA(13) } })], MAINTENANT);
+  verifier('treize mois : échue', b5.actifs === 0);
+
+  // --- identification : nom, puis e-mail, puis article ---
+  verifier('l’adhérent est identifié par son nom en priorité',
+    identifierPersonne(art()).voie === 'nom');
+  verifier('sans nom, on retombe sur l’e-mail du payeur',
+    identifierPersonne(art({ user:{} })).voie === 'email');
+  verifier('sans nom ni e-mail, sur l’identifiant de l’article',
+    identifierPersonne(art({ user:{}, payer:{} })).voie === 'article');
+  verifier('deux adhérents d’un même payeur anonyme ne sont pas fondus en un', (() => {
+    const b = compterAdherents([
+      art({ id: 1, user:{}, payer:{} }),
+      art({ id: 2, user:{}, payer:{} }),
+    ], MAINTENANT);
+    return b.personnes === 2;
+  })());
+  verifier('le payeur seul regroupe bien ses articles sans nom', (() => {
+    const b = compterAdherents([
+      art({ user:{}, payer:{ email:'seul@exemple.test' } }),
+      art({ user:{}, payer:{ email:'SEUL@Exemple.TEST' } }),
+    ], MAINTENANT);
+    return b.personnes === 1;
+  })());
+
+  // --- l'empreinte ne laisse filtrer aucune identité ---
+  verifier('l’empreinte ne contient ni nom ni e-mail', (() => {
+    const c = identifierPersonne(art()).cle;
+    return /^[0-9a-f]{40}$/.test(c) && !/diallo|awa|exemple/i.test(c);
+  })());
+
+  // --- date absente ---
+  const b6 = compterAdherents([art({ user:{ firstName:'Sans', lastName:'Date' }, order:{} })], MAINTENANT);
+  verifier('une adhésion sans date n’est pas comptée comme à jour',
+    b6.personnes === 1 && b6.actifs === 0 && b6.sansDate === 1);
+
+  // --- aucun article ---
+  const b7 = compterAdherents([], MAINTENANT);
+  verifier('sans article, le compte est de zéro sans erreur',
+    b7.personnes === 0 && b7.actifs === 0);
+
+  // --- la durée est configurable ---
+  process.env.HELLOASSO_DUREE_MOIS = '24';
+  verifier('une durée de 24 mois est prise en compte',
+    compterAdherents([art({ user:{ firstName:'Deux', lastName:'Ans' }, order:{ date: ilYA(18) } })], MAINTENANT).actifs === 1);
+  process.env.HELLOASSO_DUREE_MOIS = '12';
+}
+
+/* ------------------------------------------------------------------ */
+serie('ADHÉSIONS HELLOASSO — API, pagination et pannes');
+{
+  process.env.HELLOASSO_CLIENT_ID = 'faux-id';
+  process.env.HELLOASSO_CLIENT_SECRET = 'faux-secret';
+  process.env.HELLOASSO_ORGANISATION = 'association-de-test';
+  const ha = await import('../netlify/functions/lib/helloasso.mjs');
+  const { synchroniser, etatAdhesions } =
+    await import('../netlify/functions/lib/sync-adhesions.mjs');
+
+  const reinitHA = () => {
+    HA.articles.length = 0; HA.appels.length = 0;
+    HA.jetons = 0; HA.panne = 0; HA.authRefusee = false; HA.jetonCourt = false;
+    ha.oublierJeton();
+  };
+  const faux = (n, prefixe = 'P') => Array.from({ length: n }, (_, i) => ({
+    id: i + 1, type: 'Membership', state: 'Processed',
+    order: { date: new Date(Date.now() - 86400000 * 30).toISOString() },
+    user: { firstName: prefixe + i, lastName: 'Test' },
+    payer: { email: `p${i}@exemple.test` },
+  }));
+
+  // --- pagination complète ---
+  reinitHA();
+  HA.articles.push(...faux(250));
+  const lu = await ha.lireArticlesAdhesion();
+  verifier('toutes les pages sont lues', lu.articles.length === 250, `${lu.articles.length} articles`);
+  verifier('il a fallu plusieurs pages', lu.pages >= 3, `${lu.pages} pages`);
+  verifier('la page vide arrête la boucle, pas le jeton de continuation',
+    lu.pages === 4, `${lu.pages} pages pour 250 articles par 100`);
+
+  // --- les bons filtres sont demandés ---
+  const q = HA.appels[0];
+  verifier('seules les adhésions sont demandées', q.tierTypes === 'Membership', q.tierTypes);
+  verifier('seuls les articles validés sont demandés',
+    /Processed/.test(String(HA.appels[0].itemStates)), String(q.itemStates));
+  verifier('les pages sont demandées par cent', q.pageSize === '100', q.pageSize);
+
+  // --- le jeton est réutilisé ---
+  verifier('un seul jeton pour toutes les pages', HA.jetons === 1, `${HA.jetons} jeton(s)`);
+  await ha.lireArticlesAdhesion();
+  verifier('le jeton est réutilisé d’un appel à l’autre', HA.jetons === 1, `${HA.jetons} jeton(s)`);
+
+  // --- synchronisation complète ---
+  reinitHA(); BASE.adhesions_helloasso.length = 0;
+  BASE.synchronisation_helloasso.length = 0;
+  BASE.synchronisation_helloasso.push({ id: 1, statut: 'jamais' });
+  HA.articles.push(...faux(120));
+  const b = await synchroniser();
+  verifier('la synchronisation réussit', b.ok === true, b.motif || '');
+  verifier('les personnes sont enregistrées', BASE.adhesions_helloasso.length === 120,
+    `${BASE.adhesions_helloasso.length} ligne(s)`);
+  verifier('aucun nom ni e-mail n’est stocké',
+    !/Test|exemple\.test/.test(JSON.stringify(BASE.adhesions_helloasso)));
+  verifier('l’état retient le chiffre',
+    BASE.synchronisation_helloasso[0].adherents_actifs === 120);
+  verifier('l’état est marqué réussi', BASE.synchronisation_helloasso[0].statut === 'ok');
+
+  // --- panne de l'API : le dernier chiffre est conservé ---
+  reinitHA();
+  HA.panne = 500;
+  const bp = await synchroniser();
+  verifier('une panne de l’API est signalée', bp.ok === false && bp.statut === 'echec');
+  verifier('le dernier chiffre connu est conservé',
+    BASE.synchronisation_helloasso[0].adherents_actifs === 120,
+    String(BASE.synchronisation_helloasso[0].adherents_actifs));
+  verifier('le compteur ne retombe pas à zéro',
+    BASE.synchronisation_helloasso[0].adherents_actifs !== 0);
+  verifier('les personnes déjà connues ne sont pas effacées',
+    BASE.adhesions_helloasso.length === 120);
+  verifier('l’erreur est journalisée sans secret', (() => {
+    const e = BASE.synchronisation_helloasso[0].derniere_erreur || '';
+    return e.length > 0 && !/faux-secret|faux-id|client_secret/i.test(e);
+  })(), BASE.synchronisation_helloasso[0].derniere_erreur);
+
+  // --- l'état public ne laisse filtrer aucune identité ---
+  const pub = await etatAdhesions();
+  verifier('l’état public donne l’objectif et le reste à faire',
+    pub.objectif === 200 && pub.adherents_actifs === 120 && pub.restants === 80);
+  verifier('il ne contient aucune donnée nominative',
+    !/cle_personne|email|nom|prenom/i.test(JSON.stringify(pub)), JSON.stringify(pub).slice(0, 120));
+  verifier('il précise que la source est HelloAsso', pub.source === 'HelloAsso');
+  verifier('il porte la période et la date de synchronisation',
+    Boolean(pub.periode_debut) && Boolean(pub.derniere_synchronisation));
+
+  // --- le dépassement de l'objectif ne donne pas un reste négatif ---
+  BASE.synchronisation_helloasso[0].adherents_actifs = 240;
+  const pub2 = await etatAdhesions();
+  verifier('au-delà de 200, le reste à faire est zéro, jamais négatif', pub2.restants === 0);
+  BASE.synchronisation_helloasso[0].adherents_actifs = 120;
+
+  // --- authentification refusée ---
+  reinitHA(); HA.authRefusee = true;
+  const ba = await synchroniser();
+  verifier('une authentification refusée est signalée proprement',
+    ba.ok === false && /authentification/i.test(ba.motif), ba.motif);
+  verifier('le secret ne figure pas dans le motif',
+    !/faux-secret/.test(JSON.stringify(ba)));
+
+  // --- adhésions supprimées chez HelloAsso ---
+  reinitHA();
+  HA.articles.push(...faux(60));
+  await synchroniser();
+  verifier('une adhésion disparue chez HelloAsso disparaît aussi chez nous',
+    BASE.adhesions_helloasso.length === 60, `${BASE.adhesions_helloasso.length} ligne(s)`);
+
+  // --- sans configuration, rien n'est tenté ---
+  reinitHA();
+  const gardes = [process.env.HELLOASSO_CLIENT_ID, process.env.HELLOASSO_CLIENT_SECRET];
+  delete process.env.HELLOASSO_CLIENT_ID; delete process.env.HELLOASSO_CLIENT_SECRET;
+  verifier('sans identifiants, HelloAsso est déclaré non configuré', !ha.helloassoConfigure());
+  const bnc = await synchroniser();
+  verifier('et la synchronisation s’arrête sans appeler l’API',
+    bnc.ok === false && HA.appels.length === 0);
+  [process.env.HELLOASSO_CLIENT_ID, process.env.HELLOASSO_CLIENT_SECRET] = gardes;
+
+  // --- espace d'administration ---
+  const { default: admin } = await import('../netlify/functions/admin-adhesions.mjs');
+  process.env.SECRET_ADMIN = process.env.SECRET_ADMIN || 'cle-admin-de-test';
+  const sansCle = await admin(new Request('https://site.test/api/admin-adhesions'));
+  verifier('l’espace d’administration refuse sans clé', sansCle.status === 403);
+  const avecCle = await admin(new Request(
+    `https://site.test/api/admin-adhesions?cle=${process.env.SECRET_ADMIN}`));
+  verifier('il répond avec la clé', avecCle.status === 200);
+  const htmlAdmin = await avecCle.text();
+  verifier('la page n’est pas indexable', /noindex/.test(htmlAdmin));
+  verifier('elle montre l’état de synchronisation', /Synchronisation/.test(htmlAdmin));
+  verifier('elle propose d’actualiser', /Actualiser maintenant/.test(htmlAdmin));
+  verifier('elle énonce la règle de comptage', /Règle de comptage/.test(htmlAdmin));
+  verifier('elle liste les critères d’utilité publique', (() => {
+    return ['Intérêt général','Rayonnement','Vie associative','Gouvernance','Ancienneté','Finances']
+      .every((c) => htmlAdmin.includes(c));
+  })());
+  verifier('les critères sont « À vérifier » par défaut',
+    (htmlAdmin.match(/À vérifier/g) || []).length >= 7);
+  verifier('la clé d’administration ne fuite pas dans la page',
+    !htmlAdmin.includes('faux-secret'));
+  verifier('aucune donnée nominative sur la page d’administration',
+    !/@exemple\.test/.test(htmlAdmin));
 }
 
 /* ------------------------------------------------------------------ */

@@ -18,6 +18,7 @@ conservées dans la table `supabase_migrations.schema_migrations`.
 | `demandes_modification_dahira` | Table des demandes, jetons en condensat, expiration 48 h |
 | `application_modification_validee` | Déclencheur appliquant une modification une fois validée |
 | `messages_contact` | Table des messages de la rubrique « Nous contacter » — fermée, index d'idempotence et d'empreinte IP |
+| `adhesions_helloasso` | Tables `adhesions_helloasso` (empreintes, sans donnée nominative), `synchronisation_helloasso` (état) et `criteres_rup` (suivi manuel) |
 | `contact_prenom_et_telephone` | Colonnes `prenom` et `telephone` sur `messages_contact` ; objet choisi dans une liste fermée |
 | `limiteur_inclut_contact` | `compte_soumissions_recentes` compte désormais aussi les messages de contact |
 | `reference_fournisseur_journal` | Colonne `reference_fournisseur` sur `journal_notifications` : la référence rendue par Brevo ou Resend, pour retrouver un envoi dans leurs journaux et y lire la remise réelle |

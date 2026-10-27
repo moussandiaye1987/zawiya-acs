@@ -55,6 +55,12 @@ DONNEES = {
     khadara_vendredi:true, wazifa_quotidienne:false, effectif:40,
     latitude:48.861, longitude:2.441, telephone_public:'06 00 00 00 00', contact_public_autorise:true }],
   genere_le:'2026-10-25T08:00:00Z',
+  adhesions:{ objectif:200, adherents_actifs:137, restants:63,
+    periode_debut:'2025-10-27T00:00:00Z', periode_fin:'2026-10-27T00:00:00Z',
+    duree_adhesion_mois:12, derniere_synchronisation:'2026-10-27T06:17:00Z',
+    statut:'ok', source:'HelloAsso' },
+  helloasso_adhesion:null,
+  fiscal_actif:false,
 };
 
 setTimeout(() => {
@@ -69,22 +75,22 @@ setTimeout(() => {
   console.log('\nSTRUCTURE ET NAVIGATION');
   const ordre = [...d.querySelectorAll('main section[id]')].map(s => s.id);
   v('ordre des sections conforme',
-    JSON.stringify(ordre) === JSON.stringify(['projet','adherer','dahiras','transparence','historique','contact']),
+    JSON.stringify(ordre) === JSON.stringify(['projet','adherer','adhesion-association','dahiras','transparence','historique','contact']),
     ordre.join(' → '));
   const acces = [...d.querySelectorAll('.acces a')].map(a => a.textContent.trim());
   // Trois accès à l'origine ; « Nous contacter » est le quatrième,
   // demandé explicitement dans la navigation.
-  v('quatre accès en haut', acces.length === 4, acces.join(' · '));
+  v('cinq accès en haut', acces.length === 5, acces.join(' · '));
   v('les accès sont ceux attendus',
     acces.map((t) => t.replace(/Référencer ma dahiraMa dahira/, 'Ma dahira')).join('|')
-      === 'Le projet|Nous contacter|Adhérer|Ma dahira',
+      === "Le projet|Adhérer à l'association|Nous contacter|Adhérer|Ma dahira",
     acces.join(' · '));
   v('« Adhérer » est le bouton principal',
     d.querySelector('.acces a.primaire').getAttribute('href') === '#adherer');
   const ancres = [...d.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href').slice(1)).filter(Boolean);
   const cassees = [...new Set(ancres)].filter(a => a !== 'haut' && !d.getElementById(a));
   v('aucune ancre cassée', cassees.length === 0, cassees.join(', '));
-  v('menu mobile complet', d.querySelectorAll('#menuMobile a').length === 8,
+  v('menu mobile complet', d.querySelectorAll('#menuMobile a').length === 9,
     [...d.querySelectorAll('#menuMobile a')].map(a => a.textContent).join(' · '));
 
   console.log('\nVOCABULAIRE SANS ENCAISSEMENT');
@@ -346,6 +352,83 @@ setTimeout(() => {
   })());
   v('aucune modification directe depuis la page',
     !d.querySelector('#modifier-dahira input[id^="dNom"]'));
+
+  console.log('\nADHÉSION À L\'ASSOCIATION');
+  const sect = d.getElementById('adhesion-association');
+  v('la rubrique existe', Boolean(sect));
+  v('le texte demandé figure mot pour mot', (() => {
+    const t = sect.textContent.replace(/\s+/g, ' ');
+    return t.includes("En adhérant à l'Association Connaissance et Savoir, vous soutenez nos "
+      + "projets et nos actions et contribuez à faire vivre notre association. Rejoignez une "
+      + "communauté engagée et participez à son développement.");
+  })());
+  v('un bouton mène à HelloAsso', (() => {
+    const a = d.getElementById('lienAdhesion');
+    return Boolean(a) && /^https:\/\/www\.helloasso\.com\//.test(a.getAttribute('href'));
+  })(), d.getElementById('lienAdhesion')?.getAttribute('href'));
+  v('le lien est la page publique vérifiée de l\'association',
+    d.getElementById('lienAdhesion').getAttribute('href')
+      === 'https://www.helloasso.com/associations/association-connaissance-et-savoir');
+  v('il s\'ouvre dans un nouvel onglet, sans fuite de référent', (() => {
+    const a = d.getElementById('lienAdhesion');
+    return a.getAttribute('target') === '_blank' && /noopener/.test(a.getAttribute('rel') || '');
+  })());
+  v('aucune adresse d\'administration HelloAsso n\'est utilisée',
+    !/admin\.helloasso|helloasso\.com\/admin|\/associations\/[^"']+\/administration/.test(html));
+  v('les trois démarches sont distinguées', (() => {
+    const t = sect.textContent.replace(/\s+/g, ' ');
+    return /Adhésion à l'association/.test(t) && /Engagement de contribution/.test(t)
+      && /Don ponctuel/.test(t);
+  })());
+  v('la distinction renvoie au formulaire d\'engagement',
+    Boolean(sect.querySelector('a[href="#adherer"]')));
+  v('les formulaires existants sont conservés',
+    Boolean(d.getElementById('formEngagement')) && Boolean(d.getElementById('formDahira')));
+  v('un accès « Adhérer à l\'association » est dans la barre du haut',
+    Boolean([...d.querySelectorAll('.acces a')].find((a) => /Adhérer à l'association/.test(a.textContent))));
+  v('et dans le menu déroulant',
+    Boolean([...d.querySelectorAll('#menuMobile a')].find((a) => /Adhérer à l'association/.test(a.textContent))));
+
+  v('l\'objectif de 200 adhérents est annoncé',
+    /Notre objectif : 200 adhérents actifs/.test(sect.textContent));
+  v('le compteur affiche le nombre venu du serveur',
+    d.getElementById('adhActifs').textContent === '137',
+    d.getElementById('adhActifs').textContent);
+  v('le reste à faire est calculé', d.getElementById('adhRestants').textContent === '63');
+  v('la barre de progression suit le chiffre',
+    d.getElementById('jaugeBarre').style.width === '69%',
+    d.getElementById('jaugeBarre').style.width);
+  v('la période d\'adhésion est indiquée',
+    /12 mois/.test(d.getElementById('adhPeriode').textContent));
+  v('la date de dernière synchronisation est affichée',
+    /synchronisation/i.test(d.getElementById('adhMaj').textContent)
+    && /2026/.test(d.getElementById('adhMaj').textContent),
+    d.getElementById('adhMaj').textContent);
+  v('il est dit que le chiffre ne couvre que HelloAsso',
+    /ne portent que sur les adhésions enregistrées sur HelloAsso/
+      .test(d.getElementById('adhSource').textContent.replace(/\s+/g, ' ')));
+  v('la mise en garde sur l\'utilité publique est présente mot pour mot', (() => {
+    const t = sect.textContent.replace(/\s+/g, ' ');
+    return t.includes("Le seuil de 200 adhérents est l'un des critères examinés pour une "
+      + "éventuelle reconnaissance d'utilité publique. L'atteindre ne garantit pas cette "
+      + "reconnaissance, qui dépend d'autres conditions et d'une décision administrative.");
+  })());
+
+  v('aucune promesse fiscale n\'est faite par défaut',
+    d.getElementById('blocFiscal').hidden === true);
+  v('aucun texte fiscal n\'est visible tant que l\'interrupteur est éteint',
+    !/réduction d'impôt de 66/.test(
+      [...sect.querySelectorAll(':scope > * > *:not(#blocFiscal)')]
+        .map((e) => e.textContent).join(' ')));
+  v('l\'affichage fiscal dépend d\'un réglage serveur',
+    /fiscal_actif/.test(html) && /AFFICHER_INFO_FISCALE/.test(
+      fs.readFileSync(racine + 'netlify/functions/donnees-publiques.mjs', 'utf8')));
+  v('aucun droit statutaire n\'est promis', (() => {
+    const t = sect.textContent.replace(/\s+/g, ' ');
+    return !/assemblée générale|droit de vote|voter/i.test(t);
+  })());
+  v('aucune confusion entre intérêt général et utilité publique',
+    !/reconnue d'utilité publique/i.test(sect.textContent));
 
   console.log('\nBESOIN D\'AIDE — boîte de dialogue');
   const boite = d.getElementById('boiteAide');
