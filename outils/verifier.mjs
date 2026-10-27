@@ -591,9 +591,11 @@ serie('CSV — format et sécurité');
 serie('NOUS CONTACTER — validation, envoi et garde-fous');
 {
   const messageValide = (sur = {}) => ({
-    nom: 'Awa Diallo',
+    prenom: 'Awa',
+    nom: 'Diallo',
     email: 'awa@exemple.test',
-    objet: 'Question sur le calendrier',
+    telephone: '06 11 22 33 44',
+    objet: 'Question sur le projet',
     message: 'Bonjour, je voudrais savoir quand les visites sont prévues.',
     cle_idempotence: 'contact-' + Math.random().toString(16).slice(2),
     ...sur,
@@ -618,11 +620,14 @@ serie('NOUS CONTACTER — validation, envoi et garde-fous');
       === 'bureau@exemple.test|second@exemple.test');
   verifier('chaque message ne part qu’à son destinataire',
     recus.every(m => m.to.length === 1));
-  verifier('le nom du visiteur y figure', recus.every(m => /Awa Diallo/.test(m.htmlContent)));
+  verifier('le prénom et le nom y figurent', recus.every(m => /Awa Diallo/.test(m.htmlContent)));
   verifier('son adresse e-mail y figure', recus.every(m => /awa@exemple\.test/.test(m.htmlContent)));
+  verifier('son téléphone y figure', recus.every(m => /06 11 22 33 44/.test(m.htmlContent)));
   verifier('l’objet et le message y figurent',
-    recus.every(m => /Question sur le calendrier/.test(m.htmlContent)
+    recus.every(m => /Question sur le projet/.test(m.htmlContent)
                   && /quand les visites sont prévues/.test(m.htmlContent)));
+  verifier('l’objet figure dans le sujet du message',
+    recus.every(m => m.subject.includes('Question sur le projet')));
   verifier('« Répondre à » porte l’adresse du visiteur',
     recus.every(m => m.replyTo && m.replyTo.email === 'awa@exemple.test'),
     JSON.stringify(recus[0].replyTo));
@@ -642,18 +647,32 @@ serie('NOUS CONTACTER — validation, envoi et garde-fous');
     return rep.fautes || {};
   };
   verifier('un nom vide est refusé', Boolean((await fautesDe({ nom:'' })).nom));
+  verifier('un prénom vide est refusé', Boolean((await fautesDe({ prenom:'' })).prenom));
   verifier('un e-mail invalide est refusé', Boolean((await fautesDe({ email:'pas-un-email' })).email));
   verifier('un objet vide est refusé', Boolean((await fautesDe({ objet:'' })).objet));
+  verifier('un objet hors de la liste est refusé',
+    Boolean((await fautesDe({ objet:'Objet inventé' })).objet));
+  verifier('les quatre objets de la liste sont acceptés', await (async () => {
+    const { OBJETS_CONTACT } = await import('../netlify/functions/lib/commun.mjs');
+    for(const o of OBJETS_CONTACT){
+      if(Object.keys(await fautesDe({ objet:o })).length) return false;
+    }
+    return OBJETS_CONTACT.length === 4;
+  })());
+  verifier('un téléphone fantaisiste est refusé',
+    Boolean((await fautesDe({ telephone:'pas un numéro du tout' })).telephone));
+  verifier('le téléphone reste facultatif',
+    !Object.keys(await fautesDe({ telephone:'' })).length);
   verifier('un message trop court est refusé', Boolean((await fautesDe({ message:'court' })).message));
   verifier('un nom trop long est refusé', Boolean((await fautesDe({ nom:'A'.repeat(200) })).nom));
-  verifier('un objet trop long est refusé', Boolean((await fautesDe({ objet:'O'.repeat(300) })).objet));
+  verifier('un prénom trop long est refusé', Boolean((await fautesDe({ prenom:'P'.repeat(200) })).prenom));
   verifier('un message trop long est refusé', Boolean((await fautesDe({ message:'M'.repeat(6000) })).message));
   verifier('un refus de validation n’enregistre rien', BASE.messages_contact.length === 0);
   verifier('un refus de validation n’envoie rien', APPELS.mails.length === 0);
 
   // --- caractères de contrôle et injection ---
   reinitialiser();
-  await envoyerContact(messageValide({ nom:'Awa\u0000\u001fDiallo', message:'<script>alert(1)</script> et un texte assez long.' }));
+  await envoyerContact(messageValide({ nom:'Dia\u0000\u001fllo', message:'<script>alert(1)</script> et un texte assez long.' }));
   verifier('les caractères de contrôle sont retirés',
     !/[\u0000-\u001f]/.test(BASE.messages_contact[0].nom));
   verifier('le HTML du visiteur est échappé dans l’e-mail',

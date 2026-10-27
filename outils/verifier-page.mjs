@@ -9,6 +9,7 @@
  */
 import { JSDOM, VirtualConsole } from 'jsdom';
 import fs from 'node:fs';
+import { OBJETS_CONTACT as OBJETS_SERVEUR } from '../netlify/functions/lib/commun.mjs';
 
 const erreurs = [];
 const vc = new VirtualConsole();
@@ -346,23 +347,64 @@ setTimeout(() => {
   v('aucune modification directe depuis la page',
     !d.querySelector('#modifier-dahira input[id^="dNom"]'));
 
-  console.log('\nNOUS CONTACTER');
-  v('la rubrique existe', Boolean(d.getElementById('formContact')));
-  v('les cinq éléments demandés sont là', (() => {
-    const f = d.getElementById('formContact');
-    return ['cNom','cEmail','cObjet','cMessage','btnContact'].every((id) => f.querySelector('#' + id));
+  console.log('\nBESOIN D\'AIDE — boîte de dialogue');
+  const boite = d.getElementById('boiteAide');
+  v('la boîte de dialogue existe', Boolean(boite) && boite.tagName === 'DIALOG');
+  v('elle est fermée au chargement', Boolean(boite) && !boite.hasAttribute('open'));
+  v('elle porte un nom accessible',
+    Boolean(boite) && Boolean(d.getElementById(boite.getAttribute('aria-labelledby'))));
+  v('son titre est celui demandé',
+    d.getElementById('titreAide').textContent.trim() === "Besoin d'aide ? Écrivez-nous ici",
+    d.getElementById('titreAide').textContent.trim());
+  // La classe « aide » sert déjà aux textes d'aide, avec un alignement à
+  // droite et une marge : la lui donner décentrerait la boîte.
+  v('aucune classe de la boîte n’en recopie une autre',
+    Boolean(boite) && !boite.classList.contains('aide')
+    && boite.classList.contains('boite-aide'));
+  v('un bouton flottant ouvre la boîte depuis n’importe où', (() => {
+    const f = d.querySelector('.aide-flottant');
+    return Boolean(f) && f.classList.contains('ouvrir-aide')
+      && /Besoin d'aide/.test(f.textContent);
   })());
+  v('un bouton de fermeture est prévu', Boolean(d.getElementById('fermerAide')));
+  v('le formulaire est dans la boîte, et nulle part ailleurs',
+    d.querySelectorAll('#formContact').length === 1
+    && boite.contains(d.getElementById('formContact')));
+  v('la rubrique du bas ouvre la même boîte', (() => {
+    const b = d.querySelector('#contact .ouvrir-aide');
+    return Boolean(b) && /Écrivez-nous ici/.test(b.textContent);
+  })());
+  v('la rubrique existe', Boolean(d.getElementById('formContact')));
+  v('les champs demandés sont tous là', (() => {
+    const f = d.getElementById('formContact');
+    return ['cPrenom','cNom','cEmail','cTel','cObjet','cMessage','btnContact']
+      .every((id) => f.querySelector('#' + id));
+  })());
+  v('l’objet est une liste déroulante', d.getElementById('cObjet').tagName === 'SELECT');
+  v('elle propose les quatre objets demandés', (() => {
+    const choix = [...d.querySelectorAll('#cObjet option')]
+      .map((o) => o.textContent.trim()).filter((t) => !/Choisissez/.test(t));
+    return choix.join('|') === "Question sur le projet|Question sur l'adhésion|"
+      + 'Référencement de ma dahira|Autre question';
+  })(), [...d.querySelectorAll('#cObjet option')].map((o) => o.textContent.trim()).join(' · '));
+  v('la liste de la page et celle du serveur concordent', (() => {
+    const page = [...d.querySelectorAll('#cObjet option')]
+      .map((o) => o.textContent.trim()).filter((t) => !/Choisissez/.test(t));
+    return page.every((t) => OBJETS_SERVEUR.includes(t)) && page.length === OBJETS_SERVEUR.length;
+  })());
+  v('le téléphone reste facultatif',
+    !d.getElementById('cTel').hasAttribute('required'));
   v('le bouton porte le libellé demandé',
     d.getElementById('btnContact').textContent.trim() === 'Envoyer mon message',
     d.getElementById('btnContact').textContent.trim());
   v('le message est une zone de texte multiligne',
     d.getElementById('cMessage').tagName === 'TEXTAREA');
-  v('chaque champ a son étiquette', ['cNom','cEmail','cObjet','cMessage']
+  v('chaque champ a son étiquette', ['cPrenom','cNom','cEmail','cTel','cObjet','cMessage']
     .every((id) => d.querySelector(`label[for="${id}"]`)));
-  v('les quatre champs sont obligatoires', ['cNom','cEmail','cObjet','cMessage']
+  v('les cinq champs requis sont obligatoires', ['cPrenom','cNom','cEmail','cObjet','cMessage']
     .every((id) => d.getElementById(id).hasAttribute('required')));
   v('les longueurs sont bornées dès la page', (() => {
-    const max = { cNom:'120', cEmail:'160', cObjet:'160', cMessage:'5000' };
+    const max = { cPrenom:'120', cNom:'120', cEmail:'160', cTel:'40', cMessage:'5000' };
     return Object.entries(max).every(([id, n]) => d.getElementById(id).getAttribute('maxlength') === n);
   })());
   v('le champ e-mail est de type e-mail',
@@ -375,7 +417,7 @@ setTimeout(() => {
     const t = d.querySelector('#formContact .mention-donnees');
     if (!t) return false;
     const texte = t.textContent.replace(/\s+/g, ' ').trim();
-    return /uniquement à traiter votre demande/.test(texte) && /ni transmis à des tiers/.test(texte);
+    return /uniquement à traiter votre demande/.test(texte) && /ni transmises à des tiers/.test(texte);
   })());
   v('elle renvoie à la page de confidentialité',
     Boolean(d.querySelector('#formContact .mention-donnees a[href="confidentialite.html"]')));
@@ -390,7 +432,7 @@ setTimeout(() => {
   v('la confirmation n’est affichée qu’après accord du serveur',
     /if\(r\.ok && rep\.ok\)\{[\s\S]{0,400}bien été envoyé/.test(html));
   v('le double clic est bloqué par un drapeau',
-    /if\(envoiEnCours\) return;[\s\S]{0,1800}\/api\/contact/.test(html));
+    /if\(envoiEnCours\) return;[\s\S]{0,4000}\/api\/contact/.test(html));
   // Un lien présent dans le code ne suffit pas : le menu déroulant est
   // masqué au-dessus de 1000 px, la barre du haut en dessous. Il faut
   // donc le lien AUX DEUX endroits pour qu'il soit atteignable partout.

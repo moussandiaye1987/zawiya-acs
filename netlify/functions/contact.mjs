@@ -2,7 +2,7 @@ import { insererIdempotent, rpc, baseConfiguree } from './lib/db.mjs';
 import { envoyer, gabarit, echapper } from './lib/mail.mjs';
 import {
   json, erreur, corpsJSON, nettoyer, estEmail, empreinteIP, suspectRobot,
-  fabriquerReference, destinatairesAssociation,
+  fabriquerReference, destinatairesAssociation, OBJETS_CONTACT,
 } from './lib/commun.mjs';
 
 /**
@@ -24,8 +24,9 @@ const MAX_PAR_HEURE = 5;
 
 const LONGUEURS = {
   nom: 120,
+  prenom: 120,
   email: 160,
-  objet: 160,
+  telephone: 40,
   message: 5000,
 };
 
@@ -46,8 +47,10 @@ export default async (req) => {
 
   const champs = {
     nom: nettoyer(d.nom, LONGUEURS.nom),
+    prenom: nettoyer(d.prenom, LONGUEURS.prenom),
     email: nettoyer(d.email, LONGUEURS.email),
-    objet: nettoyer(d.objet, LONGUEURS.objet),
+    telephone: nettoyer(d.telephone, LONGUEURS.telephone),
+    objet: nettoyer(d.objet, 160),
     message: nettoyer(d.message, LONGUEURS.message),
   };
 
@@ -55,11 +58,20 @@ export default async (req) => {
   if (!champs.nom || champs.nom.length < 2) {
     fautes.nom = 'Indiquez votre nom.';
   }
+  if (!champs.prenom || champs.prenom.length < 2) {
+    fautes.prenom = 'Indiquez votre prénom.';
+  }
   if (!estEmail(champs.email)) {
     fautes.email = 'Indiquez un e-mail valide, pour que nous puissions vous répondre.';
   }
-  if (!champs.objet || champs.objet.length < 3) {
-    fautes.objet = "Indiquez l'objet de votre message.";
+  // Le téléphone est facultatif : la réponse part par e-mail. S'il est
+  // donné, on vérifie seulement qu'il ressemble à un numéro.
+  if (champs.telephone && !/^[+()\d\s.-]{6,40}$/.test(champs.telephone)) {
+    fautes.telephone = 'Ce numéro ne semble pas valide. Laissez le champ vide si vous préférez.';
+  }
+  // Liste fermée : le serveur ne fait pas confiance à ce que la page envoie.
+  if (!OBJETS_CONTACT.includes(champs.objet)) {
+    fautes.objet = "Choisissez l'objet de votre message dans la liste.";
   }
   if (!champs.message || champs.message.length < 10) {
     fautes.message = 'Écrivez votre message (10 caractères au minimum).';
@@ -159,9 +171,10 @@ function composer(m) {
     <p><strong>Message reçu depuis la rubrique « Nous contacter ».</strong></p>
     <table cellpadding="4" style="font-size:14px;border-collapse:collapse">
       <tr><td style="color:#6b7d71">Référence</td><td><strong>${echapper(m.reference)}</strong></td></tr>
-      <tr><td style="color:#6b7d71">Nom</td><td>${echapper(m.nom)}</td></tr>
+      <tr><td style="color:#6b7d71">Nom</td><td>${echapper(m.prenom)} ${echapper(m.nom)}</td></tr>
       <tr><td style="color:#6b7d71">E-mail</td><td><a href="mailto:${echapper(m.email)}">${echapper(m.email)}</a></td></tr>
-      <tr><td style="color:#6b7d71">Objet</td><td>${echapper(m.objet)}</td></tr>
+      <tr><td style="color:#6b7d71">Téléphone</td><td>${m.telephone ? `<a href="tel:${echapper(m.telephone)}">${echapper(m.telephone)}</a>` : 'non communiqué'}</td></tr>
+      <tr><td style="color:#6b7d71">Objet</td><td><strong>${echapper(m.objet)}</strong></td></tr>
       <tr><td style="color:#6b7d71">Reçu le</td><td>${echapper(horodatage)}</td></tr>
     </table>
     <p style="margin-top:18px;color:#6b7d71;font-size:13px">Message :</p>
@@ -174,8 +187,9 @@ function composer(m) {
     'Message reçu depuis la rubrique « Nous contacter ».',
     '',
     `Référence : ${m.reference}`,
-    `Nom : ${m.nom}`,
+    `Nom : ${m.prenom} ${m.nom}`,
     `E-mail : ${m.email}`,
+    `Téléphone : ${m.telephone || 'non communiqué'}`,
     `Objet : ${m.objet}`,
     `Reçu le : ${horodatage}`,
     '',
@@ -186,10 +200,10 @@ function composer(m) {
   ].join('\n');
 
   return {
-    sujet: `Contact — ${m.objet} — ${m.nom}`,
+    sujet: `Contact — ${m.objet} — ${m.prenom} ${m.nom}`,
     texte,
     html: gabarit('Nouveau message', corps),
     // L'expéditeur reste l'adresse autorisée ; seule la réponse va au visiteur.
-    repondreA: { email: m.email, nom: m.nom },
+    repondreA: { email: m.email, nom: `${m.prenom} ${m.nom}`.trim() },
   };
 }

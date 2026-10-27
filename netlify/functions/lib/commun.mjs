@@ -33,6 +33,20 @@ export const ZONES = [
 
 export const DUREES = [12, 24, 36];
 
+/**
+ * Objets proposés dans la boîte « Besoin d'aide ».
+ *
+ * Liste fermée : la page la propose, le serveur la revalide. Un objet
+ * hors liste est refusé — personne ne choisit ce qui arrive dans la
+ * boîte de l'association.
+ */
+export const OBJETS_CONTACT = [
+  'Question sur le projet',
+  "Question sur l'adhésion",
+  'Référencement de ma dahira',
+  'Autre question',
+];
+
 /** Devises acceptées. Les totaux ne les additionnent jamais entre elles. */
 export const DEVISES = {
   EUR: { nom: 'Euro', symbole: '€', plancher: 5, plafond: 100000 },

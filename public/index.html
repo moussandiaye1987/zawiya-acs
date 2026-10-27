@@ -328,6 +328,42 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 .total b{font-family:"Marcellus",serif; font-size:1.55rem; color:var(--vert)}
 .total .sous{display:block; font-family:"Alegreya Sans",sans-serif; font-size:.82rem; color:var(--encre-2); font-weight:400}
 .actions{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.3rem; align-items:center}
+/* --- Boîte « Besoin d'aide » --- */
+.aide-flottant{position:fixed; right:16px; bottom:16px; z-index:60;
+  display:inline-flex; align-items:center; gap:.5rem; cursor:pointer;
+  padding:.75rem 1.1rem; border:0; border-radius:999px;
+  background:var(--vert); color:#fff; font-family:inherit; font-size:.95rem;
+  box-shadow:0 6px 20px rgba(20,48,31,.28); min-height:48px}
+.aide-flottant:hover{filter:brightness(1.08)}
+.aide-flottant:focus-visible{outline:3px solid var(--encre); outline-offset:2px}
+.aide-flottant svg{width:20px; height:20px; flex:0 0 auto}
+@media (max-width:520px){
+  .aide-flottant{right:12px; bottom:12px; padding:.7rem .95rem; font-size:.9rem}
+}
+@media print{ .aide-flottant{display:none} }
+
+dialog.boite-aide{width:min(640px, calc(100vw - 2rem)); margin:auto; max-height:min(88vh, 900px);
+  padding:0; border:1px solid var(--trait); border-radius:var(--rayon);
+  background:var(--craie); color:var(--encre); overflow:hidden}
+dialog.boite-aide::backdrop{background:rgba(10,24,16,.55)}
+dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
+.aide-tete{display:flex; align-items:flex-start; gap:1rem; justify-content:space-between;
+  padding:1.2rem 1.4rem 1rem; border-bottom:1px solid var(--trait); background:var(--pierre)}
+.aide-tete h2{font-family:"Marcellus",serif; font-weight:400; font-size:1.25rem; margin:0; line-height:1.25}
+.aide-tete p{margin:.3rem 0 0; font-size:.9rem; color:var(--encre-2)}
+.aide-fermer{flex:0 0 auto; width:40px; height:40px; display:grid; place-items:center;
+  border:1px solid var(--trait); border-radius:var(--rayon); background:transparent;
+  color:var(--encre-2); cursor:pointer}
+.aide-fermer:hover{background:var(--craie); color:var(--encre)}
+.aide-fermer svg{width:18px; height:18px}
+.aide-corps{padding:0 1.4rem 1.4rem; overflow-y:auto; -webkit-overflow-scrolling:touch}
+.aide-corps .form-grid{margin-top:1.1rem}
+@media (max-width:520px){
+  dialog.boite-aide{width:100vw; max-width:100vw; max-height:100dvh; height:100dvh;
+    margin:0; border:0; border-radius:0}
+  .aide-tete{padding:1rem 1.1rem .9rem}
+  .aide-corps{padding:0 1.1rem 1.6rem}
+}
 .mention-donnees{grid-column:1 / -1; font-size:.85rem; color:var(--encre-2); margin:.2rem 0 0; line-height:1.5}
 .mention-donnees a{color:var(--vert)}
 .aide{font-size:.78rem; color:var(--encre-2); margin:.3rem 0 0; text-align:right}
@@ -1504,55 +1540,13 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 <section class="sect" id="contact">
   <div class="wrap">
     <div class="sect-lead">
-      <h2>Nous contacter</h2>
-      <p>Une question sur le projet, sur votre engagement ou sur votre dahira ? Écrivez-nous : nous répondons à l'adresse que vous indiquez.</p>
+      <h2>Besoin d'aide ?</h2>
+      <p>Une question sur le projet, sur l'adhésion ou sur le référencement d'une dahira ? Écrivez-nous : nous répondons à l'adresse que vous indiquez.</p>
     </div>
 
-    <form id="formContact" novalidate>
-      <div class="form-grid" id="nous-ecrire">
-        <div class="champ">
-          <label for="cNom">Nom <span class="req" aria-hidden="true">*</span></label>
-          <input id="cNom" name="nom" type="text" autocomplete="name" maxlength="120" required>
-          <p class="erreur" data-pour="nom" hidden></p>
-        </div>
-
-        <div class="champ">
-          <label for="cEmail">Adresse e-mail <span class="req" aria-hidden="true">*</span></label>
-          <input id="cEmail" name="email" type="email" autocomplete="email" maxlength="160" required>
-          <p class="erreur" data-pour="email" hidden></p>
-        </div>
-
-        <div class="champ plein">
-          <label for="cObjet">Objet du message <span class="req" aria-hidden="true">*</span></label>
-          <input id="cObjet" name="objet" type="text" maxlength="160" required>
-          <p class="erreur" data-pour="objet" hidden></p>
-        </div>
-
-        <div class="champ plein">
-          <label for="cMessage">Message <span class="req" aria-hidden="true">*</span></label>
-          <textarea id="cMessage" name="message" rows="6" maxlength="5000" required></textarea>
-          <p class="aide"><span id="cCompteur">0</span> / 5000 caractères</p>
-          <p class="erreur" data-pour="message" hidden></p>
-        </div>
-
-        <!-- Piège à robots : invisible et hors du parcours au clavier. -->
-        <div class="piege" aria-hidden="true">
-          <label for="c_site_web">Ne rien écrire ici</label>
-          <input id="c_site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
-        </div>
-
-        <p class="mention-donnees">
-          Votre nom et votre adresse e-mail servent uniquement à traiter votre
-          demande et à vous répondre. Ils ne sont ni publiés, ni transmis à des
-          tiers. <a href="confidentialite.html">En savoir plus</a>.
-        </p>
-
-        <div class="actions">
-          <button type="submit" class="btn" id="btnContact">Envoyer mon message</button>
-        </div>
-        <p class="statut" id="statutContact" role="status" aria-live="polite"></p>
-      </div>
-    </form>
+    <p style="margin:0 0 2rem">
+      <button type="button" class="btn ouvrir-aide">Écrivez-nous ici</button>
+    </p>
 
     <div class="duo" style="margin-top:2.4rem">
       <div>
@@ -1574,6 +1568,98 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 </section>
 
 </main>
+
+<!-- ================================================================
+     BOÎTE « BESOIN D'AIDE »
+     Un bouton toujours à portée, et la boîte qui s'ouvre par-dessus.
+     Le formulaire n'existe qu'ici : la rubrique du bas, la navigation
+     et le pied de page ouvrent tous cette même boîte.
+     ================================================================ -->
+<button type="button" class="aide-flottant ouvrir-aide" aria-haspopup="dialog">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.8-.9L3 20.5l1.6-4.8A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4z"/>
+  </svg>
+  <span>Besoin d'aide ?</span>
+</button>
+
+<dialog class="boite-aide" id="boiteAide" aria-labelledby="titreAide">
+  <form id="formContact" novalidate>
+    <div class="aide-tete">
+      <div>
+        <h2 id="titreAide">Besoin d'aide ? Écrivez-nous ici</h2>
+        <p>Nous répondons à l'adresse que vous indiquez.</p>
+      </div>
+      <button type="button" class="aide-fermer" id="fermerAide" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="aide-corps">
+      <div class="form-grid" id="nous-ecrire">
+        <div class="champ">
+          <label for="cPrenom">Prénom <span class="req" aria-hidden="true">*</span></label>
+          <input id="cPrenom" name="prenom" type="text" autocomplete="given-name" maxlength="120" required>
+          <p class="erreur" data-pour="prenom" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="cNom">Nom <span class="req" aria-hidden="true">*</span></label>
+          <input id="cNom" name="nom" type="text" autocomplete="family-name" maxlength="120" required>
+          <p class="erreur" data-pour="nom" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="cEmail">Adresse e-mail <span class="req" aria-hidden="true">*</span></label>
+          <input id="cEmail" name="email" type="email" autocomplete="email" inputmode="email" maxlength="160" required>
+          <p class="erreur" data-pour="email" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="cTel">Téléphone</label>
+          <input id="cTel" name="telephone" type="tel" autocomplete="tel" inputmode="tel" maxlength="40">
+          <p class="aide" style="text-align:left">Facultatif. Notre réponse part par e-mail.</p>
+          <p class="erreur" data-pour="telephone" hidden></p>
+        </div>
+
+        <div class="champ plein">
+          <label for="cObjet">Objet de ma question <span class="req" aria-hidden="true">*</span></label>
+          <select id="cObjet" name="objet" required>
+            <option value="">Choisissez dans la liste</option>
+            <option>Question sur le projet</option>
+            <option>Question sur l'adhésion</option>
+            <option>Référencement de ma dahira</option>
+            <option>Autre question</option>
+          </select>
+          <p class="erreur" data-pour="objet" hidden></p>
+        </div>
+
+        <div class="champ plein">
+          <label for="cMessage">Message <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="cMessage" name="message" rows="5" maxlength="5000" required></textarea>
+          <p class="aide"><span id="cCompteur">0</span> / 5000 caractères</p>
+          <p class="erreur" data-pour="message" hidden></p>
+        </div>
+
+        <!-- Piège à robots : invisible et hors du parcours au clavier. -->
+        <div class="piege" aria-hidden="true">
+          <label for="c_site_web">Ne rien écrire ici</label>
+          <input id="c_site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <p class="mention-donnees">
+          Vos coordonnées servent uniquement à traiter votre demande et à vous
+          répondre. Elles ne sont ni publiées, ni transmises à des tiers.
+          <a href="confidentialite.html">En savoir plus</a>.
+        </p>
+
+        <div class="actions">
+          <button type="submit" class="btn" id="btnContact">Envoyer mon message</button>
+        </div>
+        <p class="statut" id="statutContact" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </form>
+</dialog>
 
 <footer class="pied">
   <div class="wrap">
@@ -2472,13 +2558,56 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
    ===================================================================== */
 (function contact(){
   const form = document.getElementById('formContact');
-  if(!form) return;
+  const boite = document.getElementById('boiteAide');
+  if(!form || !boite) return;
   const btn = document.getElementById('btnContact');
   const compteur = document.getElementById('cCompteur');
   const zone = document.getElementById('cMessage');
   let cleIdempotence = nouvelleCle();
-  const ouvertLe = Date.now();
+  let ouvertLe = Date.now();
   let envoiEnCours = false;
+  let declencheur = null;
+
+  /* --- ouverture et fermeture --- */
+  function ouvrir(depuis){
+    declencheur = depuis || null;
+    if(!boite.open){
+      // showModal piège le clavier dans la boîte et gère Échap tout seul.
+      if(boite.showModal) boite.showModal(); else boite.setAttribute('open','');
+      ouvertLe = Date.now();
+    }
+    annoncer('statutContact', '');
+    const premier = document.getElementById('cPrenom');
+    if(premier) premier.focus();
+  }
+  function fermer(){
+    if(boite.open && boite.close) boite.close();
+    else boite.removeAttribute('open');
+    // Le focus revient là où l'on était avant d'ouvrir.
+    if(declencheur && declencheur.focus) declencheur.focus();
+  }
+
+  document.querySelectorAll('.ouvrir-aide').forEach(b => {
+    b.addEventListener('click', e => { e.preventDefault(); ouvrir(b); });
+  });
+  // Les liens « Nous contacter » ouvrent la boîte plutôt que de sauter
+  // en bas de page ; sans script, ils y mènent quand même.
+  document.querySelectorAll('a[href="#nous-ecrire"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const menu = document.getElementById('menuMobile');
+      if(menu && menu.classList.contains('ouvert')){
+        menu.classList.remove('ouvert');
+        const mb = document.getElementById('menuBtn');
+        if(mb) mb.setAttribute('aria-expanded','false');
+      }
+      ouvrir(a);
+    });
+  });
+  document.getElementById('fermerAide').addEventListener('click', fermer);
+  // Clic sur le fond : la boîte occupe tout le dialogue, donc un clic
+  // reçu par <dialog> lui-même vient forcément de l'extérieur.
+  boite.addEventListener('click', e => { if(e.target === boite) fermer(); });
 
   if(zone && compteur){
     const majCompteur = () => { compteur.textContent = String(zone.value.length); };
@@ -2495,23 +2624,31 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
     viderErreurs(form);
     annoncer('statutContact', '');
 
+    const prenom = document.getElementById('cPrenom').value.trim();
     const nom = document.getElementById('cNom').value.trim();
     const email = document.getElementById('cEmail').value.trim();
-    const objet = document.getElementById('cObjet').value.trim();
+    const telephone = document.getElementById('cTel').value.trim();
+    const objet = document.getElementById('cObjet').value;
     const message = zone.value.trim();
 
     // Premier filtre, côté page, pour éviter un aller-retour inutile.
     // Le serveur revalide tout : c'est lui qui fait foi.
     let premier = null;
+    const champVers = { prenom:'cPrenom', nom:'cNom', email:'cEmail',
+                        telephone:'cTel', objet:'cObjet', message:'cMessage' };
     const refuser = (champ, texte) => {
       erreurChamp(form, champ, texte);
-      if(!premier) premier = marquerInvalide('c' + champ[0].toUpperCase() + champ.slice(1));
+      if(!premier) premier = marquerInvalide(champVers[champ]);
     };
+    if(prenom.length < 2) refuser('prenom', 'Indiquez votre prénom.');
     if(nom.length < 2) refuser('nom', 'Indiquez votre nom.');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
       refuser('email', 'Indiquez un e-mail valide, pour que nous puissions vous répondre.');
     }
-    if(objet.length < 3) refuser('objet', "Indiquez l'objet de votre message.");
+    if(telephone && !/^[+()\d\s.-]{6,40}$/.test(telephone)){
+      refuser('telephone', 'Ce numéro ne semble pas valide. Laissez le champ vide si vous préférez.');
+    }
+    if(!objet) refuser('objet', "Choisissez l'objet de votre message dans la liste.");
     if(message.length < 10) refuser('message', 'Écrivez votre message (10 caractères au minimum).');
     if(premier){
       premier.focus();
@@ -2530,7 +2667,7 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
       est_test: MODE_TEST_CONTACT,
       duree_saisie_ms: Date.now() - ouvertLe,
       site_web: document.getElementById('c_site_web').value,
-      nom, email, objet, message,
+      prenom, nom, email, telephone, objet, message,
     };
 
     try {
