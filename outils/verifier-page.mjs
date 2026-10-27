@@ -71,7 +71,13 @@ setTimeout(() => {
     JSON.stringify(ordre) === JSON.stringify(['projet','adherer','dahiras','transparence','historique','contact']),
     ordre.join(' → '));
   const acces = [...d.querySelectorAll('.acces a')].map(a => a.textContent.trim());
-  v('trois accès en haut', acces.length === 3, acces.join(' · '));
+  // Trois accès à l'origine ; « Nous contacter » est le quatrième,
+  // demandé explicitement dans la navigation.
+  v('quatre accès en haut', acces.length === 4, acces.join(' · '));
+  v('les accès sont ceux attendus',
+    acces.map((t) => t.replace(/Référencer ma dahiraMa dahira/, 'Ma dahira')).join('|')
+      === 'Le projet|Nous contacter|Adhérer|Ma dahira',
+    acces.join(' · '));
   v('« Adhérer » est le bouton principal',
     d.querySelector('.acces a.primaire').getAttribute('href') === '#adherer');
   const ancres = [...d.querySelectorAll('a[href^="#"]')].map(a => a.getAttribute('href').slice(1)).filter(Boolean);
@@ -385,15 +391,25 @@ setTimeout(() => {
     /if\(r\.ok && rep\.ok\)\{[\s\S]{0,400}bien été envoyé/.test(html));
   v('le double clic est bloqué par un drapeau',
     /if\(envoiEnCours\) return;[\s\S]{0,1800}\/api\/contact/.test(html));
-  v('un lien « Nous contacter » figure dans la navigation',
-    Boolean([...d.querySelectorAll('header a')].find((a) => /Nous contacter/.test(a.textContent))));
+  // Un lien présent dans le code ne suffit pas : le menu déroulant est
+  // masqué au-dessus de 1000 px, la barre du haut en dessous. Il faut
+  // donc le lien AUX DEUX endroits pour qu'il soit atteignable partout.
+  v('un lien « Nous contacter » dans la barre du haut (grand écran)',
+    Boolean([...d.querySelectorAll('.acces a')].find((a) => /Nous contacter/.test(a.textContent))));
+  v('un lien « Nous contacter » dans le menu déroulant (petit écran)',
+    Boolean([...d.querySelectorAll('#menuMobile a')].find((a) => /Nous contacter/.test(a.textContent))));
+  v('chaque entrée du menu déroulant mène à une section existante',
+    [...d.querySelectorAll('#menuMobile a')].every((a) => {
+      const h = a.getAttribute('href') || '';
+      return !h.startsWith('#') || Boolean(d.getElementById(h.slice(1)));
+    }));
   v('un lien « Nous contacter » figure dans le pied de page',
     Boolean([...d.querySelectorAll('footer a')].find((a) => /Nous contacter/.test(a.textContent))));
-  v('les deux liens mènent à la rubrique', (() => {
+  v('tous les liens « Nous contacter » mènent à la rubrique', (() => {
     const cibles = [...d.querySelectorAll('header a, footer a')]
       .filter((a) => /Nous contacter/.test(a.textContent))
       .map((a) => a.getAttribute('href'));
-    return cibles.length === 2 && cibles.every((h) => h === '#nous-ecrire')
+    return cibles.length === 3 && cibles.every((h) => h === '#nous-ecrire')
       && Boolean(d.getElementById('nous-ecrire'));
   })());
   v('aucune clé d’envoi dans la page publique',
