@@ -20,13 +20,13 @@ process.env.URL = 'https://site.test';
 /* ------------------------------------------------------------------ */
 /* Base de données simulée                                             */
 /* ------------------------------------------------------------------ */
-const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [] };
-const APPELS = { mails: [], echecMail: false, echecPour: null, rpc: [], geocodages: [], geocodageEnPanne: false };
+const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [], messages_contact: [] };
+const APPELS = { mails: [], echecMail: false, echecPour: null, soumissionsRecentes: 0, rpc: [], geocodages: [], geocodageEnPanne: false };
 
 function reinitialiser(){
   Object.keys(BASE).forEach(k => { BASE[k].length = 0; });
   APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false; APPELS.echecPour = null;
-  APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false;
+  APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false; APPELS.soumissionsRecentes = 0;
 }
 
 function repJSON(corps, status = 200){
@@ -65,7 +65,7 @@ globalThis.fetch = async (url, options = {}) => {
     if(segments.startsWith('rpc/')){
       const nom = segments.slice(4);
       APPELS.rpc.push(nom);
-      if(nom === 'compte_soumissions_recentes') return repJSON(0);
+      if(nom === 'compte_soumissions_recentes') return repJSON(APPELS.soumissionsRecentes || 0);
       if(nom === 'engagements_a_rappeler'){
         // on reproduit le filtre de la fonction SQL : un seul rappel par
         // personne et par mois, tous canaux confondus
@@ -191,6 +191,7 @@ const { default: engagement } = await import('../netlify/functions/engagement.mj
 const { default: dahira }     = await import('../netlify/functions/dahira.mjs');
 const { default: publiques }  = await import('../netlify/functions/donnees-publiques.mjs');
 const { default: participant }= await import('../netlify/functions/participant.mjs');
+const { default: contact }    = await import('../netlify/functions/contact.mjs');
 
 /* ------------------------------------------------------------------ */
 serie('ENGAGEMENT — validation');
@@ -584,6 +585,141 @@ serie('CSV — format et sécurité');
     t.every(x => x.periodicites.includes('mensuelle')));
   verifier('le formatage respecte la devise',
     montant(50, 'EUR').includes('€') && montant(25000, 'XOF').includes('FCFA'));
+}
+
+/* ------------------------------------------------------------------ */
+serie('NOUS CONTACTER — validation, envoi et garde-fous');
+{
+  const messageValide = (sur = {}) => ({
+    nom: 'Awa Diallo',
+    email: 'awa@exemple.test',
+    objet: 'Question sur le calendrier',
+    message: 'Bonjour, je voudrais savoir quand les visites sont prévues.',
+    cle_idempotence: 'contact-' + Math.random().toString(16).slice(2),
+    ...sur,
+  });
+  const envoyerContact = (d) => contact(requete(d));
+
+  reinitialiser();
+  const r = await envoyerContact(messageValide());
+  const c = await r.json();
+  verifier('un message valide est accepté', r.status === 200 && c.ok === true);
+  verifier('une référence lisible est rendue', /^CONTACT-\d{4}-[A-Z0-9]{6}$/.test(c.reference), c.reference);
+  verifier('le message est enregistré avant tout envoi', BASE.messages_contact.length === 1);
+  verifier('l’adresse IP n’est pas stockée en clair',
+    !JSON.stringify(BASE.messages_contact[0]).includes('203.0.113.7')
+    && BASE.messages_contact[0].ip_hash.length === 32);
+
+  const recus = APPELS.mails.filter(m => /^Contact —/.test(m.subject));
+  verifier('un envoi par adresse interne', recus.length === 2,
+    recus.map(m => m.to[0].email).join(', '));
+  verifier('les deux adresses internes sont servies',
+    recus.map(m => m.to[0].email).sort().join('|')
+      === 'bureau@exemple.test|second@exemple.test');
+  verifier('chaque message ne part qu’à son destinataire',
+    recus.every(m => m.to.length === 1));
+  verifier('le nom du visiteur y figure', recus.every(m => /Awa Diallo/.test(m.htmlContent)));
+  verifier('son adresse e-mail y figure', recus.every(m => /awa@exemple\.test/.test(m.htmlContent)));
+  verifier('l’objet et le message y figurent',
+    recus.every(m => /Question sur le calendrier/.test(m.htmlContent)
+                  && /quand les visites sont prévues/.test(m.htmlContent)));
+  verifier('« Répondre à » porte l’adresse du visiteur',
+    recus.every(m => m.replyTo && m.replyTo.email === 'awa@exemple.test'),
+    JSON.stringify(recus[0].replyTo));
+  verifier('l’expéditeur reste l’adresse autorisée',
+    recus.every(m => m.sender.email === process.env.MAIL_EXPEDITEUR));
+  verifier('le visiteur n’est jamais l’expéditeur',
+    recus.every(m => m.sender.email !== 'awa@exemple.test'));
+  verifier('aucune pièce jointe n’est envoyée',
+    recus.every(m => !m.attachment || m.attachment.length === 0));
+  verifier('aucune liste d’adhérents ne fuite',
+    recus.every(m => !/Tous les engagements/.test(m.htmlContent)));
+
+  // --- validation côté serveur ---
+  const fautesDe = async (sur) => {
+    reinitialiser();
+    const rep = await (await envoyerContact(messageValide(sur))).json();
+    return rep.fautes || {};
+  };
+  verifier('un nom vide est refusé', Boolean((await fautesDe({ nom:'' })).nom));
+  verifier('un e-mail invalide est refusé', Boolean((await fautesDe({ email:'pas-un-email' })).email));
+  verifier('un objet vide est refusé', Boolean((await fautesDe({ objet:'' })).objet));
+  verifier('un message trop court est refusé', Boolean((await fautesDe({ message:'court' })).message));
+  verifier('un nom trop long est refusé', Boolean((await fautesDe({ nom:'A'.repeat(200) })).nom));
+  verifier('un objet trop long est refusé', Boolean((await fautesDe({ objet:'O'.repeat(300) })).objet));
+  verifier('un message trop long est refusé', Boolean((await fautesDe({ message:'M'.repeat(6000) })).message));
+  verifier('un refus de validation n’enregistre rien', BASE.messages_contact.length === 0);
+  verifier('un refus de validation n’envoie rien', APPELS.mails.length === 0);
+
+  // --- caractères de contrôle et injection ---
+  reinitialiser();
+  await envoyerContact(messageValide({ nom:'Awa\u0000\u001fDiallo', message:'<script>alert(1)</script> et un texte assez long.' }));
+  verifier('les caractères de contrôle sont retirés',
+    !/[\u0000-\u001f]/.test(BASE.messages_contact[0].nom));
+  verifier('le HTML du visiteur est échappé dans l’e-mail',
+    APPELS.mails.every(m => !/<script>/.test(m.htmlContent) && /&lt;script&gt;/.test(m.htmlContent)));
+
+  // --- doublons ---
+  reinitialiser();
+  const cle = 'contact-cle-fixe';
+  const r1 = await envoyerContact(messageValide({ cle_idempotence: cle }));
+  const avant = APPELS.mails.length;
+  const r2 = await envoyerContact(messageValide({ cle_idempotence: cle }));
+  const c1 = await r1.json(), c2 = await r2.json();
+  verifier('un second envoi avec la même clé ne crée rien', BASE.messages_contact.length === 1);
+  verifier('il rend la même référence', c1.reference === c2.reference);
+  verifier('il est signalé comme déjà reçu', c2.deja === true);
+  verifier('il ne provoque aucun e-mail supplémentaire', APPELS.mails.length === avant);
+
+  // --- piège à robots ---
+  reinitialiser();
+  const rr = await envoyerContact(messageValide({ site_web:'https://spam.test' }));
+  const cr = await rr.json();
+  verifier('le piège rempli n’enregistre rien', BASE.messages_contact.length === 0);
+  verifier('le piège rempli n’envoie rien', APPELS.mails.length === 0);
+  verifier('la réponse au robot imite un succès', rr.status === 200 && cr.ok === true);
+
+  reinitialiser();
+  await envoyerContact(messageValide({ duree_saisie_ms: 300 }));
+  verifier('un envoi trop rapide est écarté', BASE.messages_contact.length === 0);
+
+  // --- limitation de débit ---
+  reinitialiser();
+  APPELS.soumissionsRecentes = 5;
+  const rl = await envoyerContact(messageValide());
+  APPELS.soumissionsRecentes = 0;
+  verifier('au-delà du quota horaire, l’envoi est refusé', rl.status === 429);
+
+  // --- panne d’envoi : jamais de fausse confirmation ---
+  reinitialiser();
+  APPELS.echecMail = true;
+  const rp = await envoyerContact(messageValide());
+  const cp = await rp.json();
+  APPELS.echecMail = false;
+  verifier('une panne d’envoi ne confirme pas au visiteur', rp.status === 502 && cp.ok === false);
+  verifier('le message est tout de même conservé', BASE.messages_contact.length === 1);
+  verifier('la référence est rendue malgré la panne',
+    /^CONTACT-\d{4}-[A-Z0-9]{6}$/.test(cp.reference || ''));
+  verifier('le motif reste technique, sans secret',
+    !/BREVO_API_KEY|api-key/i.test(JSON.stringify(cp)));
+
+  // --- une seule adresse en panne ---
+  reinitialiser();
+  APPELS.echecPour = 'bureau@exemple.test';
+  const rs = await envoyerContact(messageValide());
+  APPELS.echecPour = null;
+  verifier('si une seule adresse échoue, le visiteur est confirmé', rs.status === 200);
+  verifier('et l’autre adresse reçoit bien le message',
+    APPELS.mails.some(m => m.to[0].email === 'second@exemple.test'));
+
+  // --- méthode ---
+  verifier('la lecture par GET est refusée',
+    (await contact(new Request('https://site.test/api/contact'))).status === 405);
+
+  // --- données de test ---
+  reinitialiser();
+  await envoyerContact(messageValide({ est_test:true }));
+  verifier('un message de test est marqué comme tel', BASE.messages_contact[0].est_test === true);
 }
 
 /* ------------------------------------------------------------------ */

@@ -19,6 +19,7 @@ public/                 le site, publié tel quel par Netlify
   img/ · maquette-zawiya.mp4
 netlify/functions/      traitement côté serveur
   engagement.mjs        POST /api/engagement
+  contact.mjs           POST /api/contact
   dahira.mjs            POST /api/dahira
   donnees-publiques.mjs GET  /api/donnees-publiques   (agrégats + annuaire validé)
   participant.mjs       GET  /api/participant         (liens personnels des e-mails)

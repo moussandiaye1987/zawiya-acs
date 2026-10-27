@@ -328,6 +328,9 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 .total b{font-family:"Marcellus",serif; font-size:1.55rem; color:var(--vert)}
 .total .sous{display:block; font-family:"Alegreya Sans",sans-serif; font-size:.82rem; color:var(--encre-2); font-weight:400}
 .actions{grid-column:1 / -1; display:flex; flex-wrap:wrap; gap:.7rem; margin-top:.3rem; align-items:center}
+.mention-donnees{grid-column:1 / -1; font-size:.85rem; color:var(--encre-2); margin:.2rem 0 0; line-height:1.5}
+.mention-donnees a{color:var(--vert)}
+.aide{font-size:.78rem; color:var(--encre-2); margin:.3rem 0 0; text-align:right}
 .statut{font-size:.92rem; color:var(--vert); min-height:1.3em; margin:.6rem 0 0; grid-column:1 / -1}
 .statut.ko{color:var(--alerte)}
 @media (max-width:620px){
@@ -609,7 +612,7 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       <a href="#modifier-dahira">Modifier ma fiche</a>
       <a href="#transparence">Transparence et suivi</a>
       <a href="#historique">Historique</a>
-      <a href="#contact">Contact</a>
+      <a href="#nous-ecrire">Nous contacter</a>
     </nav>
   </div>
 </header>
@@ -1500,10 +1503,57 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
 <section class="sect" id="contact">
   <div class="wrap">
     <div class="sect-lead">
-      <h2>Nous contacter et verser</h2>
-      <p>Indiquez la référence reçue lors de votre engagement sur chacun de vos virements : c'est ce qui permet de rattacher votre versement à votre engagement.</p>
+      <h2>Nous contacter</h2>
+      <p>Une question sur le projet, sur votre engagement ou sur votre dahira ? Écrivez-nous : nous répondons à l'adresse que vous indiquez.</p>
     </div>
-    <div class="duo">
+
+    <form id="formContact" novalidate>
+      <div class="form-grid" id="nous-ecrire">
+        <div class="champ">
+          <label for="cNom">Nom <span class="req" aria-hidden="true">*</span></label>
+          <input id="cNom" name="nom" type="text" autocomplete="name" maxlength="120" required>
+          <p class="erreur" data-pour="nom" hidden></p>
+        </div>
+
+        <div class="champ">
+          <label for="cEmail">Adresse e-mail <span class="req" aria-hidden="true">*</span></label>
+          <input id="cEmail" name="email" type="email" autocomplete="email" maxlength="160" required>
+          <p class="erreur" data-pour="email" hidden></p>
+        </div>
+
+        <div class="champ plein">
+          <label for="cObjet">Objet du message <span class="req" aria-hidden="true">*</span></label>
+          <input id="cObjet" name="objet" type="text" maxlength="160" required>
+          <p class="erreur" data-pour="objet" hidden></p>
+        </div>
+
+        <div class="champ plein">
+          <label for="cMessage">Message <span class="req" aria-hidden="true">*</span></label>
+          <textarea id="cMessage" name="message" rows="6" maxlength="5000" required></textarea>
+          <p class="aide"><span id="cCompteur">0</span> / 5000 caractères</p>
+          <p class="erreur" data-pour="message" hidden></p>
+        </div>
+
+        <!-- Piège à robots : invisible et hors du parcours au clavier. -->
+        <div class="piege" aria-hidden="true">
+          <label for="c_site_web">Ne rien écrire ici</label>
+          <input id="c_site_web" name="site_web" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <p class="mention-donnees">
+          Votre nom et votre adresse e-mail servent uniquement à traiter votre
+          demande et à vous répondre. Ils ne sont ni publiés, ni transmis à des
+          tiers. <a href="confidentialite.html">En savoir plus</a>.
+        </p>
+
+        <div class="actions">
+          <button type="submit" class="btn" id="btnContact">Envoyer mon message</button>
+        </div>
+        <p class="statut" id="statutContact" role="status" aria-live="polite"></p>
+      </div>
+    </form>
+
+    <div class="duo" style="margin-top:2.4rem">
       <div>
         <h3 style="font-family:Marcellus,serif;font-weight:400;font-size:1.2rem">Verser votre contribution</h3>
         <p style="color:var(--encre-2);font-size:.95rem">Les coordonnées bancaires de l'association, le RIB à télécharger et le rappel sur le virement permanent se trouvent <a href="#rib" style="color:var(--vert)">juste sous le formulaire d'adhésion</a>.</p>
@@ -1539,7 +1589,7 @@ fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
       </div>
       <div>
         <p style="margin:0 0 .3rem"><b style="color:var(--encre);font-weight:500">Association Connaissance et Savoir</b> — association loi 1901</p>
-        <p style="margin:0">35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes · <a href="confidentialite.html">Confidentialité</a></p>
+        <p style="margin:0">35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes · <a href="#nous-ecrire">Nous contacter</a> · <a href="confidentialite.html">Confidentialité</a></p>
       </div>
       <a class="btn" href="#adherer">Adhérer au projet</a>
     </div>
@@ -2146,6 +2196,9 @@ function nouvelleCle(){
   return (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
 }
 
+// Mode test, lu une fois pour toute la page : ?test=1 dans l'adresse.
+const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '1';
+
 /* =====================================================================
    FORMULAIRE D'ENGAGEMENT
    ===================================================================== */
@@ -2408,6 +2461,114 @@ function nouvelleCle(){
   charger();
   majTotal();
   majRappel();
+})();
+
+/* =====================================================================
+   FORMULAIRE « NOUS CONTACTER »
+   Le message part vers l'association par le serveur : la messagerie du
+   visiteur ne s'ouvre jamais. Les champs sont conservés tant que l'envoi
+   n'a pas abouti, pour qu'un échec ne fasse rien perdre.
+   ===================================================================== */
+(function contact(){
+  const form = document.getElementById('formContact');
+  if(!form) return;
+  const btn = document.getElementById('btnContact');
+  const compteur = document.getElementById('cCompteur');
+  const zone = document.getElementById('cMessage');
+  let cleIdempotence = nouvelleCle();
+  const ouvertLe = Date.now();
+  let envoiEnCours = false;
+
+  if(zone && compteur){
+    const majCompteur = () => { compteur.textContent = String(zone.value.length); };
+    zone.addEventListener('input', majCompteur);
+    majCompteur();
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    // Double garde contre le double clic : le drapeau arrête le second
+    // envoi même si le bouton a été réactivé entre-temps.
+    if(envoiEnCours) return;
+
+    viderErreurs(form);
+    annoncer('statutContact', '');
+
+    const nom = document.getElementById('cNom').value.trim();
+    const email = document.getElementById('cEmail').value.trim();
+    const objet = document.getElementById('cObjet').value.trim();
+    const message = zone.value.trim();
+
+    // Premier filtre, côté page, pour éviter un aller-retour inutile.
+    // Le serveur revalide tout : c'est lui qui fait foi.
+    let premier = null;
+    const refuser = (champ, texte) => {
+      erreurChamp(form, champ, texte);
+      if(!premier) premier = marquerInvalide('c' + champ[0].toUpperCase() + champ.slice(1));
+    };
+    if(nom.length < 2) refuser('nom', 'Indiquez votre nom.');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+      refuser('email', 'Indiquez un e-mail valide, pour que nous puissions vous répondre.');
+    }
+    if(objet.length < 3) refuser('objet', "Indiquez l'objet de votre message.");
+    if(message.length < 10) refuser('message', 'Écrivez votre message (10 caractères au minimum).');
+    if(premier){
+      premier.focus();
+      annoncer('statutContact', 'Certains champs sont à corriger.', true);
+      return;
+    }
+
+    envoiEnCours = true;
+    btn.disabled = true;
+    const libelle = btn.textContent;
+    btn.textContent = 'Envoi…';
+    annoncer('statutContact', 'Envoi en cours…');
+
+    const charge = {
+      cle_idempotence: cleIdempotence,
+      est_test: MODE_TEST_CONTACT,
+      duree_saisie_ms: Date.now() - ouvertLe,
+      site_web: document.getElementById('c_site_web').value,
+      nom, email, objet, message,
+    };
+
+    try {
+      const r = await fetch('/api/contact', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify(charge),
+      });
+      const rep = await r.json().catch(() => ({}));
+
+      if(r.ok && rep.ok){
+        // Succès confirmé par le serveur : on vide, et pas avant.
+        form.reset();
+        if(compteur) compteur.textContent = '0';
+        cleIdempotence = nouvelleCle();
+        annoncer('statutContact',
+          'Merci ! Votre message a bien été envoyé. Nous vous répondrons dès que possible.');
+        return;
+      }
+
+      // Échec : les champs restent remplis, la clé reste la même pour
+      // qu'un nouvel essai ne crée pas de second message.
+      if(rep.fautes){
+        Object.entries(rep.fautes).forEach(([champ, texte]) => erreurChamp(form, champ, texte));
+        annoncer('statutContact', 'Certains champs sont à corriger.', true);
+      } else {
+        annoncer('statutContact',
+          rep.message || "Votre message n'a pas pu être envoyé. Réessayez dans un instant.", true);
+      }
+    } catch {
+      annoncer('statutContact',
+        "Votre message n'a pas pu être envoyé : connexion interrompue. "
+        + 'Vos réponses sont conservées, réessayez dans un instant.', true);
+    } finally {
+      envoiEnCours = false;
+      btn.disabled = false;
+      btn.textContent = libelle;
+    }
+  });
 })();
 
 /* =====================================================================

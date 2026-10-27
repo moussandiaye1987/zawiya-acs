@@ -44,6 +44,10 @@ function listeDestinataires(destinataire) {
 
 /**
  * @param {object}  options
+ * @param {{email: string, nom?: string}} [options.repondreA]
+ *        Adresse de réponse. L'expéditeur reste celui du service
+ *        d'envoi — seul « Répondre à » porte l'adresse du visiteur, de
+ *        sorte qu'un clic sur « Répondre » lui écrive à lui.
  * @param {string|string[]} options.destinataire
  *        Une adresse, ou plusieurs. Plusieurs adresses partent dans un
  *        seul message : une seule pièce jointe, un seul appel, aucun
@@ -59,10 +63,18 @@ function listeDestinataires(destinataire) {
  *   qu'il rend, qui permet d'y retrouver cet envoi précis.
  * Ne lève jamais : un échec d'e-mail ne doit pas faire perdre une soumission.
  */
-export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
+export async function envoyer({ destinataire, sujet, texte, html, pieces, repondreA }) {
   const destinataires = listeDestinataires(destinataire);
   if (!destinataires.length) return { envoye: false, motif: 'destinataire absent' };
   if (!mailConfigure()) return { envoye: false, motif: 'service e-mail non configuré' };
+
+  // Une adresse de réponse mal formée est ignorée plutôt que de faire
+  // échouer l'envoi : mieux vaut un message reçu sans « Répondre à »
+  // qu'un message perdu.
+  const reponse_a =
+    repondreA && typeof repondreA.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(repondreA.email)
+      ? repondreA
+      : null;
 
   const fournisseur = fournisseurMail();
   try {
@@ -79,6 +91,9 @@ export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
               sender: { email: EXPEDITEUR_EMAIL, name: EXPEDITEUR_NOM },
               to: destinataires.map((email) => ({ email })),
               subject: sujet,
+              replyTo: reponse_a
+                ? { email: reponse_a.email, name: reponse_a.nom || undefined }
+                : undefined,
               textContent: texte,
               htmlContent: html || undefined,
               // Brevo attend { name, content } avec un contenu en base64.
@@ -97,6 +112,9 @@ export async function envoyer({ destinataire, sujet, texte, html, pieces }) {
               from: `${EXPEDITEUR_NOM} <${EXPEDITEUR_EMAIL}>`,
               to: destinataires,
               subject: sujet,
+              reply_to: reponse_a
+                ? (reponse_a.nom ? `${reponse_a.nom} <${reponse_a.email}>` : reponse_a.email)
+                : undefined,
               text: texte,
               html: html || undefined,
               // Resend attend { filename, content } avec un contenu en base64.

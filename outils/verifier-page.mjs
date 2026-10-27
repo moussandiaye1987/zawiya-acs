@@ -340,6 +340,65 @@ setTimeout(() => {
   v('aucune modification directe depuis la page',
     !d.querySelector('#modifier-dahira input[id^="dNom"]'));
 
+  console.log('\nNOUS CONTACTER');
+  v('la rubrique existe', Boolean(d.getElementById('formContact')));
+  v('les cinq éléments demandés sont là', (() => {
+    const f = d.getElementById('formContact');
+    return ['cNom','cEmail','cObjet','cMessage','btnContact'].every((id) => f.querySelector('#' + id));
+  })());
+  v('le bouton porte le libellé demandé',
+    d.getElementById('btnContact').textContent.trim() === 'Envoyer mon message',
+    d.getElementById('btnContact').textContent.trim());
+  v('le message est une zone de texte multiligne',
+    d.getElementById('cMessage').tagName === 'TEXTAREA');
+  v('chaque champ a son étiquette', ['cNom','cEmail','cObjet','cMessage']
+    .every((id) => d.querySelector(`label[for="${id}"]`)));
+  v('les quatre champs sont obligatoires', ['cNom','cEmail','cObjet','cMessage']
+    .every((id) => d.getElementById(id).hasAttribute('required')));
+  v('les longueurs sont bornées dès la page', (() => {
+    const max = { cNom:'120', cEmail:'160', cObjet:'160', cMessage:'5000' };
+    return Object.entries(max).every(([id, n]) => d.getElementById(id).getAttribute('maxlength') === n);
+  })());
+  v('le champ e-mail est de type e-mail',
+    d.getElementById('cEmail').getAttribute('type') === 'email');
+  v('un piège à robots est présent et hors du clavier', (() => {
+    const p = d.querySelector('#formContact .piege input');
+    return Boolean(p) && p.getAttribute('tabindex') === '-1';
+  })());
+  v('la mention sur l’usage des informations est visible', (() => {
+    const t = d.querySelector('#formContact .mention-donnees');
+    if (!t) return false;
+    const texte = t.textContent.replace(/\s+/g, ' ').trim();
+    return /uniquement à traiter votre demande/.test(texte) && /ni transmis à des tiers/.test(texte);
+  })());
+  v('elle renvoie à la page de confidentialité',
+    Boolean(d.querySelector('#formContact .mention-donnees a[href="confidentialite.html"]')));
+  v('une zone de statut annoncée aux lecteurs d’écran', (() => {
+    const z = d.getElementById('statutContact');
+    return Boolean(z) && z.getAttribute('role') === 'status' && z.getAttribute('aria-live') === 'polite';
+  })());
+  v('le formulaire envoie au serveur, sans ouvrir la messagerie',
+    /fetch\('\/api\/contact'/.test(html) && !/#formContact[\s\S]{0,400}mailto:/.test(html));
+  v('le message exact de succès est celui demandé',
+    html.includes('Merci ! Votre message a bien été envoyé. Nous vous répondrons dès que possible.'));
+  v('la confirmation n’est affichée qu’après accord du serveur',
+    /if\(r\.ok && rep\.ok\)\{[\s\S]{0,400}bien été envoyé/.test(html));
+  v('le double clic est bloqué par un drapeau',
+    /if\(envoiEnCours\) return;[\s\S]{0,1800}\/api\/contact/.test(html));
+  v('un lien « Nous contacter » figure dans la navigation',
+    Boolean([...d.querySelectorAll('header a')].find((a) => /Nous contacter/.test(a.textContent))));
+  v('un lien « Nous contacter » figure dans le pied de page',
+    Boolean([...d.querySelectorAll('footer a')].find((a) => /Nous contacter/.test(a.textContent))));
+  v('les deux liens mènent à la rubrique', (() => {
+    const cibles = [...d.querySelectorAll('header a, footer a')]
+      .filter((a) => /Nous contacter/.test(a.textContent))
+      .map((a) => a.getAttribute('href'));
+    return cibles.length === 2 && cibles.every((h) => h === '#nous-ecrire')
+      && Boolean(d.getElementById('nous-ecrire'));
+  })());
+  v('aucune clé d’envoi dans la page publique',
+    !/BREVO_API_KEY|RESEND_API_KEY|xkeysib-|re_[A-Za-z0-9]{20,}/.test(html));
+
   console.log('\nMODE TEST');
   v('aucun bandeau de test par défaut',
     d.getElementById('bandeauTest').hidden === true);
