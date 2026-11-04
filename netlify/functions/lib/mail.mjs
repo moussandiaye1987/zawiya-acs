@@ -157,7 +157,7 @@ export function gabarit(titre, corpsHtml) {
     </td></tr>
     <tr><td style="padding:16px 28px 22px;border-top:1px solid rgba(20,48,31,.12);font-family:Helvetica,Arial,sans-serif;font-size:12px;color:#6b7d71">
       Zawiya Cheikh Ibrahim Niasse — Association Connaissance et Savoir<br>
-      35 rue de la Petite Grille, 77400 Saint-Thibault-des-Vignes
+      4 rue des Monts Chauvets, 78300 Poissy
     </td></tr>
   </table>
 </body></html>`;

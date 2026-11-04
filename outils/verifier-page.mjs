@@ -597,6 +597,14 @@ setTimeout(() => {
     [...d.querySelectorAll('table')].every(t => t.closest('.scroll-x')));
   v('lien vers la confidentialité', Boolean(d.querySelector('a[href="confidentialite.html"]')));
 
+  // Le siège a été transféré à Poissy le 8 février 2025 (récépissé,
+  // RNA W771003798). L'ancienne adresse ne doit réapparaître nulle part :
+  // elle contredirait les pièces officielles remises aux bailleurs.
+  const pageEntiere = d.documentElement.textContent;
+  v('siège social à jour (Poissy)', pageEntiere.includes('4 rue des Monts Chauvets'));
+  v('ancienne adresse absente',
+    !/Petite Grille|Saint-Thibault|77400/.test(pageEntiere));
+
   console.log('\n' + '─'.repeat(60));
   console.log(ok + ' / ' + total + ' contrôles réussis');
   process.exit(ok === total && erreurs.length === 0 ? 0 : 1);
