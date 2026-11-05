@@ -602,6 +602,25 @@ setTimeout(() => {
   // elle contredirait les pièces officielles remises aux bailleurs.
   const pageEntiere = d.documentElement.textContent;
   v('siège social à jour (Poissy)', pageEntiere.includes('4 rue des Monts Chauvets'));
+
+  // Modes de règlement proposés : l'annuel a été ajouté à la demande du
+  // bureau. Le serveur ne tient pas de liste fermée, mais le courriel de
+  // confirmation ne parle de virement permanent que si le libellé
+  // contient « virement » — d'où ce contrôle.
+  const reglements = [...d.querySelectorAll('#preference option')].map(o => o.textContent.trim());
+  v('virement annuel proposé', reglements.includes('Virement annuel'));
+  v('tous les virements reconnus par le courriel',
+    reglements.filter(t => /^Virement/.test(t)).length === 3);
+
+  // Les personnes qui cotisaient avant la mise en ligne doivent
+  // s'enregistrer : sans cette note, leur versement reste invisible.
+  const avis = d.getElementById('avisDejaCotisant');
+  v('note aux cotisants existants présente', Boolean(avis));
+  v('note placée avant le formulaire',
+    Boolean(avis) && Boolean(avis.compareDocumentPosition(d.getElementById('formEngagement'))
+      & 4));
+  v('note indique la formule Libre et le virement mensuel',
+    Boolean(avis) && /Libre/.test(avis.textContent) && /Virement mensuel/.test(avis.textContent));
   v('ancienne adresse absente',
     !/Petite Grille|Saint-Thibault|77400/.test(pageEntiere));
 

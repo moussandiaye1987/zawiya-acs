@@ -860,6 +860,20 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       <span>Ce formulaire enregistre votre engagement de contribution. Aucun paiement ni prélèvement n'est effectué sur ce site. L'association vous communiquera les modalités de règlement. Aucune coordonnée bancaire ne vous est demandée ici.</span>
     </div>
 
+    <div class="avis" id="avisDejaCotisant">
+      <b>Vous cotisez déjà chaque mois ? Enregistrez-vous ici également.</b>
+      <p style="margin:.5rem 0 0">Les contributions versées avant la mise en ligne de ce site ne sont pas
+      reprises automatiquement : sans enregistrement, votre versement n'apparaît dans aucun suivi.
+      L'enregistrement est également nécessaire si vous souhaitez modifier le montant que vous versiez
+      jusqu'ici.</p>
+      <p style="margin:.5rem 0 0">Si votre montant correspond à l'une des formules, choisissez-la.
+      S'il en diffère, choisissez <b>Libre</b> et indiquez votre montant exact — celui que vous versez
+      aujourd'hui, ou le nouveau si vous l'ajustez. Sélectionnez ensuite
+      <b>Virement mensuel</b> dans « Comment je préfère régler ».</p>
+      <p style="margin:.5rem 0 0">Cet enregistrement ne crée aucun nouveau prélèvement et ne double pas
+      votre versement : votre virement existant continue tel quel.</p>
+    </div>
+
     <form id="formEngagement" novalidate>
       <fieldset style="margin-top:1.4rem">
         <legend>Mon forfait mensuel <span class="req" aria-hidden="true">*</span></legend>
@@ -921,6 +935,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
             <option value="">Je verrai avec l'association</option>
             <option>Virement mensuel</option>
             <option>Virement trimestriel</option>
+            <option>Virement annuel</option>
             <option>HelloAsso</option>
             <option>Koppar Express</option>
             <option>Remise à ma Dahira</option>
