@@ -120,6 +120,9 @@ export default async (req, context) => {
                  || (d.rappel_whatsapp === true && Boolean(champs.telephone)),
     canal_rappel: d.rappel_email === true && champs.email ? 'email'
                 : d.rappel_whatsapp === true && champs.telephone ? 'whatsapp' : 'aucun',
+    // Déclaré par la personne, jamais déduit : le bureau en a besoin pour
+    // distinguer un versement déjà en cours d'une contribution nouvelle.
+    deja_cotisant: d.deja_cotisant === true,
     est_test: d.est_test === true,
     ip_hash,
   };
@@ -222,6 +225,7 @@ async function composerMailAssociation(e) {
       <tr><td style="color:#6b7d71">Durée</td><td>${e.duree_mois} mois</td></tr>
       <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${montant(e.total_previsionnel, dev)}</td></tr>
       <tr><td style="color:#6b7d71">Préférence de règlement</td><td>${echapper(e.preference_reglement || 'non précisée')}</td></tr>
+      <tr><td style="color:#6b7d71">Cotise déjà</td><td>${e.deja_cotisant ? '<strong>Oui — versement déjà en cours avant cet enregistrement</strong>' : 'Non'}</td></tr>
       <tr><td style="color:#6b7d71">Rappels</td><td>${e.rappel_email ? 'e-mail' : ''}${e.rappel_email && e.rappel_whatsapp ? ' et ' : ''}${e.rappel_whatsapp ? 'WhatsApp' : ''}${!e.rappel_email && !e.rappel_whatsapp ? 'aucun' : ''}</td></tr>
     </table>
     ${e.message ? `<p style="color:#6b7d71;font-size:14px">Message : ${echapper(e.message)}</p>` : ''}`;

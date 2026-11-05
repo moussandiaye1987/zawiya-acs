@@ -943,6 +943,14 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
           <p class="aide">Simple préférence. Rien n'est mis en place à cette étape.</p>
         </div>
 
+        <label class="case" id="caseDejaCotisant">
+          <input type="checkbox" id="dejaCotisant">
+          <span><b>Je cotise déjà</b> — je verse déjà une contribution à l'association.
+          Enregistrez quand même votre engagement : c'est lui qui le rend visible dans le suivi,
+          et il permet d'ajuster votre montant. Votre virement existant continue tel quel,
+          rien n'est prélevé ici.</span>
+        </label>
+
         <div class="champ">
           <label for="prenom">Prénom <span class="req" aria-hidden="true">*</span></label>
           <input id="prenom" name="prenom" type="text" autocomplete="given-name" required>
@@ -2678,6 +2686,7 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
       montant_mensuel_declare: montant(),
       duree_mois: duree(),
       preference_reglement: document.getElementById('preference').value,
+      deja_cotisant: document.getElementById('dejaCotisant').checked,
       message: document.getElementById('message').value,
       consentement: true,
       rappel_email: document.getElementById('rappelEmail').checked && Boolean(email),

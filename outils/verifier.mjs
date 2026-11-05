@@ -284,6 +284,25 @@ serie('ENGAGEMENT — validation');
   r = await engagement(requete(engagementValide({ forfait:'libre', montant_mensuel_declare: 150 })));
   c = await r.json();
   verifier('montant libre valide accepté', r.status === 200 && c.ok, c.reference);
+
+  // « Je cotise déjà » : déclaré par la personne, il doit arriver en base
+  // et dans le CSV. Coché mais non transmis, il laisserait croire au
+  // bureau qu'un versement en cours a été signalé.
+  reinitialiser();
+  r = await engagement(requete(engagementValide({ deja_cotisant: true })));
+  verifier('cotisant existant enregistré',
+    r.status === 200 && BASE.engagements.at(-1)?.deja_cotisant === true);
+
+  reinitialiser();
+  r = await engagement(requete(engagementValide()));
+  verifier('non coché : enregistré à faux',
+    r.status === 200 && BASE.engagements.at(-1)?.deja_cotisant === false);
+
+  const { fabriquerCSV } = await import('../netlify/functions/lib/csv.mjs');
+  const csv = fabriquerCSV([{ reference:'X', deja_cotisant:true }, { reference:'Y', deja_cotisant:false }]);
+  verifier('colonne « Cotise déjà » dans le CSV', csv.includes('Cotise déjà'));
+  verifier('valeurs Oui / Non dans le CSV',
+    csv.split('\r\n')[1].includes('"Oui"') && csv.split('\r\n')[2].includes('"Non"'));
 }
 
 serie('ENGAGEMENT — anti-robot');

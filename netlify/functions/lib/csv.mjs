@@ -100,6 +100,7 @@ const COLONNES = [
   ['Durée (mois)',            (e) => entier(e.duree_mois)],
   ['Total prévisionnel',      (e) => nombre(e.total_previsionnel, e.devise === 'XOF' ? 0 : 2)],
   ['Préférence de règlement', (e) => texte(e.preference_reglement)],
+  ['Cotise déjà',             (e) => texte(oui(e.deja_cotisant))],
   ['Statut',                  (e) => texte(e.statut)],
   ['Début',                   (e) => dateSeule(e.debut_engagement)],
   ['Fin prévue',              (e) => dateSeule(e.fin_engagement)],

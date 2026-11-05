@@ -609,6 +609,19 @@ setTimeout(() => {
   // contient « virement » — d'où ce contrôle.
   const reglements = [...d.querySelectorAll('#preference option')].map(o => o.textContent.trim());
   v('virement annuel proposé', reglements.includes('Virement annuel'));
+
+  // La case « je cotise déjà » n'a de valeur que si elle remonte jusqu'au
+  // bureau : cochée mais non transmise, elle donnerait une fausse
+  // impression d'avoir été prise en compte.
+  const caseDeja = d.getElementById('dejaCotisant');
+  v('case « je cotise déjà » présente', Boolean(caseDeja));
+  v('case « je cotise déjà » non obligatoire',
+    Boolean(caseDeja) && !caseDeja.required);
+  v('case « je cotise déjà » transmise au serveur',
+    /deja_cotisant:\s*document\.getElementById\('dejaCotisant'\)\.checked/
+      .test(d.documentElement.innerHTML));
+  v('case « je cotise déjà » invite à s\'enregistrer quand même',
+    Boolean(caseDeja) && /quand m[êe]me/i.test(caseDeja.closest('label').textContent));
   v('tous les virements reconnus par le courriel',
     reglements.filter(t => /^Virement/.test(t)).length === 3);
 
