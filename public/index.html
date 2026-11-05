@@ -932,13 +932,13 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
         <div class="champ">
           <label for="preference">Comment je préfère régler</label>
           <select id="preference" name="preference">
-            <option value="">Je verrai avec l'association</option>
-            <option>Virement mensuel</option>
+            <option selected>Virement mensuel</option>
             <option>Virement trimestriel</option>
             <option>Virement annuel</option>
             <option>HelloAsso</option>
             <option>Koppar Express</option>
             <option>Remise à ma Dahira</option>
+            <option value="">Je verrai avec l'association</option>
           </select>
           <p class="aide">Simple préférence. Rien n'est mis en place à cette étape.</p>
         </div>
@@ -982,11 +982,28 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
         <div class="champ">
           <label for="zone">Ma zone</label>
           <select id="zone" name="zone">
-            <option value="">Je ne sais pas</option>
-            <option>Île-de-France</option><option>Nord</option><option>Grand-Est</option>
+            <option selected>Île-de-France</option><option>Nord</option><option>Grand-Est</option>
             <option>Loire</option><option>Auvergne-Rhône-Alpes</option><option>Sud</option>
             <option>Hors de France</option>
+            <option value="">Je ne sais pas</option>
           </select>
+        </div>
+        <div class="champ" id="champPays" hidden>
+          <label for="pays">Mon pays de résidence <span class="req" aria-hidden="true">*</span></label>
+          <input id="pays" name="pays" type="text" list="listePays" autocomplete="country-name"
+                 placeholder="Par exemple Sénégal">
+          <datalist id="listePays">
+            <option>Sénégal</option><option>Maroc</option><option>Mauritanie</option>
+            <option>Gambie</option><option>Mali</option><option>Guinée</option>
+            <option>Côte d'Ivoire</option><option>Nigeria</option><option>Ghana</option>
+            <option>Belgique</option><option>Espagne</option><option>Italie</option>
+            <option>Allemagne</option><option>Suisse</option><option>Royaume-Uni</option>
+            <option>Pays-Bas</option><option>Portugal</option><option>Suède</option>
+            <option>États-Unis</option><option>Canada</option><option>Émirats arabes unis</option>
+            <option>Arabie saoudite</option><option>Égypte</option><option>Turquie</option>
+          </datalist>
+          <p class="erreur" data-pour="pays" hidden></p>
+          <p class="aide">Saisissez-le librement s'il ne figure pas dans la liste.</p>
         </div>
 
         <div class="champ plein">
@@ -2593,6 +2610,7 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
         prenom: document.getElementById('prenom').value, nom: document.getElementById('nom').value,
         email: document.getElementById('email').value, telephone: document.getElementById('telephone').value,
         codePostal: document.getElementById('codePostal').value, zone: document.getElementById('zone').value,
+        pays: document.getElementById('pays').value,
         dahira: document.getElementById('dahira').value, message: document.getElementById('message').value,
       };
       localStorage.setItem(CLE_BROUILLON, JSON.stringify(d));
@@ -2615,11 +2633,20 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
     } catch(e){ /* brouillon illisible : on repart propre */ }
   }
 
+  // Le pays ne se demande qu'à qui réside hors de France : ailleurs la
+  // zone suffit, et un champ de plus décourage.
+  function majPays(){
+    const hors = document.getElementById('zone').value === 'Hors de France';
+    document.getElementById('champPays').hidden = !hors;
+    if(!hors) document.getElementById('pays').value = '';
+  }
+
   form.addEventListener('change', e => {
     if(e.target.name === 'forfait'){
       blocLibre.hidden = e.target.value !== 'libre';
       if(e.target.value === 'libre') champLibre.focus();
     }
+    if(e.target.id === 'zone') majPays();
     majTotal(); majRappel(); sauver();
   });
   form.addEventListener('input', () => { majTotal(); majRappel(); sauver(); });
@@ -2654,6 +2681,11 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
       erreurChamp(form, 'montant_mensuel_declare', 'Indiquez le montant mensuel que vous choisissez.');
       premier = premier || marquerInvalide('montantLibre');
     }
+    if(document.getElementById('zone').value === 'Hors de France'
+       && !document.getElementById('pays').value.trim()){
+      erreurChamp(form, 'pays', 'Indiquez votre pays de résidence.');
+      premier = premier || marquerInvalide('pays');
+    }
     if(!document.getElementById('consentement').checked){
       erreurChamp(form, 'consentement', 'Cochez cette case pour enregistrer votre engagement.');
       premier = premier || marquerInvalide('consentement');
@@ -2686,6 +2718,8 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
       montant_mensuel_declare: montant(),
       duree_mois: duree(),
       preference_reglement: document.getElementById('preference').value,
+      pays: document.getElementById('zone').value === 'Hors de France'
+        ? document.getElementById('pays').value.trim() : '',
       deja_cotisant: document.getElementById('dejaCotisant').checked,
       message: document.getElementById('message').value,
       consentement: true,
@@ -2757,6 +2791,7 @@ const MODE_TEST_CONTACT = new URLSearchParams(location.search).get('test') === '
   });
 
   charger();
+  majPays();
   majTotal();
   majRappel();
 })();

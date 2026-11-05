@@ -298,9 +298,30 @@ serie('ENGAGEMENT — validation');
   verifier('non coché : enregistré à faux',
     r.status === 200 && BASE.engagements.at(-1)?.deja_cotisant === false);
 
+  // Hors de France : le pays est exigé, et aucun département français
+  // ne doit être déduit d'un code postal étranger.
+  reinitialiser();
+  r = await engagement(requete(engagementValide({ zone:'Hors de France', pays:'' })));
+  let f = await r.json();
+  verifier('pays exigé hors de France', r.status === 422 && Boolean(f.fautes.pays));
+
+  reinitialiser();
+  r = await engagement(requete(engagementValide({
+    zone:'Hors de France', pays:'Sénégal', code_postal:'11000' })));
+  verifier('pays enregistré', r.status === 200 && BASE.engagements.at(-1)?.pays === 'Sénégal');
+  verifier('aucun département déduit hors de France',
+    BASE.engagements.at(-1)?.departement === null);
+
+  reinitialiser();
+  r = await engagement(requete(engagementValide({
+    zone:'Île-de-France', pays:'Sénégal', code_postal:'78300' })));
+  verifier('pays ignoré en France', r.status === 200 && BASE.engagements.at(-1)?.pays === '');
+  verifier('département déduit en France', BASE.engagements.at(-1)?.departement === '78');
+
   const { fabriquerCSV } = await import('../netlify/functions/lib/csv.mjs');
   const csv = fabriquerCSV([{ reference:'X', deja_cotisant:true }, { reference:'Y', deja_cotisant:false }]);
   verifier('colonne « Cotise déjà » dans le CSV', csv.includes('Cotise déjà'));
+  verifier('colonne « Pays » dans le CSV', csv.includes('Pays'));
   verifier('valeurs Oui / Non dans le CSV',
     csv.split('\r\n')[1].includes('"Oui"') && csv.split('\r\n')[2].includes('"Non"'));
 }

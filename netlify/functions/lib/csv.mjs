@@ -91,6 +91,7 @@ const COLONNES = [
   ['Ville',                   (e) => texte(e.ville)],
   ['Département',             (e) => texte(e.departement)],
   ['Zone',                    (e) => texte(e.zone)],
+  ['Pays',                    (e) => texte(e.pays || (e.zone === 'Hors de France' ? '' : 'France'))],
   ['Dahira',                  (e) => texte(e.dahira)],
   ['Forfait',                 (e) => texte(NOM_FORFAIT[e.forfait] || e.forfait)],
   // Le franc CFA ne se divise pas : aucune décimale pour lui.

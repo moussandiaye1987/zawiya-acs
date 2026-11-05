@@ -613,6 +613,27 @@ setTimeout(() => {
   // La case « je cotise déjà » n'a de valeur que si elle remonte jusqu'au
   // bureau : cochée mais non transmise, elle donnerait une fausse
   // impression d'avoir été prise en compte.
+  // Valeurs par défaut demandées par le bureau : la plupart des
+  // contributeurs sont en Île-de-France et règlent par virement mensuel.
+  const choisi = (id) => {
+    const sel = d.getElementById(id);
+    const o = [...sel.options].find(x => x.selected) || sel.options[0];
+    return o ? o.textContent.trim() : null;
+  };
+  v('zone par défaut : Île-de-France', choisi('zone') === 'Île-de-France');
+  v('règlement par défaut : virement mensuel', choisi('preference') === 'Virement mensuel');
+
+  // Le pays : caché par défaut, révélé par « Hors de France ».
+  const pays = d.getElementById('pays');
+  v('champ pays présent', Boolean(pays));
+  v('champ pays caché au départ', Boolean(d.getElementById('champPays')?.hidden));
+  v('champ pays transmis au serveur', /pays:\s*document\.getElementById\('zone'\)\.value/
+    .test(d.documentElement.innerHTML));
+  v('liste de pays proposée',
+    (d.getElementById('listePays')?.querySelectorAll('option').length || 0) >= 20);
+  v('pays exigé hors de France',
+    /Indiquez votre pays de résidence/.test(d.documentElement.innerHTML));
+
   const caseDeja = d.getElementById('dejaCotisant');
   v('case « je cotise déjà » présente', Boolean(caseDeja));
   v('case « je cotise déjà » non obligatoire',

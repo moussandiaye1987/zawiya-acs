@@ -40,6 +40,7 @@ export default async (req, context) => {
     code_postal: nettoyer(d.code_postal, 10),
     ville: nettoyer(d.ville, 120),
     zone: nettoyer(d.zone, 60),
+    pays: nettoyer(d.pays, 80),
     dahira: nettoyer(d.dahira, 120),
     preference_reglement: nettoyer(d.preference_reglement, 80),
     message: nettoyer(d.message, 1000),
@@ -58,6 +59,14 @@ export default async (req, context) => {
     fautes.telephone = 'Ce numéro semble incomplet.';
   }
   if (champs.zone && !ZONES.includes(champs.zone)) fautes.zone = 'Zone inconnue.';
+
+  // Le pays n'a de sens que hors de France, et il y est indispensable :
+  // « Hors de France » seul ne dit pas où joindre la personne.
+  const horsDeFrance = champs.zone === 'Hors de France';
+  if (horsDeFrance && !champs.pays) {
+    fautes.pays = 'Indiquez votre pays de résidence.';
+  }
+  if (!horsDeFrance) champs.pays = '';
 
   const forfait = nettoyer(d.forfait, 20);
   if (!forfait || !FORFAITS[forfait]) fautes.forfait = 'Choisissez un forfait.';
@@ -103,7 +112,9 @@ export default async (req, context) => {
   const ligne = {
     reference: fabriquerReference(),
     ...champs,
-    departement: departementDepuisCP(champs.code_postal),
+    // Un code postal étranger ne désigne aucun département français :
+    // « 11000 » à Dakar deviendrait l'Aude dans les statistiques.
+    departement: horsDeFrance ? null : departementDepuisCP(champs.code_postal),
     forfait,
     montant_mensuel_declare: montantMensuel,
     devise,
@@ -225,6 +236,7 @@ async function composerMailAssociation(e) {
       <tr><td style="color:#6b7d71">Durée</td><td>${e.duree_mois} mois</td></tr>
       <tr><td style="color:#6b7d71">Total prévisionnel</td><td>${montant(e.total_previsionnel, dev)}</td></tr>
       <tr><td style="color:#6b7d71">Préférence de règlement</td><td>${echapper(e.preference_reglement || 'non précisée')}</td></tr>
+      <tr><td style="color:#6b7d71">Pays</td><td>${echapper(e.pays || 'France')}</td></tr>
       <tr><td style="color:#6b7d71">Cotise déjà</td><td>${e.deja_cotisant ? '<strong>Oui — versement déjà en cours avant cet enregistrement</strong>' : 'Non'}</td></tr>
       <tr><td style="color:#6b7d71">Rappels</td><td>${e.rappel_email ? 'e-mail' : ''}${e.rappel_email && e.rappel_whatsapp ? ' et ' : ''}${e.rappel_whatsapp ? 'WhatsApp' : ''}${!e.rappel_email && !e.rappel_whatsapp ? 'aucun' : ''}</td></tr>
     </table>
