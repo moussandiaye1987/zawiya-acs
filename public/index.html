@@ -1132,6 +1132,10 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       communauté engagée et participez à son développement.</p>
     </div>
 
+    <details class="replier" id="replierAdhesion">
+      <summary>Comment adhérer, et où nous en sommes</summary>
+      <div class="contenu">
+
     <div class="distinguo">
       <div class="distinguo-carte en-avant">
         <b>Adhésion à l'association</b>
@@ -1192,6 +1196,9 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       dans la limite de 20 % du revenu imposable, selon votre situation et les règles
       applicables. Un reçu fiscal est délivré pour les versements éligibles.</p>
     </div>
+
+      </div>
+    </details>
   </div>
 </section>
 
@@ -2412,6 +2419,16 @@ function rendreAdhesions(d){
 
   const bloc = document.getElementById('blocAdhesions');
   if(!bloc) return;
+
+  // Le volet est replié par défaut pour alléger la page, mais deux liens
+  // du menu pointent ici : les suivre pour tomber sur un simple bouton
+  // « + » donnerait l'impression que la rubrique est vide.
+  const replier = document.getElementById('replierAdhesion');
+  const ouvrirSiVise = () => {
+    if(replier && location.hash === '#adhesion-association') replier.open = true;
+  };
+  ouvrirSiVise();
+  window.addEventListener('hashchange', ouvrirSiVise);
 
   const actifs = a && Number.isInteger(a.adherents_actifs) ? a.adherents_actifs : null;
   if(actifs === null){ bloc.hidden = true; return; }

@@ -362,6 +362,23 @@ setTimeout(() => {
       + "projets et nos actions et contribuez à faire vivre notre association. Rejoignez une "
       + "communauté engagée et participez à son développement.");
   })());
+  // La rubrique est repliée pour alléger la page, mais deux liens du
+  // menu la visent : repliée et non rouverte, elle paraîtrait vide.
+  const replier = d.getElementById('replierAdhesion');
+  v('la rubrique est repliée par défaut', Boolean(replier) && !replier.open);
+  v('tout le détail est dans le volet',
+    Boolean(replier) && Boolean(replier.querySelector('#lienAdhesion'))
+      && Boolean(replier.querySelector('#blocAdhesions'))
+      && Boolean(replier.querySelector('#blocFiscal')));
+  v('le texte mandaté reste visible hors du volet',
+    Boolean(sect.querySelector('.sect-lead'))
+      && !sect.querySelector('.sect-lead').closest('details'));
+  v('le volet s\'ouvre quand un lien le vise',
+    /location\.hash === '#adhesion-association'/.test(html)
+      && /hashchange/.test(html));
+  v('les liens du menu visent bien la rubrique',
+    [...d.querySelectorAll('a[href="#adhesion-association"]')].length >= 1);
+
   v('un bouton mène à HelloAsso', (() => {
     const a = d.getElementById('lienAdhesion');
     return Boolean(a) && /^https:\/\/www\.helloasso\.com\//.test(a.getAttribute('href'));
@@ -416,10 +433,16 @@ setTimeout(() => {
 
   v('aucune promesse fiscale n\'est faite par défaut',
     d.getElementById('blocFiscal').hidden === true);
-  v('aucun texte fiscal n\'est visible tant que l\'interrupteur est éteint',
-    !/réduction d'impôt de 66/.test(
-      [...sect.querySelectorAll(':scope > * > *:not(#blocFiscal)')]
-        .map((e) => e.textContent).join(' ')));
+  // Contrôle indépendant de la profondeur : la mention fiscale ne doit
+  // exister nulle part ailleurs que dans le bloc prévu, lequel est
+  // masqué. L'ancienne version visait un niveau d'imbrication précis et
+  // devenait fausse dès qu'on repliait la rubrique.
+  v('aucun texte fiscal n\'est visible tant que l\'interrupteur est éteint', (() => {
+    const copie = sect.cloneNode(true);
+    copie.querySelector('#blocFiscal')?.remove();
+    return !/réduction d'impôt de 66/.test(copie.textContent)
+        && d.getElementById('blocFiscal').hidden === true;
+  })());
   v('l\'affichage fiscal dépend d\'un réglage serveur',
     /fiscal_actif/.test(html) && /AFFICHER_INFO_FISCALE/.test(
       fs.readFileSync(racine + 'netlify/functions/donnees-publiques.mjs', 'utf8')));
