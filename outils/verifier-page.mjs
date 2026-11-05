@@ -362,6 +362,17 @@ setTimeout(() => {
       + "projets et nos actions et contribuez à faire vivre notre association. Rejoignez une "
       + "communauté engagée et participez à son développement.");
   })());
+  // Le bureau ne veut plus être appelé : l'association se joint par
+  // écrit. Un numéro réintroduit par mégarde exposerait de nouveau des
+  // personnes à des appels directs.
+  const texteSite = d.documentElement.textContent;
+  v('aucun numéro de contact de l\'association',
+    !/06\s*76\s*55\s*10\s*98|06\s*45\s*53\s*61\s*62/.test(texteSite));
+  v('aucun lien d\'appel vers l\'association',
+    [...d.querySelectorAll('a[href^="tel:"]')].every((a) => a.closest('#listeDahiras, template')));
+  v('l\'adresse de l\'association est publiée',
+    Boolean(d.querySelector('a[href="mailto:acs.kbf@gmail.com"]')));
+
   // La rubrique est repliée pour alléger la page, mais deux liens du
   // menu la visent : repliée et non rouverte, elle paraîtrait vide.
   const replier = d.getElementById('replierAdhesion');
