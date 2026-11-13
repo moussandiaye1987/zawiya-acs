@@ -12,13 +12,37 @@
 <meta property="og:site_name" content="Association Connaissance et Savoir">
 <meta property="og:title" content="Bâtir la Zawiya Cheikh Ibrahim Niasse en Île-de-France">
 <meta property="og:description" content="1 000 engagements recherchés pour acquérir et aménager un lieu permanent : salle de 500 places, salles de Hadra, école, accueil des Chouyoukh.">
-<meta property="og:image" content="img/og.jpg">
+<meta property="og:url" content="https://zawiya-cheikh-ibrahima-niass.netlify.app/">
+<link rel="canonical" href="https://zawiya-cheikh-ibrahima-niass.netlify.app/">
+<meta property="og:image" content="https://zawiya-cheikh-ibrahima-niass.netlify.app/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Perspective de la Zawiya Cheikh Ibrahim Niasse : façade en pierre claire et fenêtres en ogive.">
+<meta name="twitter:image" content="https://zawiya-cheikh-ibrahima-niass.netlify.app/img/og.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#12321F">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/AlegreyaSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/Marcellus-Regular.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* ---------------------------------------------------------------
+   Polices servies par le site, et non par Google.
+   Hébergées ici, elles n'envoient plus l'adresse IP des visiteurs à
+   un tiers — ce que la CNIL assimile à un transfert de données — et
+   suppriment deux connexions bloquantes au rendu. Sous-ensemble
+   latin, format woff2 : 136 Ko au total, mis en cache un an.
+   Marcellus et Alegreya Sans sont sous licence SIL Open Font.
+   --------------------------------------------------------------- */
+@font-face{font-family:"Marcellus"; font-style:normal; font-weight:400; font-display:swap;
+  src:url("fonts/Marcellus-Regular.woff2") format("woff2")}
+@font-face{font-family:"Alegreya Sans"; font-style:normal; font-weight:400; font-display:swap;
+  src:url("fonts/AlegreyaSans-Regular.woff2") format("woff2")}
+@font-face{font-family:"Alegreya Sans"; font-style:normal; font-weight:500; font-display:swap;
+  src:url("fonts/AlegreyaSans-Medium.woff2") format("woff2")}
+@font-face{font-family:"Alegreya Sans"; font-style:normal; font-weight:700; font-display:swap;
+  src:url("fonts/AlegreyaSans-Bold.woff2") format("woff2")}
+@font-face{font-family:"Alegreya Sans"; font-style:italic; font-weight:400; font-display:swap;
+  src:url("fonts/AlegreyaSans-Italic.woff2") format("woff2")}
+
 /* ====================================================================
    Jetons de couleur — identité conservée : pierre, encre forestière,
    vert ACS, et l'ogive des fenêtres du bâtiment comme motif récurrent.
@@ -26,7 +50,7 @@
 :root{
   --pierre:#EFE8DC; --pierre-2:#E4DAC9; --craie:#FBF8F2;
   --encre:#14301F; --encre-2:#4A6152;
-  --vert:#1E7A43; --vert-vif:#7CB230;
+  --vert:#1A6B3B; --vert-vif:#7CB230;
   --nuit:#12321F; --sur-nuit:#EFE8DC; --sur-nuit-2:rgba(239,232,220,.74);
   --trait:rgba(20,48,31,.16); --trait-fort:rgba(20,48,31,.34);
   --alerte:#B4342A;
@@ -65,7 +89,7 @@ html{-webkit-text-size-adjust:100%; scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{animation:none !important; transition:none !important} }
 body{margin:0; background:var(--pierre); color:var(--encre);
   font-family:"Alegreya Sans","Segoe UI",system-ui,sans-serif; font-size:17px; line-height:1.62; overflow-x:hidden}
-img{max-width:100%; display:block}
+img{max-width:100%; height:auto; display:block}
 a{color:inherit}
 h1,h2,h3,h4{font-family:"Marcellus","Times New Roman",Georgia,serif; font-weight:400; line-height:1.14; margin:0}
 p{margin:0 0 1em}
@@ -84,6 +108,7 @@ p{margin:0 0 1em}
 .topbar-in{display:flex; align-items:center; gap:.9rem; padding:.5rem 0; min-height:62px; position:relative}
 .brand{display:flex; align-items:center; gap:.6rem; text-decoration:none; flex:0 0 auto}
 .marques{display:flex; align-items:center; gap:.35rem; flex:0 0 auto}
+.brand{min-height:44px}
 .brand img{width:38px; height:38px; border-radius:50%; background:#fff; flex:0 0 auto}
 .brand b{font-family:"Marcellus",serif; font-size:1rem; font-weight:400; letter-spacing:.02em; line-height:1.15}
 .brand b span{display:block; font-size:.73rem; color:var(--encre-2); letter-spacing:.04em}
@@ -268,6 +293,7 @@ p{margin:0 0 1em}
 
 /* ---------- tableaux ---------- */
 .scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch; position:relative}
+.scroll-x:focus-visible{outline:2px solid var(--vert); outline-offset:2px}
 .tbl{width:100%; border-collapse:collapse; font-size:.97rem; margin-top:1.4rem}
 .tbl caption{text-align:left; font-size:.88rem; color:var(--encre-2); padding-bottom:.7rem}
 .tbl th,.tbl td{padding:.75rem .65rem; text-align:right; border-bottom:1px solid var(--trait); font-variant-numeric:tabular-nums}
@@ -317,10 +343,12 @@ p{margin:0 0 1em}
 .piege{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
 fieldset{border:1px solid var(--trait); border-radius:var(--rayon); padding:1.05rem 1.15rem 1.15rem; margin:0; grid-column:1 / -1}
 fieldset legend{font-size:.88rem; color:var(--encre-2); padding:0 .45rem}
-.case{display:flex; gap:.7rem; align-items:flex-start; grid-column:1 / -1; font-size:.92rem; color:var(--encre-2)}
+.case{display:flex; gap:.7rem; align-items:flex-start; grid-column:1 / -1; font-size:.92rem;
+  color:var(--encre-2); min-height:44px; padding-block:.35rem; cursor:pointer}
 .case input{margin-top:.25rem; width:19px; height:19px; accent-color:var(--vert); flex:0 0 auto}
 .radios-ligne{display:flex; gap:1.4rem; align-items:center; padding-top:.3rem; flex-wrap:wrap}
-.radios-ligne label{display:flex; gap:.42rem; align-items:center; font-size:.96rem; cursor:pointer}
+.radios-ligne label{display:flex; gap:.42rem; align-items:center; font-size:.96rem; cursor:pointer;
+  min-height:44px; padding-inline:.2rem}
 .radios-ligne input{accent-color:var(--vert); width:18px; height:18px}
 .total{grid-column:1 / -1; display:flex; flex-wrap:wrap; justify-content:space-between; gap:.5rem 1rem;
   border-block:1px solid var(--trait-fort); padding:.95rem 0; align-items:baseline}
@@ -638,7 +666,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
 .logos figure{margin:0; text-align:center; width:84px}
 .logos img{width:58px; height:58px; border-radius:50%; background:#fff; margin-inline:auto}
 .logos figcaption{font-size:.72rem; line-height:1.3; color:var(--encre-2); margin-top:.4rem}
-.pied a{color:var(--vert)}
+.pied a:not(.btn){color:var(--vert)}
 .pied-bas{margin-top:1.8rem; padding-top:1.1rem; border-top:1px solid var(--trait); font-size:.84rem;
   display:flex; flex-wrap:wrap; gap:.4rem 1.3rem; justify-content:space-between}
 </style>
@@ -657,8 +685,8 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
   <div class="wrap topbar-in">
     <a class="brand" href="#haut">
       <span class="marques">
-        <img src="img/logoacs.jpg" alt="Association Connaissance et Savoir">
-        <img src="img/logofaf.jpg" alt="Fédération Ansaruddîne France">
+        <img src="img/logoacs.jpg" alt="Association Connaissance et Savoir" width="420" height="358">
+        <img src="img/logofaf.jpg" alt="Fédération Ansaruddîne France" width="420" height="420">
       </span>
       <b><span class="brand-long">Zawiya Cheikh Ibrahim Niasse</span><span class="brand-court">Zawiya</span><span>ACS · Fédération Ansaruddîne France</span></b>
     </a>
@@ -703,7 +731,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       </div>
     </div>
     <figure class="hero-art">
-      <img class="ogive" src="img/facade2.jpg" alt="Perspective de la façade de la Zawiya à la tombée du jour : pierre claire et hautes fenêtres en ogive.">
+      <img class="ogive" src="img/facade2.jpg" alt="Perspective de la façade de la Zawiya à la tombée du jour : pierre claire et hautes fenêtres en ogive." width="1024" height="1536">
       <figcaption>Perspective d'architecte — façade sur rue</figcaption>
     </figure>
   </div>
@@ -756,10 +784,10 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
     <p class="film-legende">Film de la maquette — parcours extérieur et intérieur du bâtiment, 1 min 49.</p>
 
     <div class="galerie">
-      <figure class="g-large"><img loading="lazy" decoding="async" src="img/aerien.jpg" alt="Vue d'ensemble du bâtiment, du parvis et du parking arboré."><figcaption>Vue d'ensemble</figcaption></figure>
-      <figure class="g-small"><img loading="lazy" decoding="async" src="img/hero.jpg" alt="Façade en pierre claire avec fenêtres en ogive, vue depuis la rue."><figcaption>Façade sur rue</figcaption></figure>
-      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/hall2.jpg" alt="Hall d'accueil lumineux, sol en terrazzo, hautes ouvertures en ogive."><figcaption>Hall d'accueil</figcaption></figure>
-      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/conf.jpg" alt="Salle de conférence avec estrade et sièges verts."><figcaption>Salle de conférence, 500 places</figcaption></figure>
+      <figure class="g-large"><img loading="lazy" decoding="async" src="img/aerien.jpg" alt="Vue d'ensemble du bâtiment, du parvis et du parking arboré." width="1600" height="781"><figcaption>Vue d'ensemble</figcaption></figure>
+      <figure class="g-small"><img loading="lazy" decoding="async" src="img/hero.jpg" alt="Façade en pierre claire avec fenêtres en ogive, vue depuis la rue." width="1536" height="1024"><figcaption>Façade sur rue</figcaption></figure>
+      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/hall2.jpg" alt="Hall d'accueil lumineux, sol en terrazzo, hautes ouvertures en ogive." width="1400" height="788"><figcaption>Hall d'accueil</figcaption></figure>
+      <figure class="g-mid"><img loading="lazy" decoding="async" src="img/conf.jpg" alt="Salle de conférence avec estrade et sièges verts." width="1400" height="933"><figcaption>Salle de conférence, 500 places</figcaption></figure>
     </div>
 
     <h4 style="font-family:Marcellus,serif;font-weight:400;font-size:1.25rem;margin:2rem 0 .4rem">Ce que nous recherchons dans le bâtiment</h4>
@@ -793,7 +821,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
           </div>
         </div>
         <figure style="margin:1.8rem 0 0">
-          <img loading="lazy" decoding="async" src="img/plan.jpg" alt="Plan axonométrique du rez-de-chaussée : parking arboré, hall d'accueil, salle de conférence, salles Hadra, cuisine et sanitaires." style="border:1px solid var(--trait); border-radius:var(--rayon)">
+          <img loading="lazy" decoding="async" src="img/plan.jpg" alt="Plan axonométrique du rez-de-chaussée : parking arboré, hall d'accueil, salle de conférence, salles Hadra, cuisine et sanitaires." style="border:1px solid var(--trait); border-radius:var(--rayon)" width="1280" height="904">
           <figcaption style="font-size:.85rem;color:var(--encre-2);margin-top:.6rem">Plan d'étude du rez-de-chaussée — organisation souhaitée, non contractuelle</figcaption>
         </figure>
       </div>
@@ -1102,7 +1130,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
         <div class="contenu">
           <img loading="lazy" decoding="async" src="img/rib-acs.jpg"
                alt="Relevé d'identité bancaire de l'Association Connaissance et Savoir, BRED Banque Populaire, agence de Torcy."
-               style="border:1px solid var(--trait); border-radius:var(--rayon); margin-top:1rem">
+               style="border:1px solid var(--trait); border-radius:var(--rayon); margin-top:1rem" width="1000" height="490">
         </div>
       </details>
     </div>
@@ -1518,7 +1546,7 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
       <div class="contenu">
 
     <p style="color:var(--encre-2);max-width:42em;margin-top:.5rem">Une seule configuration de référence gouverne tout ce que vous voyez sur cette page : le puzzle, le tableau ci-dessous et le simulateur en lisent les mêmes valeurs.</p>
-    <div class="scroll-x">
+    <div class="scroll-x" tabindex="0" role="region" aria-label="Tableau, défilement horizontal">
       <table class="tbl" id="tableauEquation">
         <caption id="legendeEquation"></caption>
         <thead>
@@ -1824,11 +1852,11 @@ dialog.boite-aide form{display:flex; flex-direction:column; max-height:inherit}
     <div class="pied-grid">
       <div class="logos">
         <figure>
-          <img loading="lazy" src="img/logoacs.jpg" alt="Logo de l'Association Connaissance et Savoir">
+          <img loading="lazy" src="img/logoacs.jpg" alt="Logo de l'Association Connaissance et Savoir" width="420" height="358">
           <figcaption>Association<br>Connaissance et Savoir</figcaption>
         </figure>
         <figure>
-          <img loading="lazy" src="img/logofaf.jpg" alt="Logo de la Fédération Ansaruddîne France">
+          <img loading="lazy" src="img/logofaf.jpg" alt="Logo de la Fédération Ansaruddîne France" width="420" height="420">
           <figcaption>Fédération<br>Ansaruddîne France</figcaption>
         </figure>
       </div>
