@@ -8,6 +8,16 @@
   publish = "public"
   command = ""
 
+# L'adresse d'expédition et son libellé figurent en clair dans
+# .env.example, qui documente les variables attendues. Le scanner de
+# secrets de Netlify y reconnaît la valeur configurée et refuse de
+# construire. Or une adresse d'expédition n'est pas un secret : elle
+# s'affiche dans l'en-tête de chaque message envoyé. Seules ces deux
+# clés sont exemptées ; la clé Brevo, celle de Supabase, celle de
+# HelloAsso et le secret d'administration restent surveillés.
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "MAIL_EXPEDITEUR,MAIL_EXPEDITEUR_NOM"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
