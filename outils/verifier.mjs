@@ -23,7 +23,8 @@ process.env.URL = 'https://site.test';
 const BASE = { engagements: [], dahiras: [], journal_notifications: [], versements: [], rappels: [], messages_contact: [],
   adhesions_helloasso: [], synchronisation_helloasso: [], criteres_rup: [] };
 const HA = { articles: [], appels: [], jetons: 0, panne: 0, authRefusee: false, jetonCourt: false };
-const APPELS = { mails: [], echecMail: false, echecPour: null, soumissionsRecentes: 0, rpc: [], geocodages: [], geocodageEnPanne: false };
+const APPELS = {
+  brevoConsultations: [], mails: [], echecMail: false, echecPour: null, soumissionsRecentes: 0, rpc: [], geocodages: [], geocodageEnPanne: false };
 
 const CRITERES_RUP = [
   ['adherents','Nombre d\'adhérents'], ['interet','Intérêt général'],
@@ -38,6 +39,7 @@ function reinitialiser(){
   BASE.synchronisation_helloasso.push({ id: 1, statut: 'jamais' });
   APPELS.mails.length = 0; APPELS.rpc.length = 0; APPELS.echecMail = false; APPELS.echecPour = null;
   APPELS.geocodages.length = 0; APPELS.geocodageEnPanne = false; APPELS.soumissionsRecentes = 0;
+  APPELS.brevoConsultations.length = 0; APPELS.bloquees = []; APPELS.evenements = {};
 }
 
 function repJSON(corps, status = 200){
@@ -83,6 +85,21 @@ globalThis.fetch = async (url, options = {}) => {
 
   // --- fournisseur d'e-mails ---
   if(u.hostname === 'api.brevo.com'){
+    // Consultation du sort des messages (diagnostic), avant l'envoi.
+    if(u.pathname.startsWith('/v3/smtp/blockedContacts/')){
+      const adresse = decodeURIComponent(u.pathname.split('/').pop());
+      APPELS.brevoConsultations.push(adresse);
+      if((APPELS.bloquees || []).includes(adresse)) {
+        return repJSON({ email: adresse, blockedAt: '2026-10-01T10:00:00Z',
+                         reason: { message: 'plainte pour courrier indésirable' } }, 200);
+      }
+      return new Response('{"message":"Contact not found"}', { status: 404 });
+    }
+    if(u.pathname.startsWith('/v3/smtp/statistics/events')){
+      const adresse = u.searchParams.get('email');
+      return repJSON({ events: (APPELS.evenements || {})[adresse] || [] }, 200);
+    }
+
     if(APPELS.echecMail) return new Response('service indisponible', { status: 500 });
     const charge = JSON.parse(options.body);
     // Panne visant une adresse précise : sert à vérifier qu'un
@@ -1423,5 +1440,60 @@ serie('MODIFICATION D\'UNE FICHE DAHIRA');
 
 /* ------------------------------------------------------------------ */
 console.log('\n' + '─'.repeat(60));
+// =====================================================================
+//  DIAGNOSTIC DES ENVOIS
+//  Le journal du site ne sait que si Brevo a accepté la demande. Cette
+//  page doit dire ce qu'il est advenu ensuite — sans quoi « envoyé »
+//  continuera de passer pour « reçu ».
+// =====================================================================
+{
+  const { default: diagnostic } = await import('../netlify/functions/diagnostic-envois.mjs');
+  const appel = (cle) => new Request(`https://site.test/api/diagnostic-envois?cle=${cle}`);
+
+  reinitialiser();
+  process.env.SECRET_ADMIN = 'cle-admin-de-test';
+  process.env.EMAIL_ASSOCIATION = 'bureau@assoc.test, second@assoc.test';
+
+  let r = await diagnostic(appel('mauvaise'));
+  verifier('diagnostic : clé refusée', r.status === 403);
+
+  APPELS.bloquees = ['second@assoc.test'];
+  APPELS.evenements = {
+    'bureau@assoc.test': [{ date: '2026-11-04T21:54:00Z', event: 'delivered', subject: 'Nouvel engagement' }],
+  };
+  BASE.journal_notifications.push(
+    { cree_le: '2026-11-04T21:54:33Z', destinataire: 'bureau@assoc.test',
+      modele: 'engagement_association', statut: 'envoye', tentatives: 1,
+      reference_fournisseur: '<abc@smtp-relay.mailin.fr>', derniere_erreur: null },
+    { cree_le: '2026-11-04T21:54:33Z', destinataire: 'second@assoc.test',
+      modele: 'engagement_association', statut: 'envoye', tentatives: 1,
+      reference_fournisseur: '<def@smtp-relay.mailin.fr>', derniere_erreur: null });
+
+  r = await diagnostic(appel('cle-admin-de-test'));
+  const html = await r.text();
+  verifier('diagnostic : page servie', r.status === 200);
+  verifier('les deux adresses configurées sont interrogées',
+    APPELS.brevoConsultations.includes('bureau@assoc.test')
+    && APPELS.brevoConsultations.includes('second@assoc.test'));
+  verifier('une remise confirmée est annoncée comme telle', /remise confirmée/.test(html));
+  verifier('une adresse bloquée est signalée', /bloquée/.test(html)
+    && /courrier indésirable/.test(html));
+  verifier('la page distingue accepté et reçu',
+    /Accepté n.est pas reçu/.test(html));
+  verifier('la clé Brevo n\'apparaît jamais dans la page',
+    !html.includes(process.env.BREVO_API_KEY));
+  verifier('la clé d\'administration n\'apparaît jamais dans la page',
+    !html.includes(process.env.SECRET_ADMIN));
+  verifier('la page refuse d\'être indexée', /noindex/.test(html));
+
+  // Sans adresse configurée, le silence serait pire que l'alerte.
+  reinitialiser();
+  process.env.EMAIL_ASSOCIATION = '';
+  r = await diagnostic(appel('cle-admin-de-test'));
+  verifier('absence de destinataire signalée en clair',
+    /EMAIL_ASSOCIATION est vide/.test(await r.text()));
+  process.env.EMAIL_ASSOCIATION = 'bureau@assoc.test, second@assoc.test';
+}
+
 console.log(`${reussis} / ${total} contrôles réussis`);
 process.exit(reussis === total ? 0 : 1);
