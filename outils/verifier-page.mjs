@@ -362,6 +362,39 @@ setTimeout(() => {
       + "projets et nos actions et contribuez à faire vivre notre association. Rejoignez une "
       + "communauté engagée et participez à son développement.");
   })());
+  // --- Contrôles issus de l'audit de novembre ---
+
+  // Le bouton du pied de page était vert sur vert : « .pied a » (0,1,1)
+  // l'emportait sur « .btn » (0,1,0). Invisible, donc inutilisable.
+  v('le pied de page ne repeint pas les boutons',
+    /\.pied a:not\(\.btn\)\{color:var\(--vert\)\}/.test(html));
+
+  // Les dimensions évitent que la page saute au chargement des photos ;
+  // height:auto empêche ces mêmes dimensions de les déformer.
+  const photos = [...d.querySelectorAll('img')];
+  v('toutes les images portent leurs dimensions',
+    photos.every((i) => i.getAttribute('width') && i.getAttribute('height')),
+    `${photos.filter((i) => !i.getAttribute('width')).length} sans dimensions`);
+  v('les images gardent leurs proportions', /img\{max-width:100%; height:auto/.test(html));
+
+  // Aucune police, aucun script, aucune image d'origine tierce : les
+  // visiteurs ne sont annoncés à personne.
+  v('aucun appel à Google Fonts', !/fonts\.(googleapis|gstatic)\.com/.test(html));
+  v('les polices sont servies par le site',
+    (html.match(/@font-face/g) || []).length >= 5 && /fonts\/Marcellus-Regular\.woff2/.test(html));
+
+  // Un partage sans adresse absolue ne montre aucune vignette.
+  const og = d.querySelector('meta[property="og:image"]');
+  v('image de partage en adresse absolue',
+    Boolean(og) && /^https:\/\//.test(og.getAttribute('content')));
+  v('adresse canonique déclarée', Boolean(d.querySelector('link[rel="canonical"]')));
+
+  // Une zone qui défile doit être atteignable au clavier.
+  const defilants = [...d.querySelectorAll('.scroll-x')];
+  v('les tableaux défilants sont accessibles au clavier',
+    defilants.length > 0 && defilants.every((e) => e.getAttribute('tabindex') === '0'
+      && e.getAttribute('aria-label')));
+
   // Le bureau ne veut plus être appelé : l'association se joint par
   // écrit. Un numéro réintroduit par mégarde exposerait de nouveau des
   // personnes à des appels directs.
